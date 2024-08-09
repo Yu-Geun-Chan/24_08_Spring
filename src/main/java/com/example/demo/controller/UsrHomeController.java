@@ -9,15 +9,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.demo.dto.Article;
+import com.example.demo.vo.Article;
 
 @Controller // 프로젝트에서 얘는 컨트롤러라고 인식하게끔 하는것
 public class UsrHomeController {
-	
+
 	@RequestMapping("/usr/home/getString")
 	@ResponseBody
 	public String getString() {
-	
+
 		return "안뇽?";
 	}
 
@@ -34,7 +34,7 @@ public class UsrHomeController {
 
 		return true;
 	}
-	
+
 	@RequestMapping("/usr/home/getMap")
 	@ResponseBody
 	public Map<String, Object> getMap() {
@@ -49,21 +49,21 @@ public class UsrHomeController {
 	@RequestMapping("/usr/home/getList")
 	@ResponseBody
 	public List<String> getList() {
-		
+
 		List<String> list = new ArrayList<>();
 		list.add("영수나이");
 		list.add("철수나이");
-		
+
 		return list;
 	}
-	
+
 	@RequestMapping("/usr/home/getArticle")
 	@ResponseBody
 	public Article getArticle(int id, String title, String body) {
-		
+
 		Article article = new Article(id, title, body);
-		
+
 		return article;
 	}
-	
+
 }
