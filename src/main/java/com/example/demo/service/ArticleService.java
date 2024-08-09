@@ -15,42 +15,31 @@ public class ArticleService {
 	@Autowired
 	private ArticleRepository articleRepository;
 
+	// 실행 순서 때문에 controller와는 다르게 service에서는 repository를 받아야한다.
 	public ArticleService(ArticleRepository articleRepository) {
 		this.articleRepository = articleRepository;
-		makeArticleTestData();
 	}
 
-	private void makeArticleTestData() {
-		for (int i = 1; i <= 10; i++) {
-			String title = "제목" + i;
-			String body = "내용" + i;
-
-			writeArticle(title, body);
-		}
+	public int writeArticle(String title, String body) {
+		articleRepository.writeArticle(title, body);
+		return articleRepository.getLastInsertId();
 	}
 
-	public Article writeArticle(String title, String body) {
-		return articleRepository.writeArticle(title, body);
-	}
-
-	public Article getArticleById(int id) {
-		return articleRepository.getArticleById(id);
+	public void deleteArticle(int id) {
+		articleRepository.deleteArticle(id);
 	}
 
 	public void modifyArticle(int id, String title, String body) {
 		articleRepository.modifyArticle(id, title, body);
-
 	}
 
-	public void deleteArticle(int id) {
-		Article article = getArticleById(id);
+	public Article getArticleById(int id) {
 
-		articleRepository.articles.remove(article);
+		return articleRepository.getArticleById(id);
 	}
 
 	public List<Article> getArticles() {
 		return articleRepository.getArticles();
 	}
-
 
 }
