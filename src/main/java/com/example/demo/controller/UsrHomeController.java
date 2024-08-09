@@ -1,53 +1,69 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.dto.Article;
+
 @Controller // 프로젝트에서 얘는 컨트롤러라고 인식하게끔 하는것
 public class UsrHomeController {
-
-	@RequestMapping("/usr/home/main")
+	
+	@RequestMapping("/usr/home/getString")
 	@ResponseBody
-	public String showMain1() {
-		return "안녕하세요";
+	public String getString() {
+	
+		return "안뇽?";
 	}
 
-	@RequestMapping("/usr/home/main2")
+	@RequestMapping("/usr/home/getDouble")
 	@ResponseBody
-	public String showMain2() {
-		return "잘가";
+	public double getDouble() {
+
+		return 1.5123124;
 	}
 
-	@RequestMapping("/usr/home/main3")
+	@RequestMapping("/usr/home/getBoolean")
 	@ResponseBody
-	public int showMain3() {
-		return 1 + 2;
+	public boolean getBoolean() {
+
+		return true;
 	}
-
-	private int count;
-
-	public UsrHomeController() {
-		count = 0;
-	}
-
-	@RequestMapping("/usr/home/setCountValue")
+	
+	@RequestMapping("/usr/home/getMap")
 	@ResponseBody
-	public String setCountValue(int value) {
-		this.count = value;
-		return "count 값 " + value + "(으)로 초기화";
+	public Map<String, Object> getMap() {
+		Map<String, Object> map = new HashMap<>();
+
+		map.put("철수나이", 11);
+		map.put("영수나이", 12);
+
+		return map;
 	}
 
-	@RequestMapping("/usr/home/setCount")
+	@RequestMapping("/usr/home/getList")
 	@ResponseBody
-	public String setCount() {
-		count = 0;
-		return "count 값 0으로 초기화";
+	public List<String> getList() {
+		
+		List<String> list = new ArrayList<>();
+		list.add("영수나이");
+		list.add("철수나이");
+		
+		return list;
 	}
-
-	@RequestMapping("/usr/home/getCount")
+	
+	@RequestMapping("/usr/home/getArticle")
 	@ResponseBody
-	public int getCount() {
-		return count++;
+	public Article getArticle(int id, String title, String body) {
+		
+		Article article = new Article(id, title, body);
+		
+		return article;
 	}
+	
 }
