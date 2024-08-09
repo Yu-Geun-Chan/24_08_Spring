@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Controller // 프로젝트에서 얘는 컨트롤러라고 인식하게끔 하는것
 public class UsrArticleController {
-	
+
 	@Autowired // 알아서 연결
 	private ArticleService articleService;
 
@@ -33,10 +33,25 @@ public class UsrArticleController {
 		return article;
 	}
 
+	// 게시글 목록
 	@RequestMapping("/usr/article/getArticles")
 	@ResponseBody
 	public List<Article> getArticles() {
-		return articleService.articles;
+		return articleService.getArticles();
+	}
+
+	// 게시글 상세보기
+	@RequestMapping("/usr/article/getArticle")
+	@ResponseBody
+	public Object getArticle(int id) {
+
+		Article foundArticle = articleService.getArticleById(id);
+
+		if (foundArticle == null) {
+			return String.format("%d번 게시글은 없습니다.", id);
+		}
+
+		return foundArticle;
 	}
 
 	@RequestMapping("/usr/article/doDelete")
@@ -53,21 +68,7 @@ public class UsrArticleController {
 
 		return String.format("%d번 게시글이 삭제되었습니다.", id);
 	}
-	
-	// 게시글 상세보기
-	@RequestMapping("/usr/article/getArticle")
-	@ResponseBody
-	public Object getArticle(int id) {
-		
-		Article foundArticle = articleService.getArticleById(id);
 
-		if (foundArticle == null) {
-			return String.format("%d번 게시글은 없습니다.", id);
-		}
-		
-		return foundArticle;
-	}
-	
 	@RequestMapping("/usr/article/doModify")
 	@ResponseBody
 	// object를 쓰는 이유는 어떨때는 return을 String으로 하고 어떨때는 Article 타입으로 하기 위해
