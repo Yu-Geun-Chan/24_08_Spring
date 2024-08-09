@@ -90,5 +90,35 @@ public class UsrArticleController {
 
 		return String.format("%d번 게시글이 삭제되었습니다.", id);
 	}
+	
+	@RequestMapping("/usr/article/getArticle")
+	@ResponseBody
+	public Object getArticle(int id) {
+		
+		Article foundArticle = getArticleById(id);
+
+		if (foundArticle == null) {
+			return String.format("%d번 게시글은 없습니다.", id);
+		}
+		
+		return foundArticle;
+	}
+	
+	@RequestMapping("/usr/article/doModify")
+	@ResponseBody
+	// object를 쓰는 이유는 어떨때는 return을 String으로 하고 어떨때는 Article 타입으로 하기 위해
+	public Object doModify(int id, String title, String body) {
+
+		Article foundArticle = getArticleById(id);
+
+		if (foundArticle == null) {
+			return String.format("%d번 게시글은 없습니다.\n", id);
+		}
+
+		foundArticle.setTitle(title);
+		foundArticle.setBody(body);
+
+		return foundArticle + String.format("%d번 게시글이 수정되었습니다.", id);
+	}
 
 }
