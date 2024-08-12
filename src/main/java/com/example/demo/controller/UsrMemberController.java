@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.service.MemberService;
+import com.example.demo.util.Ut;
 import com.example.demo.vo.Member;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,30 @@ public class UsrMemberController {
 	@ResponseBody
 	public Object doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum, String email) {
 		int id = memberService.doJoin(loginId, loginPw, name, nickname, cellphoneNum, email);
+		
+		if (Ut.isEmptyOrNull(loginId)) {
+			return "아이디를 올바르게 입력해주세요.";
+		}
+		
+		if (Ut.isEmptyOrNull(loginPw)) {
+			return "비밀번호를 올바르게 입력해주세요.";
+		}
+		
+		if (Ut.isEmptyOrNull(name)) {
+			return "이름을 올바르게 입력해주세요.";
+		}
+		
+		if (Ut.isEmptyOrNull(nickname)) {
+			return "닉네임을 올바르게 입력해주세요.";
+		}
+		
+		if (Ut.isEmptyOrNull(cellphoneNum)) {
+			return "휴대폰 번호를 올바르게 입력해주세요.";
+		}
+		
+		if (Ut.isEmptyOrNull(email)) {
+			return "이메일을 올바르게 입력해주세요.";
+		}
 		
 		if (id == -1) {
 			return "이미 사용중인 아이디입니다.";

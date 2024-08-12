@@ -17,7 +17,7 @@ public interface MemberRepository {
 	@Select("SELECT LAST_INSERT_ID();")
 	public int getLastInsertId();
 
-//	@Insert("INSERT INTO `member` SET regDate = NOW(), updateDate = NOW(), loginId = #{loginId}, loginPw = #{loginPw}, `name` = #{name}, nickname = #{nickname}, cellphoneNum = #{cellphoneNum}, email = #{email}")
+	@Insert("INSERT INTO `member` SET regDate = NOW(), updateDate = NOW(), loginId = #{loginId}, loginPw = #{loginPw}, `name` = #{name}, nickname = #{nickname}, cellphoneNum = #{cellphoneNum}, email = #{email}")
 	public void doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum, String email);
 
 	@Select("SELECT * FROM `member` WHERE id = #{id}")
@@ -28,5 +28,4 @@ public interface MemberRepository {
 
 	@Select("SELECT * FROM `member` WHERE loginId = #{loginId}")
 	public Member getMemberByLoginId(String loginId);
-
 }
