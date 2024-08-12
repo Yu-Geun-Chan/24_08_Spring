@@ -27,8 +27,13 @@ public class UsrMemberController {
 	// 액션 메서드
 	@RequestMapping("/usr/member/doJoin")
 	@ResponseBody
-	public Member doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum, String email) {
+	public Object doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum, String email) {
 		int id = memberService.doJoin(loginId, loginPw, name, nickname, cellphoneNum, email);
+		
+		if (id == -1) {
+			return "이미 사용중인 아이디입니다.";
+		}
+		
 		Member member = memberService.getMemberById(id);
 		return member;
 	}

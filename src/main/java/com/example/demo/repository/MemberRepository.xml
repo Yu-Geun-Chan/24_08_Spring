@@ -9,12 +9,12 @@
 		<set>
 		regDate = NOW(),
 		updateDate = NOW(),
-		<if test="loginId != null and loginId !=''">loginId = #{loginId},</if>
-		<if test="loginPw != null and loginPw !=''">loginPw = #{loginPw},</if>
-		<if test="name != null and name !=''">name = #{name},</if>
-		<if test="nickname != null and nickname !=''">nickname = #{nickname},</if>
-		<if test="cellphoneNum != null and cellphoneNum !=''">cellphoneNum = #{cellphoneNum},</if>
-		<if test="email != null and email !=''">email = #{email}</if>
+		<if test = "loginId != null and loginId !=''">loginId = #{loginId},</if>
+		<if test = "loginPw != null and loginPw !=''">loginPw = #{loginPw},</if>
+		<if test = "name != null and name !=''">name = #{name},</if>
+		<if test = "nickname != null and nickname !=''">nickname = #{nickname},</if>
+		<if test = "cellphoneNum != null and cellphoneNum !=''">cellphoneNum = #{cellphoneNum},</if>
+		<if test = "email != null and email !=''">email = #{email}</if>
 		</set>
 	</insert>
 

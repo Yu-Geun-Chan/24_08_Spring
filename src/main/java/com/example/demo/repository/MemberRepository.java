@@ -26,4 +26,7 @@ public interface MemberRepository {
 //	@Select("SELECT * FROM `member` ORDER BY id DESC")
 	public List<Member> getMembers();
 
+	@Select("SELECT * FROM `member` WHERE loginId = #{loginId}")
+	public Member getMemberByLoginId(String loginId);
+
 }
