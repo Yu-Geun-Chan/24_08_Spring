@@ -29,7 +29,7 @@ public class UsrMemberController {
 	// 액션 메서드
 	@RequestMapping("/usr/member/doJoin")
 	@ResponseBody
-	public Object doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum,
+	public ResultData<Member> doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum,
 			String email) {
 
 		if (Ut.isEmptyOrNull(loginId)) {
@@ -37,41 +37,33 @@ public class UsrMemberController {
 		}
 
 		if (Ut.isEmptyOrNull(loginPw)) {
-			return ResultData.from("F-1", "비밀번호를 올바르게 입력해주세요.");
+			return ResultData.from("F-2", "비밀번호를 올바르게 입력해주세요.");
 		}
 
 		if (Ut.isEmptyOrNull(name)) {
-			return ResultData.from("F-1", "이름을 올바르게 입력해주세요.");
+			return ResultData.from("F-3", "이름을 올바르게 입력해주세요.");
 		}
 
 		if (Ut.isEmptyOrNull(nickname)) {
-			return ResultData.from("F-1", "닉네임을 올바르게 입력해주세요.");
+			return ResultData.from("F-4", "닉네임을 올바르게 입력해주세요.");
 		}
 
 		if (Ut.isEmptyOrNull(cellphoneNum)) {
-			return ResultData.from("F-1", "휴대폰 번호를 올바르게 입력해주세요.");
+			return ResultData.from("F-5", "휴대폰 번호를 올바르게 입력해주세요.");
 		}
 
 		if (Ut.isEmptyOrNull(email)) {
-			return ResultData.from("F-1", "이메일을 올바르게 입력해주세요.");
+			return ResultData.from("F-6", "이메일을 올바르게 입력해주세요.");
 		}
 
-		int id = memberService.doJoin(loginId, loginPw, name, nickname, cellphoneNum, email);
+		ResultData doJoinRd = memberService.doJoin(loginId, loginPw, name, nickname, cellphoneNum, email);
 		
-		// MemberService를 통해 id에 -1을 리턴 받았다면 페이지에 
-		// 이미 사용중인 아이디(저장되어 있는 loginId)입니다. 라고 띄우기
-		if (id == -1) {
-			return ResultData.from("F-1", Ut.f("이미 사용중인(%s) 아이디 입니다.", loginId), loginId);
+		if (doJoinRd.isFail()) {
+			return doJoinRd;
 		}
 
-		// MemberService를 통해 id에 -2를 리턴 받았다면 페이지에 
-		// 이미 사용중인 이름(저장되어 있는 name)과 이메일(저장되어 있는 email)입니다. 라고 띄우기
-		if (id == -2) {
-			return ResultData.from("F-1",Ut.f("이미 사용중인 이름(%s)과 이메일(%s)입니다.", name, email), name, email);
-		}
+		Member member = memberService.getMemberById((int)doJoinRd.getData1());
 
-		Member member = memberService.getMemberById(id);
-
-		return member;
+		return ResultData.newData(doJoinRd, member);
 	}
 }

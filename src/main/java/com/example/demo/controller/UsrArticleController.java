@@ -29,27 +29,39 @@ public class UsrArticleController {
 	// 액션 메서드
 	@RequestMapping("/usr/article/doWrite")
 	@ResponseBody
-	public ResultData doWrite(String title, String body) {
-		int id = articleService.writeArticle(title, body);
+	// ResultData<Article> : data1의 타입이 Article이라고 명시
+	public ResultData<Article> doWrite(String title, String body) {
+
+		if (Ut.isEmptyOrNull(title)) {
+			return ResultData.from("F-1", "제목을 입력해주세요");
+		}
+		if (Ut.isEmptyOrNull(body)) {
+			return ResultData.from("F-2", "내용을 입력해주세요");
+		}
+
+		ResultData writeArticleRd = articleService.writeArticle(title, body);
+
+		int id = (int) writeArticleRd.getData1();
+
 		Article article = articleService.getArticleById(id);
 
-		return ResultData.from("S-1", Ut.f("%d번 게시글이 작성되었습니다.", id), article);
+		return ResultData.from(writeArticleRd.getResultCode(), writeArticleRd.getMsg(), article);
 	}
 
 	// 게시글 목록
 	@RequestMapping("/usr/article/getArticles")
 	@ResponseBody
-	public ResultData getArticles() {
-		
+	public ResultData<List<Article>> getArticles() {
+
 		List<Article> articles = articleService.getArticles();
-		
+
 		return ResultData.from("S-1", "작성된 게시글들 입니다.", articles);
 	}
 
 	// 게시글 상세보기
 	@RequestMapping("/usr/article/getArticle")
 	@ResponseBody
-	public ResultData getArticle(int id) {
+	public ResultData<Article> getArticle(int id) {
 
 		Article foundArticle = articleService.getArticleById(id);
 
@@ -62,7 +74,7 @@ public class UsrArticleController {
 
 	@RequestMapping("/usr/article/doDelete")
 	@ResponseBody
-	public ResultData doDelete(int id) {
+	public ResultData<Article> doDelete(int id) {
 
 		Article foundArticle = articleService.getArticleById(id);
 
@@ -72,13 +84,14 @@ public class UsrArticleController {
 
 		articleService.deleteArticle(id);
 
+		
 		return ResultData.from("S-1", Ut.f("%d번 게시글이 삭제되었습니다.", id), foundArticle);
 	}
 
 	@RequestMapping("/usr/article/doModify")
 	@ResponseBody
 	// object를 쓰는 이유는 어떨때는 return을 String으로 하고 어떨때는 Article 타입으로 하기 위해
-	public ResultData doModify(int id, String title, String body) {
+	public ResultData<Article> doModify(int id, String title, String body) {
 
 		Article foundArticle = articleService.getArticleById(id);
 
@@ -87,6 +100,9 @@ public class UsrArticleController {
 		}
 
 		articleService.modifyArticle(id, title, body);
+		
+		// 수정된 후 게시글의 정보를 보기 위해 한번 더 찾아와야한다.
+		foundArticle = articleService.getArticleById(id);
 
 		return ResultData.from("S-1", Ut.f("%d번 게시글이 수정되었습니다.", id), foundArticle);
 	}

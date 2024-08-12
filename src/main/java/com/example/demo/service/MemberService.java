@@ -1,50 +1,44 @@
 package com.example.demo.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.repository.ArticleRepository;
 import com.example.demo.repository.MemberRepository;
-import com.example.demo.vo.Article;
+import com.example.demo.util.Ut;
 import com.example.demo.vo.Member;
+import com.example.demo.vo.ResultData;
 
-@Service // 프로젝트 내에서 얘가 서비스라는걸 인식하게끔 하는 것
+@Service
 public class MemberService {
 
 	@Autowired
 	private MemberRepository memberRepository;
 
-	// 실행 순서 때문에 controller와는 다르게 service에서는 repository를 받아야한다.
 	public MemberService(MemberRepository memberRepository) {
 		this.memberRepository = memberRepository;
 	}
 
-	public int doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum, String email) {
+	// ResultData<Integer> : data1의 타입이 int라고 명시
+	public ResultData<Integer> doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum,
+			String email) {
 
-		// Member타입만을 저장할 수 있는 existsMember 라는 변수에 MemberRepository 클래스를 통해 
-		// loginId로 가져온 회원정보를 저장
 		Member existsMember = getMemberByLoginId(loginId);
 
-		// 만약 회원정보가 이미 있다면 MemberController 클래스의 id라는 변수에 -1을 리턴
 		if (existsMember != null) {
-			return -1;
+			return ResultData.from("F-7", Ut.f("이미 사용중인 아이디(%s)입니다.", loginId));
 		}
 
-		// Member타입만을 저장할 수 있는 existsMember 라는 변수에 MemberRepository 클래스를 통해
-		// name, email로 가져온 회원정보를 저장
 		existsMember = getMemberByNameAndEmail(name, email);
 
-		// 만약 회원정보가 이미 있다면 MemberController 클래스의 id라는 변수에 -2를 리턴
 		if (existsMember != null) {
-			return -2;
+			return ResultData.from("F-8", Ut.f("이미 사용중인 이름(%s)과 이메일(%s)입니다.", name, email));
 		}
 
 		memberRepository.doJoin(loginId, loginPw, name, nickname, cellphoneNum, email);
 
-		return memberRepository.getLastInsertId();
+		int id = memberRepository.getLastInsertId();
+
+		return ResultData.from("S-1", "회원가입 성공", id);
 	}
 
 	private Member getMemberByNameAndEmail(String name, String email) {
@@ -57,10 +51,6 @@ public class MemberService {
 
 	public Member getMemberById(int id) {
 		return memberRepository.getMemberById(id);
-	}
-
-	public List<Member> getArticles() {
-		return memberRepository.getMembers();
 	}
 
 }
