@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.demo.service.MemberService;
 import com.example.demo.util.Ut;
 import com.example.demo.vo.Member;
+import com.example.demo.vo.ResultData;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,39 +33,41 @@ public class UsrMemberController {
 			String email) {
 
 		if (Ut.isEmptyOrNull(loginId)) {
-			return "아이디를 올바르게 입력해주세요.";
+			return ResultData.from("F-1", "아이디를 올바르게 입력해주세요.");
 		}
 
 		if (Ut.isEmptyOrNull(loginPw)) {
-			return "비밀번호를 올바르게 입력해주세요.";
+			return ResultData.from("F-1", "비밀번호를 올바르게 입력해주세요.");
 		}
 
 		if (Ut.isEmptyOrNull(name)) {
-			return "이름을 올바르게 입력해주세요.";
+			return ResultData.from("F-1", "이름을 올바르게 입력해주세요.");
 		}
 
 		if (Ut.isEmptyOrNull(nickname)) {
-			return "닉네임을 올바르게 입력해주세요.";
+			return ResultData.from("F-1", "닉네임을 올바르게 입력해주세요.");
 		}
 
 		if (Ut.isEmptyOrNull(cellphoneNum)) {
-			return "휴대폰 번호를 올바르게 입력해주세요.";
+			return ResultData.from("F-1", "휴대폰 번호를 올바르게 입력해주세요.");
 		}
 
 		if (Ut.isEmptyOrNull(email)) {
-			return "이메일을 올바르게 입력해주세요.";
+			return ResultData.from("F-1", "이메일을 올바르게 입력해주세요.");
 		}
 
 		int id = memberService.doJoin(loginId, loginPw, name, nickname, cellphoneNum, email);
 		
-		// MemberService를 통해 id에 -1을 리턴 받았다면 페이지에 이미 사용중인 아이디입니다. 라고 띄우기
+		// MemberService를 통해 id에 -1을 리턴 받았다면 페이지에 
+		// 이미 사용중인 아이디(저장되어 있는 loginId)입니다. 라고 띄우기
 		if (id == -1) {
-			return Ut.f("이미 사용중인 아이디(%s)입니다.", loginId);
+			return ResultData.from("F-1", Ut.f("이미 사용중인(%s) 아이디 입니다.", loginId), loginId);
 		}
 
-		// MemberService를 통해 id에 -2를 리턴 받았다면 페이지에 이미 사용중인 이름과 이메일입니다. 라고 띄우기
+		// MemberService를 통해 id에 -2를 리턴 받았다면 페이지에 
+		// 이미 사용중인 이름(저장되어 있는 name)과 이메일(저장되어 있는 email)입니다. 라고 띄우기
 		if (id == -2) {
-			return Ut.f("이미 사용중인 이름(%s)과 이메일(%s)입니다.", name, email);
+			return ResultData.from("F-1",Ut.f("이미 사용중인 이름(%s)과 이메일(%s)입니다.", name, email), name, email);
 		}
 
 		Member member = memberService.getMemberById(id);
