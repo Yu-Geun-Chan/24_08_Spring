@@ -28,43 +28,47 @@ public class UsrMemberController {
 	// 액션 메서드
 	@RequestMapping("/usr/member/doJoin")
 	@ResponseBody
-	public Object doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum, String email) {
-		int id = memberService.doJoin(loginId, loginPw, name, nickname, cellphoneNum, email);
-		
+	public Object doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum,
+			String email) {
+
 		if (Ut.isEmptyOrNull(loginId)) {
 			return "아이디를 올바르게 입력해주세요.";
 		}
-		
+
 		if (Ut.isEmptyOrNull(loginPw)) {
 			return "비밀번호를 올바르게 입력해주세요.";
 		}
-		
+
 		if (Ut.isEmptyOrNull(name)) {
 			return "이름을 올바르게 입력해주세요.";
 		}
-		
+
 		if (Ut.isEmptyOrNull(nickname)) {
 			return "닉네임을 올바르게 입력해주세요.";
 		}
-		
+
 		if (Ut.isEmptyOrNull(cellphoneNum)) {
 			return "휴대폰 번호를 올바르게 입력해주세요.";
 		}
-		
+
 		if (Ut.isEmptyOrNull(email)) {
 			return "이메일을 올바르게 입력해주세요.";
 		}
+
+		int id = memberService.doJoin(loginId, loginPw, name, nickname, cellphoneNum, email);
 		
+		// MemberService를 통해 id에 -1을 리턴 받았다면 페이지에 이미 사용중인 아이디입니다. 라고 띄우기
 		if (id == -1) {
-			return "이미 사용중인 아이디입니다.";
-		} 
-		
-		if (id == -2) {
-			return "이미 사용중인 이름과 이메일입니다.";
+			return Ut.f("이미 사용중인 아이디(%s)입니다.", loginId);
 		}
-		
+
+		// MemberService를 통해 id에 -2를 리턴 받았다면 페이지에 이미 사용중인 이름과 이메일입니다. 라고 띄우기
+		if (id == -2) {
+			return Ut.f("이미 사용중인 이름(%s)과 이메일(%s)입니다.", name, email);
+		}
+
 		Member member = memberService.getMemberById(id);
-		
+
 		return member;
 	}
 }
