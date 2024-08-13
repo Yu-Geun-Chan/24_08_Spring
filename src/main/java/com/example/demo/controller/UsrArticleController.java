@@ -86,6 +86,8 @@ public class UsrArticleController {
 		if (httpSession.getAttribute("loginedMemberId") == null) {
 			return ResultData.from("F-A", "로그인 후에 이용해주세요.");
 		}
+		
+		int memberId = (int) httpSession.getAttribute("loginedMemberId");
 
 		Article foundArticle = articleService.getArticleById(id);
 
@@ -93,7 +95,7 @@ public class UsrArticleController {
 			return ResultData.from("F-1", Ut.f("%d번 게시글은 없습니다", id));
 		}
 		
-		if (foundArticle.getMemberId() != (int) httpSession.getAttribute("loginedMemberId")) {
+		if (foundArticle.getMemberId() != memberId) {
 			return ResultData.from("F-2", Ut.f("%d번 게시글에 대한 권한이 없습니다.", id));
 		}
 
@@ -111,6 +113,8 @@ public class UsrArticleController {
 		if (httpSession.getAttribute("loginedMemberId") == null) {
 			return ResultData.from("F-A", "로그인 후에 이용해주세요.");
 		}
+		
+		int memberId = (int) httpSession.getAttribute("loginedMemberId");
 
 		Article foundArticle = articleService.getArticleById(id);
 
@@ -118,7 +122,7 @@ public class UsrArticleController {
 			return ResultData.from("F-1", Ut.f("%d번 게시글은 없습니다", id));
 		}
 		
-		if (foundArticle.getMemberId() != (int) httpSession.getAttribute("loginedMemberId")) {
+		if (foundArticle.getMemberId() != memberId) {
 			return ResultData.from("F-2", Ut.f("%d번 게시글에 대한 권한이 없습니다.", id));
 		}
 
