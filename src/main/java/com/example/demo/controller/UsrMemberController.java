@@ -19,6 +19,7 @@ import com.example.demo.vo.ResultData;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Controller // 프로젝트에서 얘는 컨트롤러라고 인식하게끔 하는것
 public class UsrMemberController {
@@ -65,5 +66,54 @@ public class UsrMemberController {
 		Member member = memberService.getMemberById((int)doJoinRd.getData1());
 
 		return ResultData.newData(doJoinRd, member);
+	}
+	@RequestMapping("/usr/member/doLogin")
+	@ResponseBody
+	public ResultData doLogin(HttpSession httpSession, String loginId, String loginPw) {
+		
+		boolean isLogined = false;
+		
+		if (httpSession.getAttribute("loginedMemberId") != null) {
+			isLogined = true;
+		}
+		
+		if(isLogined) {
+			return ResultData.from("F-A", "로그아웃 해주세요.");
+		}
+		
+		if (Ut.isEmptyOrNull(loginId)) {
+			return ResultData.from("F-1", "아이디를 올바르게 입력해주세요.");
+		}
+		
+		if (Ut.isEmptyOrNull(loginPw)) {
+			return ResultData.from("F-2", "비밀번호를 올바르게 입력해주세요.");
+		}
+		
+		Member member = memberService.getMemberByLoginId(loginId);
+		
+		if (member == null) {
+			return ResultData.from("F-3", Ut.f("[%s]은(는) 없는 아이디입니다.", loginId), loginId);
+		}
+		
+		if (!member.getLoginPw().equals(loginPw)) {
+			return ResultData.from("F-4","비밀번호가 일치하지 않습니다.");
+		}
+		
+		httpSession.setAttribute("loginedMemberId", member.getId());
+		
+		return ResultData.from("S-1",Ut.f("[%s]님 환영합니다.", member.getNickname()), member);
+	}
+	
+	@RequestMapping("/usr/member/doLogout")
+	@ResponseBody
+	public ResultData doLogout(HttpSession httpSession) {
+		
+		if (httpSession.getAttribute("loginedMemberId") == null) {
+			return ResultData.from("F-1","로그인 해주세요.");
+		}
+		
+		httpSession.removeAttribute("loginedMemberId");
+		
+		return ResultData.from("S-1","로그아웃 되었습니다.");
 	}
 }

@@ -77,12 +77,14 @@ nickname = '회원2_닉네임',
 cellphoneNum = '01056785678',
 email = 'abcde@gmail.com';
 
-UPDATE article
-SET memberId = 1
-WHERE id IN (1,2);
+ALTER TABLE article ADD COLUMN memberId INT(10) UNSIGNED NOT NULL AFTER updateDate;
 
 UPDATE article
 SET memberId = 2
+WHERE id IN(1, 2);
+
+UPDATE article
+SET memberId = 3
 WHERE id = 3;
 
 SELECT *
@@ -91,7 +93,6 @@ ORDER BY id DESC;
 
 SELECT *
 FROM `member`;
-
 
 ###############################################################################
 
@@ -102,4 +103,3 @@ INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
 title = CONCAT('제목__', RAND()),
-`body` = CONCAT('내용__', RAND());

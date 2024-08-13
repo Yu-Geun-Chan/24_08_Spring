@@ -14,9 +14,6 @@ public class MemberService {
 	@Autowired
 	private MemberRepository memberRepository;
 
-	public MemberService(MemberRepository memberRepository) {
-		this.memberRepository = memberRepository;
-	}
 
 	// ResultData<Integer> : data1의 타입이 int라고 명시
 	public ResultData<Integer> doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum,
@@ -45,7 +42,7 @@ public class MemberService {
 		return memberRepository.getMemberByNameAndEmail(name, email);
 	}
 
-	private Member getMemberByLoginId(String loginId) {
+	public Member getMemberByLoginId(String loginId) {
 		return memberRepository.getMemberByLoginId(loginId);
 	}
 

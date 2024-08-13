@@ -13,8 +13,8 @@ import com.example.demo.vo.Article;
 @Mapper
 public interface ArticleRepository {
 	
-//	@Insert("INSERT INTO article SET regDate = NOW() updateDate = NOW(), title = #{title}, `body` = #{body}")
-	public void writeArticle(String title, String body);
+//	@Insert("INSERT INTO article SET regDate = NOW() updateDate = NOW(), m,title = #{title}, `body` = #{body}")
+	public void writeArticle(int memberId, String title, String body);
 
 //	@Update("UPDATE article SET regDate = NOW(), title = #{title}, `body` = #{body} WHERE id = #{id}")
 	public void modifyArticle(int id, String title, String body);
