@@ -30,8 +30,19 @@ public class UsrMemberController {
 	// 액션 메서드
 	@RequestMapping("/usr/member/doJoin")
 	@ResponseBody
-	public ResultData<Member> doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum,
+	public ResultData<Member> doJoin(HttpSession httpSession, String loginId, String loginPw, String name, String nickname, String cellphoneNum,
 			String email) {
+		
+		boolean isLogined = false;
+		
+		if (httpSession.getAttribute("loginedMemberId") != null) {
+			isLogined = true;
+		}
+		
+		// 보통 이런 경우의 실패(로그인 유무)는 "F-A"라고 표시한다.
+		if(isLogined) {
+			return ResultData.from("F-A", "로그아웃 해주세요.");
+		}
 
 		if (Ut.isEmptyOrNull(loginId)) {
 			return ResultData.from("F-1", "아이디를 올바르게 입력해주세요.");
@@ -77,6 +88,7 @@ public class UsrMemberController {
 			isLogined = true;
 		}
 		
+		// 보통 이런 경우의 실패(로그인 유무)는 "F-A"라고 표시한다.
 		if(isLogined) {
 			return ResultData.from("F-A", "로그아웃 해주세요.");
 		}
@@ -109,7 +121,7 @@ public class UsrMemberController {
 	public ResultData doLogout(HttpSession httpSession) {
 		
 		if (httpSession.getAttribute("loginedMemberId") == null) {
-			return ResultData.from("F-1","로그인 해주세요.");
+			return ResultData.from("F-A","로그인 해주세요.");
 		}
 		
 		httpSession.removeAttribute("loginedMemberId");
