@@ -52,7 +52,7 @@ public class UsrArticleController {
 
 		Article article = articleService.getArticleById(id);
 
-		return ResultData.newData(writeArticleRd, article);
+		return ResultData.newData(writeArticleRd, "새로 작성된 게시글", article);
 	}
 
 	// 게시글 목록
@@ -62,7 +62,7 @@ public class UsrArticleController {
 
 		List<Article> articles = articleService.getArticles();
 
-		return ResultData.from("S-1", "작성된 게시글들 입니다.", articles);
+		return ResultData.from("S-1", "작성된 게시글들 입니다.", "게시글 목록", articles);
 	}
 
 	// 게시글 상세보기
@@ -76,7 +76,7 @@ public class UsrArticleController {
 			return ResultData.from("F-1", Ut.f("%d번 게시글은 없습니다", id));
 		}
 
-		return ResultData.from("S-1", Ut.f("%d번 게시글입니다.", id), foundArticle);
+		return ResultData.from("S-1", Ut.f("%d번 게시글입니다.", id), "게시글 1개", foundArticle);
 	}
 
 	@RequestMapping("/usr/article/doDelete")
@@ -87,7 +87,7 @@ public class UsrArticleController {
 			return ResultData.from("F-A", "로그인 후에 이용해주세요.");
 		}
 		
-		int memberId = (int) httpSession.getAttribute("loginedMemberId");
+		int loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");
 
 		Article foundArticle = articleService.getArticleById(id);
 
@@ -95,16 +95,16 @@ public class UsrArticleController {
 			return ResultData.from("F-1", Ut.f("%d번 게시글은 없습니다", id));
 		}
 		
-		if (foundArticle.getMemberId() != memberId) {
+		if (foundArticle.getMemberId() != loginedMemberId) {
 			return ResultData.from("F-2", Ut.f("%d번 게시글에 대한 권한이 없습니다.", id));
 		}
 
 		articleService.deleteArticle(id);
-
 		
-		return ResultData.from("S-1", Ut.f("%d번 게시글이 삭제되었습니다.", id), foundArticle);
+		return ResultData.from("S-1", Ut.f("%d번 게시글이 삭제되었습니다.", id), "삭제된 게시글", foundArticle);
 	}
 
+	// 로그인 체크 -> 게시글 유무 체크 -> 권한 체크 -> 수정
 	@RequestMapping("/usr/article/doModify")
 	@ResponseBody
 	// object를 쓰는 이유는 어떨때는 return을 String으로 하고 어떨때는 Article 타입으로 하기 위해
@@ -114,7 +114,7 @@ public class UsrArticleController {
 			return ResultData.from("F-A", "로그인 후에 이용해주세요.");
 		}
 		
-		int memberId = (int) httpSession.getAttribute("loginedMemberId");
+		int loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");
 
 		Article foundArticle = articleService.getArticleById(id);
 
@@ -122,7 +122,7 @@ public class UsrArticleController {
 			return ResultData.from("F-1", Ut.f("%d번 게시글은 없습니다", id));
 		}
 		
-		if (foundArticle.getMemberId() != memberId) {
+		if (foundArticle.getMemberId() != loginedMemberId) {
 			return ResultData.from("F-2", Ut.f("%d번 게시글에 대한 권한이 없습니다.", id));
 		}
 
@@ -131,7 +131,7 @@ public class UsrArticleController {
 		// 수정된 후 게시글의 정보를 보기 위해 한번 더 찾아와야한다.
 		foundArticle = articleService.getArticleById(id);
 
-		return ResultData.from("S-1", Ut.f("%d번 게시글이 수정되었습니다.", id), foundArticle);
+		return ResultData.from("S-1", Ut.f("%d번 게시글이 수정되었습니다.", id), "수정된 게시글", foundArticle);
 	}
 
 }
