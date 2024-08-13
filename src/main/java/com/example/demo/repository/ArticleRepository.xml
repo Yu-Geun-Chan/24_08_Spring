@@ -23,7 +23,7 @@
 	</insert>
 
 	<select id="getArticles" resultType="Article">
-		SELECT A.*, M.nickName 
+		SELECT A.*, M.nickName
 		FROM article AS A
 		INNER JOIN `member` AS M
 		ON M.id = A.memberId
@@ -31,8 +31,10 @@
 	</select>
 
 	<select id="getArticleById" resultType="Article">
-		SELECT *
-		FROM article
-		WHERE id = #{id}
+		SELECT A.*, M.nickName
+		FROM article AS A
+		INNER JOIN `member` AS M
+		ON M.id = A.memberId
+		WHERE A.id = #{id}
 	</select>
 </mapper>
