@@ -21,10 +21,8 @@ public class UsrMemberController {
 	private MemberService memberService;
 
 	// 액션 메서드
-	@RequestMapping("/usr/member/doJoin")
-	@ResponseBody
-	public ResultData<Member> doJoin(HttpSession httpSession, String loginId, String loginPw, String name,
-			String nickname, String cellphoneNum, String email) {
+	@RequestMapping("/usr/member/join")
+	public String join(HttpSession httpSession, Model model) {
 
 		boolean isLogined = false;
 
@@ -32,34 +30,17 @@ public class UsrMemberController {
 			isLogined = true;
 		}
 
-		// 보통 이런 경우의 실패(로그인 유무)는 "F-A"라고 표시한다.
 		if (isLogined) {
-			return ResultData.from("F-A", "로그아웃 해주세요.");
+			model.addAttribute("msg", "로그아웃 해주세요.");
+			model.addAttribute("replaceUri", "/usr/home/main");
+			return "/usr/home/alert";
 		}
+		return "/usr/member/join";
+	}
 
-		if (Ut.isEmptyOrNull(loginId)) {
-			return ResultData.from("F-1", "아이디를 올바르게 입력해주세요.");
-		}
-
-		if (Ut.isEmptyOrNull(loginPw)) {
-			return ResultData.from("F-2", "비밀번호를 올바르게 입력해주세요.");
-		}
-
-		if (Ut.isEmptyOrNull(name)) {
-			return ResultData.from("F-3", "이름을 올바르게 입력해주세요.");
-		}
-
-		if (Ut.isEmptyOrNull(nickname)) {
-			return ResultData.from("F-4", "닉네임을 올바르게 입력해주세요.");
-		}
-
-		if (Ut.isEmptyOrNull(cellphoneNum)) {
-			return ResultData.from("F-5", "휴대폰 번호를 올바르게 입력해주세요.");
-		}
-
-		if (Ut.isEmptyOrNull(email)) {
-			return ResultData.from("F-6", "이메일을 올바르게 입력해주세요.");
-		}
+	@RequestMapping("/usr/member/doJoin")
+	public Object doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum,
+			String email, Model model) {
 
 		ResultData doJoinRd = memberService.doJoin(loginId, loginPw, name, nickname, cellphoneNum, email);
 
@@ -69,7 +50,12 @@ public class UsrMemberController {
 
 		Member member = memberService.getMemberById((int) doJoinRd.getData1());
 
-		return ResultData.newData(doJoinRd, "새로 생성된 member", member);
+		model.addAttribute("member", member);
+
+		model.addAttribute("msg", String.format("[%s]님 회원가입을 환영합니다.", member.getNickname()));
+		model.addAttribute("replaceUri", "/usr/home/main");
+		return "/usr/home/alert";
+
 	}
 
 	@RequestMapping("/usr/member/login")
@@ -92,7 +78,7 @@ public class UsrMemberController {
 
 	@RequestMapping("/usr/member/doLogin")
 	public String doLogin(HttpSession httpSession, String loginId, String loginPw, Model model) {
-		
+
 		if (Ut.isEmptyOrNull(loginId)) {
 			model.addAttribute("msg", "아이디를 입력해주세요.");
 			model.addAttribute("replaceUri", "/usr/member/login");
@@ -114,7 +100,7 @@ public class UsrMemberController {
 		}
 
 		if (!member.getLoginPw().equals(loginPw)) {
-			model.addAttribute("msg","비밀번호가 일치하지 않습니다.");
+			model.addAttribute("msg", "비밀번호가 일치하지 않습니다.");
 			model.addAttribute("replaceUri", "/usr/member/login");
 			return "/usr/home/alert";
 		}
@@ -133,14 +119,14 @@ public class UsrMemberController {
 	public String doLogout(HttpSession httpSession, Model model) {
 
 		if (httpSession.getAttribute("loginedMemberId") == null) {
-			model.addAttribute("msg","로그인 해주세요.");
+			model.addAttribute("msg", "로그인 해주세요.");
 			model.addAttribute("replaceUri", "/usr/member/login");
 			return "/usr/home/alert";
 		}
 
 		httpSession.removeAttribute("loginedMemberId");
 
-		model.addAttribute("msg","로그아웃 되었습니다.");
+		model.addAttribute("msg", "로그아웃 되었습니다.");
 		model.addAttribute("replaceUri", "/usr/home/main");
 		return "/usr/home/alert";
 	}

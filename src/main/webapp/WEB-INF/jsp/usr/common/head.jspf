@@ -30,13 +30,16 @@
 				<li><a href="/">HOME</a></li>
 				<li><a href="../article/list">LIST</a></li>
 				<c:if test="${loginedMemberId ne null}">
-					<li><a href="/usr/member/doLogout">Logout</a></li>
+					<li><a href="/usr/member/doLogout">LOGOUT</a></li>
 				</c:if>
 				<c:if test="${loginedMemberId eq null}">
-					<li><a href="../member/login">Login</a></li>
+					<li><a href="../member/login">LOGIN</a></li>
+				</c:if>
+				<c:if test="${loginedMemberId eq null}">
+					<li><a href="../member/join">JOIN</a></li>
 				</c:if>
 				<c:if test="${loginedMemberId ne null}">
-					<li><a href="../article/write">Write</a></li>
+					<li><a href="../article/write">WRITE</a></li>
 				</c:if>
 			</ul>
 		</div>

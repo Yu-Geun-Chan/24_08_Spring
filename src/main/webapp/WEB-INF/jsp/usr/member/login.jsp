@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<c:set var="pageTitle" value="Write"></c:set>
+<c:set var="pageTitle" value="LOGIN"></c:set>
 <%@ include file="../common/head.jspf"%>
 
 <!DOCTYPE html>
@@ -31,5 +31,4 @@
 		<a style="color: green" href="list">리스트로 돌아가기</a>
 	</div>
 
-</body>
-</html>
+<%@ include file="../common/foot.jspf"%>
