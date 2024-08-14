@@ -29,7 +29,15 @@
 			<ul class="flex">
 				<li><a href="/">HOME</a></li>
 				<li><a href="../article/list">LIST</a></li>
-				<li><a href="../member/login">Login</a></li>
+				<c:if test="${loginedMemberId ne null}">
+					<li><a href="/usr/member/doLogout">Logout</a></li>
+				</c:if>
+				<c:if test="${loginedMemberId eq null}">
+					<li><a href="../member/login">Login</a></li>
+				</c:if>
+				<c:if test="${loginedMemberId ne null}">
+					<li><a href="../article/write">Write</a></li>
+				</c:if>
 			</ul>
 		</div>
 

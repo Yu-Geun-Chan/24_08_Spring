@@ -1,30 +1,50 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="pageTitle" value="Detail"></c:set>
+<%@ include file="../common/head.jspf"%>
 
-<%
+<a href="../home/main">메인 페이지로 </a>
 
-%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>게시물 상세페이지</title>
-</head>
-<body>
+<hr />
 
-	<a href="../home/main">메인 페이지로 </a>
+<section class="mt-8 text-xl px-4">
+	<div class="mx-auto">
+		<table border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
+			<tbody>
+				<tr style="text-align: center;">
+					<th>게시글 번호</th>
+					<td>${article.id}</td>
+				</tr>
+				<tr style="text-align: center;">
+					<th>작성 날짜</th>
+					<td>${article.regDate.substring(0,10)}</td>
+				</tr>
+				<tr style="text-align: center;">
+					<th>제목</th>
+					<td>${article.title}</td>
+				</tr>
+				<tr style="text-align: center;">
+					<th>내용</th>
+					<td>${article.body }</td>
+				</tr>
+				<tr style="text-align: center;">
+					<th>작성자</th>
+					<td>${article.extra__Writer}</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="btns">
+			<button type="button" onclick="history.back()">뒤로가기</button>
+			<c:if test="${article.memberId eq loginedMemberId }">
+				<a href="../article/modify?id=${article.id }">수정</a>
+			</c:if>
+			<c:if test="${article.memberId eq loginedMemberId }">
+				<a href="../article/doDelete?id=${article.id }">삭제</a>
+			</c:if>
 
-	<h2>게시물 상세페이지</h2>
-
-	<div>번호 :${article.id}</div>
-	<div>날짜 : ${article.regDate}</div>
-	<div>작성자 : ${article.nickName}</div>
-	<div>제목 : ${article.title}</div>
-	<div>내용 : ${article.body}</div>
-
-	<div>
-		<a style="color: green" href="list">리스트로 돌아가기</a>
+		</div>
 	</div>
+</section>
 
-</body>
-</html>
+
+<%@ include file="../common/foot.jspf"%>

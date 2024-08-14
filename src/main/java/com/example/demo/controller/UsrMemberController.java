@@ -2,8 +2,10 @@ package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.service.MemberService;
 import com.example.demo.util.Ut;
@@ -21,17 +23,17 @@ public class UsrMemberController {
 	// 액션 메서드
 	@RequestMapping("/usr/member/doJoin")
 	@ResponseBody
-	public ResultData<Member> doJoin(HttpSession httpSession, String loginId, String loginPw, String name, String nickname, String cellphoneNum,
-			String email) {
-		
+	public ResultData<Member> doJoin(HttpSession httpSession, String loginId, String loginPw, String name,
+			String nickname, String cellphoneNum, String email) {
+
 		boolean isLogined = false;
-		
+
 		if (httpSession.getAttribute("loginedMemberId") != null) {
 			isLogined = true;
 		}
-		
+
 		// 보통 이런 경우의 실패(로그인 유무)는 "F-A"라고 표시한다.
-		if(isLogined) {
+		if (isLogined) {
 			return ResultData.from("F-A", "로그아웃 해주세요.");
 		}
 
@@ -60,63 +62,86 @@ public class UsrMemberController {
 		}
 
 		ResultData doJoinRd = memberService.doJoin(loginId, loginPw, name, nickname, cellphoneNum, email);
-		
+
 		if (doJoinRd.isFail()) {
 			return doJoinRd;
 		}
 
-		Member member = memberService.getMemberById((int)doJoinRd.getData1());
+		Member member = memberService.getMemberById((int) doJoinRd.getData1());
 
-		return ResultData.newData(doJoinRd, "새로 생성된 member",member);
+		return ResultData.newData(doJoinRd, "새로 생성된 member", member);
 	}
-	@RequestMapping("/usr/member/doLogin")
-	@ResponseBody
-	public ResultData doLogin(HttpSession httpSession, String loginId, String loginPw) {
-		
+
+	@RequestMapping("/usr/member/login")
+	public String login(HttpSession httpSession, String loginId, String loginPw, Model model) {
+
 		boolean isLogined = false;
-		
+
 		if (httpSession.getAttribute("loginedMemberId") != null) {
 			isLogined = true;
 		}
-		
-		// 보통 이런 경우의 실패(로그인 유무)는 "F-A"라고 표시한다.
-		if(isLogined) {
-			return ResultData.from("F-A", "로그아웃 해주세요.");
+
+		if (isLogined) {
+			model.addAttribute("msg", "로그아웃 해주세요.");
+			model.addAttribute("replaceUri", "/usr/home/main");
+			return "/usr/home/alert";
 		}
+
+		return "/usr/member/login";
+	}
+
+	@RequestMapping("/usr/member/doLogin")
+	public String doLogin(HttpSession httpSession, String loginId, String loginPw, Model model) {
 		
 		if (Ut.isEmptyOrNull(loginId)) {
-			return ResultData.from("F-1", "아이디를 올바르게 입력해주세요.");
+			model.addAttribute("msg", "아이디를 입력해주세요.");
+			model.addAttribute("replaceUri", "/usr/member/login");
+			return "/usr/home/alert";
 		}
-		
+
 		if (Ut.isEmptyOrNull(loginPw)) {
-			return ResultData.from("F-2", "비밀번호를 올바르게 입력해주세요.");
+			model.addAttribute("msg", "비밀번호를 입력해주세요.");
+			model.addAttribute("replaceUri", "/usr/member/login");
+			return "/usr/home/alert";
 		}
-		
+
 		Member member = memberService.getMemberByLoginId(loginId);
-		
+
 		if (member == null) {
-			return ResultData.from("F-3", Ut.f("[%s]은(는) 없는 아이디입니다.", loginId), "입력한 로그인 아이디",loginId);
+			model.addAttribute("msg", String.format("[%s]은(는) 없는 아이디 입니다.", loginId));
+			model.addAttribute("replaceUri", "/usr/member/login");
+			return "/usr/home/alert";
 		}
-		
+
 		if (!member.getLoginPw().equals(loginPw)) {
-			return ResultData.from("F-4","비밀번호가 일치하지 않습니다.");
+			model.addAttribute("msg","비밀번호가 일치하지 않습니다.");
+			model.addAttribute("replaceUri", "/usr/member/login");
+			return "/usr/home/alert";
 		}
-		
-		httpSession.setAttribute("loginedMemberId", member.getId());
-		
-		return ResultData.from("S-1",Ut.f("[%s]님 환영합니다.", member.getNickname()), "member 1개", member);
+
+		model.addAttribute("member", member);
+
+		Member loginedMember = memberService.getMemberByLoginId(loginId);
+
+		httpSession.setAttribute("loginedMemberId", loginedMember.getId());
+
+		model.addAttribute("loginedMemberId", loginedMember.getId());
+		return "/usr/home/main";
 	}
-	
+
 	@RequestMapping("/usr/member/doLogout")
-	@ResponseBody
-	public ResultData doLogout(HttpSession httpSession) {
-		
+	public String doLogout(HttpSession httpSession, Model model) {
+
 		if (httpSession.getAttribute("loginedMemberId") == null) {
-			return ResultData.from("F-A","로그인 해주세요.");
+			model.addAttribute("msg","로그인 해주세요.");
+			model.addAttribute("replaceUri", "/usr/member/login");
+			return "/usr/home/alert";
 		}
-		
+
 		httpSession.removeAttribute("loginedMemberId");
-		
-		return ResultData.from("S-1","로그아웃 되었습니다.");
+
+		model.addAttribute("msg","로그아웃 되었습니다.");
+		model.addAttribute("replaceUri", "/usr/home/main");
+		return "/usr/home/alert";
 	}
 }

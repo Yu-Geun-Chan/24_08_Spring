@@ -23,39 +23,55 @@ public class UsrArticleController {
 	private ArticleService articleService;
 
 	// 액션 메서드
-	@RequestMapping("/usr/article/doWrite")
-	@ResponseBody
-	// ResultData<Article> : data1의 타입이 Article이라고 명시
-	public String doWrite(HttpSession httpSession, String title, String body) {
+	@RequestMapping("/usr/article/write")
+	public String write(HttpSession httpSession, String title, String body, Model model) {
 
 		if (httpSession.getAttribute("loginedMemberId") == null) {
-			return Ut.f("<script>alert('로그인 후 이용해주세요.'); location.replace('../home/main');</script>");
+			model.addAttribute("msg", "로그인 후에 이용해주세요.");
+			model.addAttribute("replaceUri", "/usr/member/login");
+			return "/usr/home/alert";
 		}
 
-		int memberId = (int) httpSession.getAttribute("loginedMemberId");
+		return "/usr/article/write";
+	}
+	
+	@RequestMapping("/usr/article/doWrite")
+	public String doWrite (HttpSession httpSession, String title, String body, Model model) {
+		
+		int loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");
 
 		if (Ut.isEmptyOrNull(title)) {
-			return Ut.f("<script>alert('제목을 입력해주세요.'); location.replace('../home/main');</script>");
+			model.addAttribute("msg", "제목을 입력해주세요.");
+			model.addAttribute("replaceUri", "/usr/article/write");
+			return "/usr/home/alert";
 		}
 		if (Ut.isEmptyOrNull(body)) {
-			return Ut.f("<script>alert('내용을 입력해주세요.'); location.replace('../home/main');</script>");
+			model.addAttribute("msg", "내용을 입력해주세요.");
+			model.addAttribute("replaceUri", "/usr/article/write");
+			return "/usr/home/alert";
 		}
 
-		ResultData writeArticleRd = articleService.writeArticle(memberId, title, body);
+		ResultData writeArticleRd = articleService.writeArticle(loginedMemberId, title, body);
 
 		int id = (int) writeArticleRd.getData1();
 
 		Article article = articleService.getArticleById(id);
-
-		return "/usr/article/write";
+		
+		model.addAttribute("article", article);
+		
+		model.addAttribute("msg", String.format("%d번 게시글이 작성되었습니다.", id));
+		model.addAttribute("replaceUri", "/usr/article/detail?id=" + id);
+		return "/usr/home/alert";
+		
 	}
 
-	@RequestMapping("/usr/article/delete")
-	public Object delete(HttpSession httpSession, int id, RedirectAttributes redirectAttributes) {
+	@RequestMapping("/usr/article/doDelete")
+	public Object delete(HttpSession httpSession, int id, Model model) {
 
 		if (httpSession.getAttribute("loginedMemberId") == null) {
-			redirectAttributes.addFlashAttribute("alertMsg","로그인 후 이용해주세요.");
-			return "redirect:/usr/member/login";
+			model.addAttribute("msg", "로그인 후에 이용해주세요.");
+			model.addAttribute("replaceUri", "/usr/member/login");
+			return "/usr/home/alert";
 		}
 
 		int loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");
@@ -63,28 +79,32 @@ public class UsrArticleController {
 		Article foundArticle = articleService.getArticleById(id);
 
 		if (foundArticle == null) {
-	        redirectAttributes.addFlashAttribute("alertMsg", String.format("%d번 게시글은 없습니다.", id));
-	        return "redirect:/usr/article/list";
+			model.addAttribute("msg", String.format("%d번 게시글은 없습니다.", id));
+			model.addAttribute("replaceUri", "/usr/article/list");
+			return "/usr/home/alert";
 		}
 
 		if (foundArticle.getMemberId() != loginedMemberId) {
-	        redirectAttributes.addFlashAttribute("alertMsg", String.format("%d번 게시글에 대한 권한이 없습니다.", id));
-	        return "redirect:/usr/article/list";
+			model.addAttribute("msg", String.format("%d번 게시글에 대한 권한이 없습니다.", id));
+			model.addAttribute("replaceUri", "/usr/article/list");
+			return "/usr/home/alert";
 		}
 
 		articleService.deleteArticle(id);
 
-		redirectAttributes.addFlashAttribute("alertMsg", String.format("%d번 게시글은 삭제되었습니다.", id));
-		return "redirect:/usr/article/list";
+		model.addAttribute("msg", String.format("%d번 게시글이 삭제되었습니다.", id));
+		model.addAttribute("replaceUri", "/usr/article/list");
+		return "/usr/home/alert";
 	}
 
 	// 로그인 체크 -> 게시글 유무 체크 -> 권한 체크 -> 수정
 	@RequestMapping("/usr/article/modify")
-	public String modify(HttpSession httpSession, int id, String title, String body, Model model, RedirectAttributes redirectAttributes) {
+	public String modify(HttpSession httpSession, int id, String title, String body, Model model) {
 
 		if (httpSession.getAttribute("loginedMemberId") == null) {
-			redirectAttributes.addFlashAttribute("alertMsg","로그인 후 이용해주세요.");
-			return "redirect:/usr/member/login";
+			model.addAttribute("msg", "로그인 후에 이용해주세요.");
+			model.addAttribute("replaceUri", "/usr/member/login");
+			return "/usr/home/alert";
 		}
 
 		int loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");
@@ -92,42 +112,44 @@ public class UsrArticleController {
 		Article foundArticle = articleService.getArticleById(id);
 
 		if (foundArticle == null) {
-	        redirectAttributes.addFlashAttribute("alertMsg", String.format("%d번 게시글은 없습니다.", id));
-	        return "redirect:/usr/article/list";
+			model.addAttribute("msg", String.format("%d번 게시글은 없습니다.", id));
+			model.addAttribute("replaceUri", "/usr/article/list");
+			return "/usr/home/alert";
 		}
 
 		if (foundArticle.getMemberId() != loginedMemberId) {
-	        redirectAttributes.addFlashAttribute("alertMsg", String.format("%d번 게시글에 대한 권한이 없습니다.", id));
-	        return "redirect:/usr/article/list";
+			model.addAttribute("msg", String.format("%d번 게시글에 대한 권한이 없습니다.", id));
+			model.addAttribute("replaceUri", "/usr/article/list");
+			return "/usr/home/alert";
 		}
 
 		model.addAttribute("article", foundArticle);
 
 		return "/usr/article/modify";
 	}
+
 	@RequestMapping("/usr/article/doModify")
-	public String doModify(int id, String title, String body, Model model, RedirectAttributes redirectAttributes) {
-		
+	public String doModify(int id, String title, String body, Model model) {
+
 		articleService.modifyArticle(id, title, body);
-	
+
 		Article modifyArticle = articleService.getArticleById(id);
-		
-		model.addAttribute("article",modifyArticle);
-		
-        redirectAttributes.addFlashAttribute("alertMsg", String.format("%d번 게시글이 수정되었습니다.", id));
-        return "/usr/article/detail";
+
+		model.addAttribute("article", modifyArticle);
+
+		model.addAttribute("msg", String.format("%d번 게시글이 수정되었습니다.", id));
+		model.addAttribute("replaceUri", "/usr/article/detail?id=" + id);
+		return "/usr/home/alert";
 	}
-	
 
 	// 게시글 상세보기
 	@RequestMapping("/usr/article/detail")
-	public String getArticle(int id, Model model, RedirectAttributes redirectAttributes) {
+	public String showDetail(HttpSession httpSession, int id, Model model) {
 
 		Article foundArticle = articleService.getArticleById(id);
 
 		if (foundArticle == null) {
-	        redirectAttributes.addFlashAttribute("alertMsg", String.format("%d번 게시글은 없습니다.", id));
-	        return "redirect:/usr/article/list";
+			return "redirect:/usr/article/list";
 		}
 
 		model.addAttribute("article", foundArticle);
@@ -137,7 +159,7 @@ public class UsrArticleController {
 
 	// 게시글 목록
 	@RequestMapping("/usr/article/list")
-	public String getArticles(Model model) {
+	public String showList(Model model) {
 
 		List<Article> articles = articleService.getArticles();
 

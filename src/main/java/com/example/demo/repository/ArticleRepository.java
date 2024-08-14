@@ -12,7 +12,7 @@ import com.example.demo.vo.Article;
 
 @Mapper
 public interface ArticleRepository {
-	
+
 //	@Insert("INSERT INTO article SET regDate = NOW() updateDate = NOW(), m,title = #{title}, `body` = #{body}")
 	public void writeArticle(int memberId, String title, String body);
 
