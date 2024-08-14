@@ -112,7 +112,10 @@ public class UsrMemberController {
 		httpSession.setAttribute("loginedMemberId", loginedMember.getId());
 
 		model.addAttribute("loginedMemberId", loginedMember.getId());
-		return "/usr/home/main";
+
+		model.addAttribute("msg", String.format("[%s]님 환영합니다.", member.getNickname()));
+		model.addAttribute("replaceUri", "/usr/home/main");
+		return "/usr/home/alert";
 	}
 
 	@RequestMapping("/usr/member/doLogout")

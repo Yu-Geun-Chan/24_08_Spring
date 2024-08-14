@@ -34,10 +34,10 @@ public class UsrArticleController {
 
 		return "/usr/article/write";
 	}
-	
+
 	@RequestMapping("/usr/article/doWrite")
-	public String doWrite (HttpSession httpSession, String title, String body, Model model) {
-		
+	public String doWrite(HttpSession httpSession, String title, String body, Model model) {
+
 		int loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");
 
 		if (Ut.isEmptyOrNull(title)) {
@@ -56,13 +56,13 @@ public class UsrArticleController {
 		int id = (int) writeArticleRd.getData1();
 
 		Article article = articleService.getArticleById(id);
-		
+
 		model.addAttribute("article", article);
-		
+
 		model.addAttribute("msg", String.format("%d번 게시글이 작성되었습니다.", id));
 		model.addAttribute("replaceUri", "/usr/article/detail?id=" + id);
 		return "/usr/home/alert";
-		
+
 	}
 
 	@RequestMapping("/usr/article/doDelete")
@@ -110,7 +110,7 @@ public class UsrArticleController {
 		int loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");
 
 		Article foundArticle = articleService.getArticleById(id);
-
+		
 		if (foundArticle == null) {
 			model.addAttribute("msg", String.format("%d번 게시글은 없습니다.", id));
 			model.addAttribute("replaceUri", "/usr/article/list");
@@ -122,14 +122,14 @@ public class UsrArticleController {
 			model.addAttribute("replaceUri", "/usr/article/list");
 			return "/usr/home/alert";
 		}
-
+		
 		model.addAttribute("article", foundArticle);
-
+		
 		return "/usr/article/modify";
 	}
 
 	@RequestMapping("/usr/article/doModify")
-	public String doModify(int id, String title, String body, Model model) {
+	public String doModify(HttpSession httpSession, int id, String title, String body, Model model) {
 
 		articleService.modifyArticle(id, title, body);
 

@@ -3,8 +3,7 @@
 <c:set var="pageTitle" value="MAIN"></c:set>
 <%@ include file="../common/head.jspf"%>
 
-
-<hr />
+<hr>
 
 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam totam sed. Illum ipsam doloribus quam impedit quibusdam
 animi culpa laborum recusandae eos sed reiciendis delectus maiores aperiam corrupti harum. Iste?

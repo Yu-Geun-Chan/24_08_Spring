@@ -6,6 +6,7 @@
 
 <a href="../home/main">메인 페이지로 </a>
 
+<hr />
 
 <script type="text/javascript">
 	function JoinForm__submit(form) {
