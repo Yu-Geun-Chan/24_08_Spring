@@ -63,31 +63,31 @@
 
 <form method="POST" action="doJoin" onsubmit="JoinForm__submit(this); return false;">
 	<div>
-		아이디 : <input autocomplete="off" type="text" placeholder="아이디를 입력해주세요." name="loginId" />
+		아이디<input autocomplete="off" type="text" placeholder="아이디를 입력해주세요." name="loginId" />
 	</div>
 	<div>
-		비밀번호 : <input autocomplete="off" type="text" placeholder="비밀번호를 입력해주세요." name="loginPw" />
+		비밀번호<input autocomplete="off" type="text" placeholder="비밀번호를 입력해주세요." name="loginPw" />
 	</div>
 	<div>
-		비밀번호 확인: <input autocomplete="off" type="text" placeholder="비밀번호 확인을 입력해주세요." name="loginPwConfirm" />
+		비밀번호 확인<input autocomplete="off" type="text" placeholder="비밀번호 확인을 입력해주세요." name="loginPwConfirm" />
 	</div>
 	<div>
-		이름 : <input autocomplete="off" type="text" placeholder="이름을 입력해주세요." name="name" />
+		이름<input autocomplete="off" type="text" placeholder="이름을 입력해주세요." name="name" />
 	</div>
 	<div>
-		닉네임 : <input autocomplete="off" type="text" placeholder="닉네임을 입력해주세요." name="nickname" />
+		닉네임<input autocomplete="off" type="text" placeholder="닉네임을 입력해주세요." name="nickname" />
 	</div>
 	<div>
-		휴대폰번호 : <input autocomplete="off" type="text" placeholder="휴대폰번호를 입력해주세요." name="cellphoneNum" />
+		휴대폰번호<input autocomplete="off" type="text" placeholder="휴대폰번호를 입력해주세요." name="cellphoneNum" />
 	</div>
 	<div>
-		이메일 : <input autocomplete="off" type="text" placeholder="이메일을 입력해" name="email" />
+		이메일<input autocomplete="off" type="text" placeholder="이메일을 입력해주세요." name="email" />
 	</div>
-	<button type="submit">가입</button>
+	<button type="submit">회원가입</button>
 </form>
 
 
-<div>
+<div class="text-center mt-8" id="list_button">
 	<a style="color: green" href="list">리스트로 돌아가기</a>
 </div>
 

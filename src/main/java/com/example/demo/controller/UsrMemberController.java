@@ -110,6 +110,7 @@ public class UsrMemberController {
 		Member loginedMember = memberService.getMemberByLoginId(loginId);
 
 		httpSession.setAttribute("loginedMemberId", loginedMember.getId());
+		httpSession.setAttribute("loginedMemberNickname", loginedMember.getNickname());
 
 		model.addAttribute("loginedMemberId", loginedMember.getId());
 
@@ -127,9 +128,9 @@ public class UsrMemberController {
 			return "/usr/home/alert";
 		}
 
+		model.addAttribute("msg", String.format("[%s]님 로그아웃 되었습니다.", httpSession.getAttribute("loginedMemberNickname")));
 		httpSession.removeAttribute("loginedMemberId");
-
-		model.addAttribute("msg", "로그아웃 되었습니다.");
+		httpSession.removeAttribute("loginedMemberNickname");
 		model.addAttribute("replaceUri", "/usr/home/main");
 		return "/usr/home/alert";
 	}

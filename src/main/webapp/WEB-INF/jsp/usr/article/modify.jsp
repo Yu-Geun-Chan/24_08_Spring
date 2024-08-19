@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+<c:set var="pageTitle" value="MODIFY"></c:set>
+<%@ include file="../common/head.jspf"%>
 <%
 
 %>
@@ -14,8 +15,9 @@
 
 	<a href="../home/main">메인 페이지로 </a>
 
+<hr />
 
-	<h2>${article.id}번 게시물 수정</h2>
+	<h2 class="text-center m-8">${article.id}번 게시물 수정</h2>
 
 
 	<form method="POST" action="/usr/article/doModify">
@@ -30,7 +32,7 @@
 		<button type="submit">수정</button>
 	</form>
 
-	<div>
+	<div class="text-center mt-8" id="list_button">
 		<a style="color: green" href="list">리스트로 돌아가기</a>
 	</div>
 

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<c:set var="pageTitle" value="Detail"></c:set>
+<c:set var="pageTitle" value="DETAIL"></c:set>
 <%@ include file="../common/head.jspf"%>
 
 <a href="../home/main">메인 페이지로 </a>
@@ -33,15 +33,14 @@
 				</tr>
 			</tbody>
 		</table>
-		<div class="btns">
-			<button type="button" onclick="history.back()">뒤로가기</button>
+		<div class="btns text-center mt-8">
+			<button class="hover:underline" type="button" onclick="history.back()">뒤로가기</button>
 			<c:if test="${article.memberId eq loginedMemberId }">
-				<a href="../article/modify?id=${article.id }">수정</a>
+				<a class="hover:underline ml-8" href="../article/modify?id=${article.id }">수정</a>
 			</c:if>
 			<c:if test="${article.memberId eq loginedMemberId }">
-				<a href="../article/doDelete?id=${article.id }">삭제</a>
+				<a class="hover:underline ml-8" href="../article/doDelete?id=${article.id }">삭제</a>
 			</c:if>
-
 		</div>
 	</div>
 </section>

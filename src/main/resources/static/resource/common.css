@@ -37,6 +37,12 @@
 	font-family: 'LotteMartDream', sans-serif;
 }
 
+hr {
+	border: 0;
+	height: 0;
+	border-top: 2px solid black;
+}
+
 html>body {
 	font-family: 'LotteMartDream', sans-serif;
 	background-color: #e3f2fd;
@@ -93,8 +99,9 @@ header ul li a:hover {
 	background-color: #4b5563; /* 약간 더 밝은 네이비 색상 */
 	color: white;
 }
+/* 여기까지 전체 상단바 스타일 */
 
-/* 로그인 폼 스타일 */
+/* 전체 폼 스타일 */
 form {
 	max-width: 350px;
 	margin: 0 auto;
@@ -106,7 +113,7 @@ form {
 }
 
 /* 입력 필드 스타일 */
-form input[type="text"], form input[type="password"] {
+form input[type="text"], form input[type="password"], form textarea[type="text"] {
 	width: calc(100% - 20px);
 	padding: 12px;
 	margin: 10px 0;
@@ -133,15 +140,22 @@ form button:hover {
 	background-color: #218838;
 }
 
-/* '리스트로 돌아가기' 링크 스타일 */
-form a {
-	display: block;
-	margin-top: 15px;
-	color: #007bff;
-	text-decoration: none;
-	font-size: 14px;
+/* 리스트 표처럼 나타내기 */
+#list_table th, #list_table td {
+	border: 1px solid black;
+	padding: 10px;
 }
 
-form a:hover {
+#list_table th {
+	background-color: #f2f2f2;
+	color: #333;
+	font-weight: bold;
+}
+
+#list_table tr:nth-child(2n) {
+	background-color: #f9f9f9;
+}
+
+#list_table a:hover {
 	text-decoration: underline;
 }

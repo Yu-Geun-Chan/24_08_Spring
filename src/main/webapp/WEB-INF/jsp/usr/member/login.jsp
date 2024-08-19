@@ -12,7 +12,7 @@
 
 	<a href="../home/main">메인 페이지로 </a>
 
-	<hr>
+	<hr />
 
 	<div class="text-center mt-3">
 		<form method="POST" action="doLogin">
