@@ -46,7 +46,7 @@
 		<!-- Pagination -->
 		<div style="text-align: center; margin-top: 20px;">
 			<c:if test="${page > 1}">
-				<a href="?boardId=${board.id}&page=${page - 1}&pageSize=${pageSize}">이전</a>
+				<a href="?boardId=${board.id}&page=${page - 1}&pageSize=${itemsInAPage}">이전</a>
 			</c:if>
 
 			<c:forEach begin="1" end="${totalPage}" var="i">
@@ -55,13 +55,13 @@
 						<strong>${i}</strong>
 					</c:when>
 					<c:otherwise>
-						<a href="?boardId=${board.id}&page=${i}&pageSize=${pageSize}">${i}</a>
+						<a href="?boardId=${board.id}&page=${i}&pageSize=${itemsInAPage}">${i}</a>
 					</c:otherwise>
 				</c:choose>
 			</c:forEach>
 
 			<c:if test="${page < totalPage}">
-				<a href="?boardId=${board.id}&page=${page + 1}&pageSize=${pageSize}">다음</a>
+				<a href="?boardId=${board.id}&page=${page + 1}&pageSize=${itemsInAPage}">다음</a>
 			</c:if>
 		</div>
 		
