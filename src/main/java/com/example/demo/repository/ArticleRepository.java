@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -28,10 +29,12 @@ public interface ArticleRepository {
 //	@Select("SELECT * FROM article ORDER BY id DESC")
 	public List<Article> getArticles();
 
-	public List<Article> getForPrintArticles(int boardId);
+	List<Article> getForPrintArticles(@Param("boardId") int boardId, @Param("itemsInApage") int itemsInApage,
+			@Param("limitFrom") int limitFrom);
 
 	@Select("SELECT LAST_INSERT_ID();")
 	public int getLastInsertId();
 
+	public int getArticlesCount(int boardId);
 
 }

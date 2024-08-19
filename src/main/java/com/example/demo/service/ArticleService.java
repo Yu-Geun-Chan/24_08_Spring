@@ -46,8 +46,11 @@ public class ArticleService {
 		return articleRepository.getArticles();
 	}
 
-	public List<Article> getForPrintArticles(int boardId) {
-		return articleRepository.getForPrintArticles(boardId);
+	public List<Article> getForPrintArticles(int boardId, int itemsInApage, int limitFrom) {
+		return articleRepository.getForPrintArticles(boardId, itemsInApage, limitFrom);
 	}
 
+	public int getArticlesCount(int boardId) {
+		return articleRepository.getArticlesCount(boardId);
+	}
 }

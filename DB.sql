@@ -161,9 +161,15 @@ FROM `member`;
 
 SELECT CEILING(RAND() * 3);
 
+SELECT CEILING(RAND() * 4);
+
 ## 게시글 테스트 데이터 대량 생성
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
+memberId = FLOOR(RAND() * 2 + 2),
+boardId = FLOOR(RAND() * 3 + 1),
 title = CONCAT('제목__', RAND()),
 `body` = CONCAT('내용__', RAND());
+
+SHOW FULL COLUMNS FROM `member`;

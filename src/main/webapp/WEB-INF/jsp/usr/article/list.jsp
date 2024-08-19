@@ -12,6 +12,8 @@
 
 <section class="mt-8 text-xl px-4">
 	<div class="mx-auto">
+	<div>${articlesCount}개</div>
+	
 		<table id="list_table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
 			<thead>
 				<tr style="text-align: center;">
@@ -32,14 +34,37 @@
 						<td>${article.extra__writer}</td>
 					</tr>
 				</c:forEach>
-				
+
 				<c:if test="${empty articles}">
 					<tr>
-						<td colspan="4" style="text-align:center">게시글이 없습니다.</td>
+						<td colspan="4" style="text-align: center">게시글이 없습니다.</td>
 					</tr>
 				</c:if>
 			</tbody>
 		</table>
+
+		<!-- Pagination -->
+		<div style="text-align: center; margin-top: 20px;">
+			<c:if test="${page > 1}">
+				<a href="?boardId=${board.id}&page=${page - 1}&pageSize=${pageSize}">이전</a>
+			</c:if>
+
+			<c:forEach begin="1" end="${totalPage}" var="i">
+				<c:choose>
+					<c:when test="${i == page}">
+						<strong>${i}</strong>
+					</c:when>
+					<c:otherwise>
+						<a href="?boardId=${board.id}&page=${i}&pageSize=${pageSize}">${i}</a>
+					</c:otherwise>
+				</c:choose>
+			</c:forEach>
+
+			<c:if test="${page < totalPage}">
+				<a href="?boardId=${board.id}&page=${page + 1}&pageSize=${pageSize}">다음</a>
+			</c:if>
+		</div>
+		
 	</div>
 </section>
 

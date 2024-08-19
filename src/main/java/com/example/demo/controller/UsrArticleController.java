@@ -171,22 +171,33 @@ public class UsrArticleController {
 
 	// 게시글 목록
 	@RequestMapping("/usr/article/list")
-	public String showList(Model model, @RequestParam(defaultValue = "1") int boardId) {
+	public String showList(Model model, @RequestParam(defaultValue = "1") int boardId,
+			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int itemsInApage) {
 
 		Board board = boardService.getBoardById(boardId);
 
-		List<Article> articles = articleService.getForPrintArticles(boardId);
-		
 		if (board == null) {
 			model.addAttribute("msg", "존재하지 않는 게시판입니다.");
 			model.addAttribute("replaceUri", "../article/list");
 			return "/usr/home/alert";
 		}
+		
+		// limitFrom 계산
+	    int limitFrom = (page - 1) * itemsInApage;
+
+		// 페이징된 게시글 가져오기
+		int articlesCount = articleService.getArticlesCount(boardId);
+		List<Article> articles = articleService.getForPrintArticles(boardId, itemsInApage, limitFrom);
+
+		// 총 페이지 수 계산
+		int totalPage = (int) Math.ceil (articlesCount / (double) itemsInApage);
 
 		model.addAttribute("articles", articles);
+		model.addAttribute("articlesCount", articlesCount);
 		model.addAttribute("board", board);
+		model.addAttribute("page", page);
+		model.addAttribute("totalPage", totalPage);
 
 		return "/usr/article/list";
-
 	}
 }
