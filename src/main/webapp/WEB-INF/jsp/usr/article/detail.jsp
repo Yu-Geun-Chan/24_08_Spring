@@ -20,6 +20,10 @@
 					<td>${article.regDate.substring(0,10)}</td>
 				</tr>
 				<tr style="text-align: center;">
+					<th>수정 날짜</th>
+					<td>${article.updateDate.substring(0,10)}</td>
+				</tr>
+				<tr style="text-align: center;">
 					<th>제목</th>
 					<td>${article.title}</td>
 				</tr>
@@ -28,18 +32,22 @@
 					<td>${article.body }</td>
 				</tr>
 				<tr style="text-align: center;">
+					<th>게시판</th>
+					<td>${article.boardId}</td>
+				</tr>
+				<tr style="text-align: center;">
 					<th>작성자</th>
-					<td>${article.extra__Writer}</td>
+					<td>${article.extra__writer}</td>
 				</tr>
 			</tbody>
 		</table>
 		<div class="btns text-center mt-8">
-			<button class="hover:underline" type="button" onclick="history.back()">뒤로가기</button>
+			<button class="btn" type="button" onclick="history.back()">뒤로가기</button>
 			<c:if test="${article.memberId eq loginedMemberId }">
-				<a class="hover:underline ml-8" href="../article/modify?id=${article.id }">수정</a>
+				<a class="btn ml-8" href="../article/modify?id=${article.id }">수정</a>
 			</c:if>
 			<c:if test="${article.memberId eq loginedMemberId }">
-				<a class="hover:underline ml-8" href="../article/doDelete?id=${article.id }">삭제</a>
+				<a class="btn ml-8" href="../article/doDelete?id=${article.id }">삭제</a>
 			</c:if>
 		</div>
 	</div>

@@ -6,10 +6,10 @@
 	<update id="modifyArticle">
 		UPDATE article
 		<set>
-			<if test = "title != null and title != ''">title = #{title},</if>
-			<if test = "body != null and body != ''">`body` = #{body},</if>
+			<if test="title != null and title != ''">title = #{title},</if>
+			<if test="body != null and body != ''">`body` = #{body},</if>
 			updateDate = NOW()
-		</set> 
+		</set>
 		WHERE id = #{id}
 	</update>
 
@@ -21,17 +21,29 @@
 		title = #{title},
 		`body` = #{body}
 	</insert>
+	
+	<select id="getForPrintArticles" resultType="Article">
+		SELECT A.*, M.nickName AS extra__Writer
+		FROM article AS A
+		INNER JOIN `member` AS M
+		ON M.id = A.memberId
+		WHERE A.boardId = #{boardId}
+		ORDER BY A.id DESC
+	</select>
 
 	<select id="getArticles" resultType="Article">
 		SELECT A.*, M.nickName AS extra__Writer
 		FROM article AS A
 		INNER JOIN `member` AS M
 		ON M.id = A.memberId
+		INNER JOIN board AS B
+		ON B.id = A.boardId
+		WHERE B.id = #{board}
 		ORDER BY A.id DESC
 	</select>
 
 	<select id="getArticleById" resultType="Article">
-		SELECT A.*, M.nickName AS extra__Writer
+		SELECT A.*, M.nickName AS extra__writer
 		FROM article AS A
 		INNER JOIN `member` AS M
 		ON M.id = A.memberId

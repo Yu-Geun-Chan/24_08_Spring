@@ -6,12 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.service.ArticleService;
+import com.example.demo.service.BoardService;
 import com.example.demo.util.Ut;
 import com.example.demo.vo.Article;
+import com.example.demo.vo.Board;
 import com.example.demo.vo.ResultData;
 
 import jakarta.servlet.http.HttpSession;
@@ -21,6 +24,9 @@ public class UsrArticleController {
 
 	@Autowired // 알아서 연결
 	private ArticleService articleService;
+
+	@Autowired // 알아서 연결
+	private BoardService boardService;
 
 	// 액션 메서드
 	@RequestMapping("/usr/article/write")
@@ -36,7 +42,7 @@ public class UsrArticleController {
 	}
 
 	@RequestMapping("/usr/article/doWrite")
-	public String doWrite(HttpSession httpSession, String title, String body, Model model) {
+	public String doWrite(HttpSession httpSession, String title, String body, Model model, String boardId) {
 
 		int loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");
 
@@ -45,13 +51,19 @@ public class UsrArticleController {
 			model.addAttribute("replaceUri", "/usr/article/write");
 			return "/usr/home/alert";
 		}
+
 		if (Ut.isEmptyOrNull(body)) {
 			model.addAttribute("msg", "내용을 입력해주세요.");
 			model.addAttribute("replaceUri", "/usr/article/write");
 			return "/usr/home/alert";
 		}
+		if (Ut.isEmptyOrNull(boardId)) {
+			model.addAttribute("msg", "게시판을 선택해주세요.");
+			model.addAttribute("replaceUri", "/usr/article/write");
+			return "/usr/home/alert";
+		}
 
-		ResultData writeArticleRd = articleService.writeArticle(loginedMemberId, title, body);
+		ResultData writeArticleRd = articleService.writeArticle(loginedMemberId, title, body, boardId);
 
 		int id = (int) writeArticleRd.getData1();
 
@@ -110,7 +122,7 @@ public class UsrArticleController {
 		int loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");
 
 		Article foundArticle = articleService.getArticleById(id);
-		
+
 		if (foundArticle == null) {
 			model.addAttribute("msg", String.format("%d번 게시글은 없습니다.", id));
 			model.addAttribute("replaceUri", "/usr/article/list");
@@ -122,9 +134,9 @@ public class UsrArticleController {
 			model.addAttribute("replaceUri", "/usr/article/list");
 			return "/usr/home/alert";
 		}
-		
+
 		model.addAttribute("article", foundArticle);
-		
+
 		return "/usr/article/modify";
 	}
 
@@ -159,13 +171,22 @@ public class UsrArticleController {
 
 	// 게시글 목록
 	@RequestMapping("/usr/article/list")
-	public String showList(Model model) {
+	public String showList(Model model, @RequestParam(defaultValue = "1") int boardId) {
 
-		List<Article> articles = articleService.getArticles();
+		Board board = boardService.getBoardById(boardId);
+
+		List<Article> articles = articleService.getForPrintArticles(boardId);
+		
+		if (board == null) {
+			model.addAttribute("msg", "존재하지 않는 게시판입니다.");
+			model.addAttribute("replaceUri", "../article/list");
+			return "/usr/home/alert";
+		}
 
 		model.addAttribute("articles", articles);
+		model.addAttribute("board", board);
 
 		return "/usr/article/list";
-	}
 
+	}
 }

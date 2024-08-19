@@ -94,10 +94,23 @@ header ul {
 	padding: 0;
 }
 
+/* 네비게이션 2차 메뉴 */
+header>div>ul>li>ul {
+	display: none;
+	position: absolute;
+}
+
+header>div>ul>li {
+	padding-bottom: 30px;
+}
+
+header>div>ul>li:hover>ul {
+	display: block;
+}
+
 /* 링크 호버 스타일 */
 header ul li a:hover {
-	background-color: #4b5563; /* 약간 더 밝은 네이비 색상 */
-	color: white;
+	text-decoration: underline;
 }
 /* 여기까지 전체 상단바 스타일 */
 
@@ -113,7 +126,8 @@ form {
 }
 
 /* 입력 필드 스타일 */
-form input[type="text"], form input[type="password"], form textarea[type="text"] {
+form input[type="text"], form input[type="password"], form textarea[type="text"]
+	{
 	width: calc(100% - 20px);
 	padding: 12px;
 	margin: 10px 0;
@@ -158,4 +172,21 @@ form button:hover {
 
 #list_table a:hover {
 	text-decoration: underline;
+}
+
+/* submit 제외 각종 버튼 스타일 */
+.btn {
+	padding: 12px;
+	color: #49d368;
+	border: 1px solid #49d368;
+	border-radius: 4px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 16px;
+	margin-top: 10px;
+}
+
+.btn:hover {
+	background-color: #28a745;
+	color: black;
 }

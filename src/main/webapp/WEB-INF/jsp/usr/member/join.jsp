@@ -60,8 +60,7 @@
 	}
 </script>
 
-
-<form method="POST" action="doJoin" onsubmit="JoinForm__submit(this); return false;">
+<form class="mt-3" method="POST" action="doJoin" onsubmit="JoinForm__submit(this); return false;">
 	<div>
 		아이디<input autocomplete="off" type="text" placeholder="아이디를 입력해주세요." name="loginId" />
 	</div>
@@ -87,8 +86,11 @@
 </form>
 
 
-<div class="text-center mt-8" id="list_button">
-	<a style="color: green" href="list">리스트로 돌아가기</a>
+<div class="btns text-center mt-8 mb-8">
+	<button class="btn" type="button" onclick="history.back()">뒤로가기</button>
+	<button class="btn" type="button">
+		<a href="list">리스트로 돌아가기</a>
+	</button>
 </div>
 
 <%@ include file="../common/foot.jspf"%>
