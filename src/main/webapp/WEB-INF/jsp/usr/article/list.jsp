@@ -62,9 +62,13 @@
 			<c:set var="paginationLen" value="3" />
 			<c:set var="startPage" value="${page -  paginationLen  >= 1 ? page - paginationLen : 1}" />
 			<c:set var="endPage" value="${page +  paginationLen  <= totalPage ? page + paginationLen : totalPage}" />
+			
+			<c:set var="baseUri" value="?boardId=${board.id }"></c:set>
+			<c:set var="baseUri" value="${baseUri }&searchKeywordTypeCode=${searchKeywordTypeCode }"></c:set>
+			<c:set var="baseUri" value="${baseUri }&searchKeyword=${searchKeyword }"></c:set>
 
 			<c:if test="${startPage > 1}">
-				<a href="?boardId=${board.id}&page=1">1</a>
+				<a href="${baseUri}&page=1">1</a>
 			</c:if>
 
 			<c:if test="${startPage > 2 }">
@@ -78,7 +82,7 @@
 						<!-- strong 태그 : 굵은 텍스트로 표시 -->
 					</c:when>
 					<c:otherwise>
-						<a href="?boardId=${board.id}&page=${i}">${i}</a>
+						<a href="${baseUri}&page=${i}">${i}</a>
 					</c:otherwise>
 				</c:choose>
 			</c:forEach>
@@ -88,7 +92,7 @@
 			</c:if>
 
 			<c:if test="${endPage < totalPage}">
-				<a href="?boardId=${board.id}&page=${totalPage}">${totalPage}</a>
+				<a href="${baseUri}&page=${totalPage}">${totalPage}</a>
 			</c:if>
 		</div>
 		<!-- 여기까지 -->

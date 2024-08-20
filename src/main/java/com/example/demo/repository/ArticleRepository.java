@@ -30,7 +30,7 @@ public interface ArticleRepository {
 	public List<Article> getArticles();
 
 	List<Article> getForPrintArticles(@Param("boardId") int boardId, @Param("itemsInApage") int itemsInApage,
-			@Param("limitFrom") int limitFrom);
+			@Param("limitFrom") int limitFrom, @Param("searchKeywordTypeCode") String searchKeywordTypeCode, @Param("searchKeyword") String searchKeyword);
 
 	@Select("SELECT LAST_INSERT_ID();")
 	public int getLastInsertId();

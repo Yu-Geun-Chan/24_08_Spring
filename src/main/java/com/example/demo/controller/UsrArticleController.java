@@ -189,7 +189,7 @@ public class UsrArticleController {
 
 		// 페이징된 게시글 가져오기
 		int articlesCount = articleService.getArticlesCount(boardId, searchKeywordTypeCode, searchKeyword);
-		List<Article> articles = articleService.getForPrintArticles(boardId, itemsInApage, limitFrom);
+		List<Article> articles = articleService.getForPrintArticles(boardId, itemsInApage, limitFrom, searchKeywordTypeCode, searchKeyword);
 
 		// 총 페이지 수 계산
 		int totalPage = (int) Math.ceil(articlesCount / (double) itemsInApage);
@@ -199,6 +199,8 @@ public class UsrArticleController {
 		model.addAttribute("board", board);
 		model.addAttribute("page", page);
 		model.addAttribute("totalPage", totalPage);
+		model.addAttribute("searchKeywordTypeCode", searchKeywordTypeCode);
+		model.addAttribute("searchKeyword", searchKeyword);
 
 		return "/usr/article/list";
 	}
