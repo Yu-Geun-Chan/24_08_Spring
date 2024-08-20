@@ -174,7 +174,7 @@ public class UsrArticleController {
 	public String showList(Model model, @RequestParam(defaultValue = "1") int boardId,
 			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int itemsInApage,
 			@RequestParam(defaultValue = "") String searchKeyword,
-			@RequestParam(defaultValue = "title, body") String searchKeywordTypeCode) {
+			@RequestParam(defaultValue = "title, body, nickname") String searchKeywordTypeCode) {
 
 		Board board = boardService.getBoardById(boardId);
 

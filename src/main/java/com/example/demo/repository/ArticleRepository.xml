@@ -17,13 +17,46 @@
 		INSERT INTO article
 		SET regDate = NOW(),
 		updateDate = NOW(),
-		memberId = #{memberId}, <!-- memberId 추가 -->
+		memberId =
+		#{memberId}, <!-- memberId 추가 -->
 		title = #{title},
 		`body` = #{body}
 	</insert>
 
 	<select id="getForPrintArticles" resultType="Article">
 		SELECT A.* , M.nickname AS extra__writer
+		FROM article AS A
+		INNER JOIN
+		`member` AS M
+		ON A.memberId = M.id
+		WHERE 1
+		<if test="boardId != 0">
+			AND boardId = #{boardId}
+		</if>
+		<if test="searchKeyword != ''">
+			<choose>
+				<when test="searchKeywordTypeCode == 'title'">
+					AND A.title LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchKeywordTypeCode == 'body'">
+					AND A.`body` LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchKeywordTypeCode == 'nickname'">
+					AND M.nickname LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<otherwise>
+					AND A.title LIKE CONCAT('%', #{searchKeyword}, '%')
+					OR
+					A.`body` LIKE CONCAT('%', #{searchKeyword}, '%')
+				</otherwise>
+			</choose>
+		</if>
+		ORDER BY A.id DESC
+		LIMIT #{limitFrom}, #{itemsInApage}
+	</select>
+
+	<select id="getArticlesCount" resultType="int">
+		SELECT COUNT(*)
 		FROM article AS A
 		INNER JOIN `member` AS M
 		ON A.memberId = M.id
@@ -39,56 +72,38 @@
 				<when test="searchKeywordTypeCode == 'body'">
 					AND A.`body` LIKE CONCAT('%', #{searchKeyword}, '%')
 				</when>
+				<when test="searchKeywordTypeCode == 'nickname'">
+					AND M.nickname LIKE CONCAT('%', #{searchKeyword},'%')
+				</when>
 				<otherwise>
 					AND A.title LIKE CONCAT('%', #{searchKeyword}, '%')
 					OR A.`body` LIKE CONCAT('%', #{searchKeyword}, '%')
 				</otherwise>
 			</choose>
 		</if>
-		ORDER BY A.id DESC
-		LIMIT #{limitFrom}, #{itemsInApage}
-	</select>
-
-	<select id="getArticlesCount" resultType="int">
-		SELECT COUNT(*)
-		FROM article
-		WHERE 1
-		<if test="boardId != 0">
-			AND boardId = #{boardId}
-		</if>
-		<if test="searchKeyword != ''">
-			<choose>
-				<when test="searchKeywordTypeCode == 'title'">
-					AND title LIKE CONCAT('%', #{searchKeyword}, '%')
-				</when>
-				<when test="searchKeywordTypeCode == 'body'">
-					AND `body` LIKE CONCAT('%', #{searchKeyword}, '%')
-				</when>
-				<otherwise>
-					AND title LIKE CONCAT('%', #{searchKeyword}, '%')
-					OR
-					`body` LIKE CONCAT('%', #{searchKeyword}, '%')
-				</otherwise>
-			</choose>
-		</if>
 	</select>
 
 	<select id="getArticles" resultType="Article">
-		SELECT A.*, M.nickName AS extra__Writer
+		SELECT A.*, M.nickName AS
+		extra__Writer
 		FROM article AS A
 		INNER JOIN `member` AS M
-		ON M.id = A.memberId
+		ON M.id =
+		A.memberId
 		INNER JOIN board AS B
 		ON B.id = A.boardId
-		WHERE B.id = #{board}
+		WHERE B.id =
+		#{board}
 		ORDER BY A.id DESC
 	</select>
 
 	<select id="getArticleById" resultType="Article">
-		SELECT A.*, M.nickName AS extra__writer
+		SELECT A.*, M.nickName AS
+		extra__writer
 		FROM article AS A
 		INNER JOIN `member` AS M
-		ON M.id = A.memberId
+		ON M.id =
+		A.memberId
 		WHERE A.id = #{id}
 	</select>
 </mapper>

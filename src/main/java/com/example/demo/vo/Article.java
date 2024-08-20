@@ -18,7 +18,7 @@ public class Article {
 	private String body;
 	private int memberId;
 	private int boardId;
-	private String nickName;
+	private String nickname;
 	
 	private String extra__writer;
 }
