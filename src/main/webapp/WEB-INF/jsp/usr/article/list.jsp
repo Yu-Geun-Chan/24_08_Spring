@@ -14,9 +14,9 @@
 	<div class="mx-auto">
 		<div>해당 게시판 게시글 수 : ${articlesCount}개</div>
 
-		<form  method="POST" action="list?boardId=${board.id}">
+		<form class="mb-4" method="POST" action="list?boardId=${board.id}">
 			<div>
-				<select name="searchKeywordTypeCode">
+				<select name="searchKeywordTypeCode" data-value="${searchKeywordTypeCode }">
 					<option value="title">제목</option> 
 					<option value="body">내용</option> 
 					<option value="title,body">제목 또는 내용</option> 
@@ -24,7 +24,7 @@
 				</select>
 			</div>
 			<div>
-				<input type="text" autocomplete="off" placeholder="검색어를 입력해주세요." name="searchKeyword" />
+				<input type="text" autocomplete="off" placeholder="검색어를 입력해주세요." name="searchKeyword" value="${searchKeyword }" />
 			</div>
 			<button type="submit">검색</button>
 		</form>
