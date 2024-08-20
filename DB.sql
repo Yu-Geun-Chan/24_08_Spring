@@ -163,7 +163,15 @@ SELECT CEILING(RAND() * 3);
 
 SELECT CEILING(RAND() * 4);
 
-## 게시글 테스트 데이터 대량 생성
+## 게시글 테스트 데이터 대량 생성 v1 (2배씩 증가)
+INSERT INTO article
+(
+    regDate, updateDate, memberId, boardId, title, `body`
+)
+SELECT NOW(), NOW(), FLOOR(RAND() * 2) + 2, FLOOR(RAND() * 3) + 1, CONCAT('제목__', RAND()), CONCAT('내용__', RAND())
+FROM article;
+
+## 게시글 테스트 데이터 대량 생성 v2
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
@@ -173,3 +181,7 @@ title = CONCAT('제목__', RAND()),
 `body` = CONCAT('내용__', RAND());
 
 SHOW FULL COLUMNS FROM `member`;
+
+SELECT COUNT(*) FROM article WHERE boardId = 1;
+SELECT COUNT(*) FROM article WHERE boardId = 2;
+SELECT COUNT(*) FROM article WHERE boardId = 3;

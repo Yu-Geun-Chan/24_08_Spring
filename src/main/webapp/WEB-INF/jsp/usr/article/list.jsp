@@ -12,7 +12,8 @@
 
 <section class="mt-8 text-xl px-4">
 	<div class="mx-auto">
-	<div>${articlesCount}개</div>
+	<div>총 게시글 수 : ${articlesCount}개</div>
+	검색<input type="text" placeholder="검색어를 입력하세요." name="searchWord" />
 	
 		<table id="list_table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
 			<thead>
@@ -46,7 +47,7 @@
 		<!-- Pagination -->
 		<div style="text-align: center; margin-top: 20px;">
 			<c:if test="${page > 1}">
-				<a href="?boardId=${board.id}&page=${page - 1}&pageSize=${itemsInAPage}">이전</a>
+				<a href="?boardId=${board.id}&page=${page - 1}&itemsInAPage=${itemsInAPage}">이전</a>
 			</c:if>
 
 			<c:forEach begin="1" end="${totalPage}" var="i">
@@ -55,13 +56,13 @@
 						<strong>${i}</strong>
 					</c:when>
 					<c:otherwise>
-						<a href="?boardId=${board.id}&page=${i}&pageSize=${itemsInAPage}">${i}</a>
+						<a href="?boardId=${board.id}&page=${i}&itemsInAPage=${itemsInAPage}">${i}</a>
 					</c:otherwise>
 				</c:choose>
 			</c:forEach>
 
 			<c:if test="${page < totalPage}">
-				<a href="?boardId=${board.id}&page=${page + 1}&pageSize=${itemsInAPage}">다음</a>
+				<a href="?boardId=${board.id}&page=${page + 1}&itemsInAPage=${itemsInAPage}">다음</a>
 			</c:if>
 		</div>
 		

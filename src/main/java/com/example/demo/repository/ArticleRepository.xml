@@ -21,19 +21,19 @@
 		title = #{title},
 		`body` = #{body}
 	</insert>
-	
+
 	<select id="getForPrintArticles" resultType="Article">
-    	SELECT A.*, M.nickName AS extra__Writer
-    	FROM article AS A
-   		INNER JOIN `member` AS M 
-   		ON M.id = A.memberId
-    	WHERE A.boardId = #{boardId}
-    	ORDER BY A.id DESC
-    	LIMIT #{limitFrom}, #{itemsInApage}
+		SELECT A.*, M.nickName AS extra__Writer
+		FROM article AS A
+		INNER JOIN `member` AS M
+		ON M.id = A.memberId
+		WHERE A.boardId = #{boardId} AND A.title LIKE '%#{searchWord}%'
+		ORDER BY A.id DESC
+		LIMIT #{limitFrom}, #{itemsInApage}
 	</select>
 
 	<select id="getArticlesCount" resultType="int">
-	    SELECT COUNT(*) FROM article WHERE boardId = #{boardId}
+		SELECT COUNT(*) FROM article WHERE boardId = #{boardId}
 	</select>
 
 	<select id="getArticles" resultType="Article">
