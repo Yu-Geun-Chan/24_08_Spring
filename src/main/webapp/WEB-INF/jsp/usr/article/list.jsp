@@ -12,9 +12,9 @@
 
 <section class="mt-8 text-xl px-4">
 	<div class="mx-auto">
-	<div>총 게시글 수 : ${articlesCount}개</div>
-	검색<input type="text" placeholder="검색어를 입력하세요." name="searchWord" />
-	
+		<div>해당 게시판 게시글 수 : ${articlesCount}개</div>
+		검색 <input type="text" placeholder="검색어를 입력하세요." name="searchWord" />
+
 		<table id="list_table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
 			<thead>
 				<tr style="text-align: center;">
@@ -38,34 +38,50 @@
 
 				<c:if test="${empty articles}">
 					<tr>
-						<td colspan="4" style="text-align: center">게시글이 없습니다.</td>
+						<td colspan="5" style="text-align: center">게시글이 없습니다.</td>
 					</tr>
 				</c:if>
 			</tbody>
 		</table>
 
-		<!-- Pagination -->
+		<!-- 페이징 -->
 		<div style="text-align: center; margin-top: 20px;">
-			<c:if test="${page > 1}">
-				<a href="?boardId=${board.id}&page=${page - 1}&itemsInAPage=${itemsInAPage}">이전</a>
+			<c:set var="paginationLen" value="3" />
+			<c:set var="startPage" value="${page -  paginationLen  >= 1 ? page - paginationLen : 1}" />
+			<c:set var="endPage" value="${page +  paginationLen  <= totalPage ? page + paginationLen : totalPage}" />
+
+			<c:if test="${startPage > 1}">
+				<a href="?boardId=${board.id}&page=1">1</a>
 			</c:if>
 
-			<c:forEach begin="1" end="${totalPage}" var="i">
+			<c:if test="${startPage > 2 }">
+				<button>...</button>
+			</c:if>
+
+			<c:forEach begin="${startPage}" end="${endPage}" var="i">
 				<c:choose>
 					<c:when test="${i == page}">
 						<strong>${i}</strong>
+						<!-- strong 태그 : 굵은 텍스트로 표시 -->
 					</c:when>
 					<c:otherwise>
-						<a href="?boardId=${board.id}&page=${i}&itemsInAPage=${itemsInAPage}">${i}</a>
+						<a href="?boardId=${board.id}&page=${i}">${i}</a>
 					</c:otherwise>
 				</c:choose>
 			</c:forEach>
 
-			<c:if test="${page < totalPage}">
-				<a href="?boardId=${board.id}&page=${page + 1}&itemsInAPage=${itemsInAPage}">다음</a>
+			<c:if test="${endPage < totalPage - 1 }">
+				<button>...</button>
 			</c:if>
+
+			<c:if test="${endPage < totalPage}">
+				<a href="?boardId=${board.id}&page=${totalPage}">${totalPage}</a>
+			</c:if>
+
 		</div>
-		
+
+		<!-- 여기까지 -->
+
 	</div>
 </section>
 

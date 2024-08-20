@@ -27,7 +27,7 @@
 		FROM article AS A
 		INNER JOIN `member` AS M
 		ON M.id = A.memberId
-		WHERE A.boardId = #{boardId} AND A.title LIKE '%#{searchWord}%'
+		WHERE A.boardId = #{boardId}
 		ORDER BY A.id DESC
 		LIMIT #{limitFrom}, #{itemsInApage}
 	</select>
