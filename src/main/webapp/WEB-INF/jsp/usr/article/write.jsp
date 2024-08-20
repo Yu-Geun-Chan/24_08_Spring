@@ -9,7 +9,7 @@
 <hr />
 
 <form method="POST" action="doWrite">
-	<div class = "p-3">
+	<div class="p-3">
 		<select name="board">
 			<option value="" selected disabled>게시판을 선택하세요.</option>
 			<!-- selected disabled : 나오는 값들 중에서 무조건 고르게 -->

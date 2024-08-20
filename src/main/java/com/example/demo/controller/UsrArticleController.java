@@ -172,8 +172,9 @@ public class UsrArticleController {
 	// 게시글 목록
 	@RequestMapping("/usr/article/list")
 	public String showList(Model model, @RequestParam(defaultValue = "1") int boardId,
-			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int itemsInApage
-		) {
+			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int itemsInApage,
+			@RequestParam(defaultValue = "") String searchKeyword,
+			@RequestParam(defaultValue = "title, body") String searchKeywordTypeCode) {
 
 		Board board = boardService.getBoardById(boardId);
 
@@ -182,16 +183,16 @@ public class UsrArticleController {
 			model.addAttribute("replaceUri", "../article/list");
 			return "/usr/home/alert";
 		}
-		
+
 		// limitFrom 계산
-	    int limitFrom = (page - 1) * itemsInApage;
+		int limitFrom = (page - 1) * itemsInApage;
 
 		// 페이징된 게시글 가져오기
-		int articlesCount = articleService.getArticlesCount(boardId);
+		int articlesCount = articleService.getArticlesCount(boardId, searchKeywordTypeCode, searchKeyword);
 		List<Article> articles = articleService.getForPrintArticles(boardId, itemsInApage, limitFrom);
 
 		// 총 페이지 수 계산
-		int totalPage = (int) Math.ceil (articlesCount / (double) itemsInApage);
+		int totalPage = (int) Math.ceil(articlesCount / (double) itemsInApage);
 
 		model.addAttribute("articles", articles);
 		model.addAttribute("articlesCount", articlesCount);

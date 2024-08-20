@@ -25,7 +25,7 @@
 	<select id="getForPrintArticles" resultType="Article">
 		SELECT A.*, M.nickName AS extra__Writer
 		FROM article AS A
-		INNER JOIN `member` AS M
+		INNER JOIN `member` AS M 
 		ON M.id = A.memberId
 		WHERE A.boardId = #{boardId}
 		ORDER BY A.id DESC
@@ -33,7 +33,27 @@
 	</select>
 
 	<select id="getArticlesCount" resultType="int">
-		SELECT COUNT(*) FROM article WHERE boardId = #{boardId}
+		SELECT COUNT(*)
+		FROM article
+		WHERE 1
+		<if test="boardId != 0">
+			AND boardId = #{boardId}
+		</if>
+		<if test="searchKeyword != ''">
+			<choose>
+				<when test="searchKeywordTypeCode == 'title'">
+					AND title LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchKeywordTypeCode == 'body'">
+					AND `body` LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<otherwise>
+					AND title LIKE CONCAT('%', #{searchKeyword}, '%')
+					OR
+					`body` LIKE CONCAT('%', #{searchKeyword}, '%')
+				</otherwise>
+			</choose>
+		</if>
 	</select>
 
 	<select id="getArticles" resultType="Article">

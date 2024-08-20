@@ -163,7 +163,7 @@ SELECT CEILING(RAND() * 3);
 
 SELECT CEILING(RAND() * 4);
 
-## 게시글 테스트 데이터 대량 생성 v1 (2배씩 증가)
+## 게시글 테스트 데이터 대량 생성 v1 (2배씩 증가, id 누락이 생길 수 있다)
 INSERT INTO article
 (
     regDate, updateDate, memberId, boardId, title, `body`

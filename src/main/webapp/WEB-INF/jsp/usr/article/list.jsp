@@ -13,8 +13,21 @@
 <section class="mt-8 text-xl px-4">
 	<div class="mx-auto">
 		<div>해당 게시판 게시글 수 : ${articlesCount}개</div>
-		검색 <input type="text" placeholder="검색어를 입력하세요." name="searchWord" />
-
+		<form method="POST" action="list">
+			<div>
+				<select name="searchKeywordTypeCode">
+					<option value="" selected disabled>검색</option>
+					<!-- selected disabled : 나오는 값들 중에서 무조건 고르게 -->
+					<option value="title">제목</option> 
+					<option value="body">내용</option> 
+					<option value="nickname">작성자</option>
+				</select>
+			</div>
+			<div>
+				<input type="text" autocomplete="off" placeholder="검색어를 입력해주세요." name="searchKeyword" />
+			</div>
+			<button type="submit">검색</button>
+		</form>
 		<table id="list_table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
 			<thead>
 				<tr style="text-align: center;">
@@ -77,9 +90,7 @@
 			<c:if test="${endPage < totalPage}">
 				<a href="?boardId=${board.id}&page=${totalPage}">${totalPage}</a>
 			</c:if>
-
 		</div>
-
 		<!-- 여기까지 -->
 
 	</div>
