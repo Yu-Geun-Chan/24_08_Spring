@@ -158,6 +158,8 @@ public class UsrArticleController {
 	@RequestMapping("/usr/article/detail")
 	public String showDetail(HttpSession httpSession, int id, Model model) {
 
+		articleService.increaseHitCount(id);
+
 		Article foundArticle = articleService.getArticleById(id);
 
 		if (foundArticle == null) {
@@ -189,7 +191,8 @@ public class UsrArticleController {
 
 		// 페이징된 게시글 가져오기
 		int articlesCount = articleService.getArticlesCount(boardId, searchKeywordTypeCode, searchKeyword);
-		List<Article> articles = articleService.getForPrintArticles(boardId, itemsInApage, limitFrom, searchKeywordTypeCode, searchKeyword);
+		List<Article> articles = articleService.getForPrintArticles(boardId, itemsInApage, limitFrom,
+				searchKeywordTypeCode, searchKeyword);
 
 		// 총 페이지 수 계산
 		int totalPage = (int) Math.ceil(articlesCount / (double) itemsInApage);

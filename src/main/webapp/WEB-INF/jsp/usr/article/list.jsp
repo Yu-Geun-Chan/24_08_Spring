@@ -17,9 +17,9 @@
 		<form class="mb-4" method="POST" action="list?boardId=${board.id}">
 			<div>
 				<select name="searchKeywordTypeCode" data-value="${searchKeywordTypeCode }">
-					<option value="title">제목</option> 
-					<option value="body">내용</option> 
-					<option value="title,body">제목 또는 내용</option> 
+					<option value="title">제목</option>
+					<option value="body">내용</option>
+					<option value="title,body">제목 또는 내용</option>
 					<option value="nickname">작성자</option>
 				</select>
 			</div>
@@ -28,7 +28,7 @@
 			</div>
 			<button type="submit">검색</button>
 		</form>
-		
+
 		<table id="list_table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
 			<thead>
 				<tr style="text-align: center;">
@@ -37,6 +37,7 @@
 					<th>제목</th>
 					<th>내용</th>
 					<th>작성자 닉네임</th>
+					<th>조회수</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -63,7 +64,7 @@
 			<c:set var="paginationLen" value="3" />
 			<c:set var="startPage" value="${page -  paginationLen  >= 1 ? page - paginationLen : 1}" />
 			<c:set var="endPage" value="${page +  paginationLen  <= totalPage ? page + paginationLen : totalPage}" />
-			
+
 			<c:set var="baseUri" value="?boardId=${board.id }"></c:set>
 			<c:set var="baseUri" value="${baseUri }&searchKeywordTypeCode=${searchKeywordTypeCode }"></c:set>
 			<c:set var="baseUri" value="${baseUri }&searchKeyword=${searchKeyword }"></c:set>

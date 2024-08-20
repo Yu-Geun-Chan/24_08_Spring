@@ -114,6 +114,7 @@ header ul li a:hover {
 }
 /* 여기까지 전체 상단바 스타일 */
 
+
 /* 전체 폼 스타일 */
 form {
 	max-width: 350px;
@@ -142,6 +143,10 @@ section>div>form>div:first-child>select, section>div>form>div:last-child>input[t
 	border-radius: 4px;
 	font-size: 16px;
 	box-sizing: border-box;
+}
+
+section>div>form>div:first-child>select {
+	width:140px;
 }
 
 /* 검색 폼 버튼 스타일 */

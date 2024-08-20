@@ -39,6 +39,10 @@
 					<th>작성자</th>
 					<td>${article.extra__writer}</td>
 				</tr>
+				<tr style="text-align: center;">
+					<th>조회수</th>
+					<td>${article.hit}</td>
+				</tr>
 			</tbody>
 		</table>
 		<div class="btns text-center mt-8">
