@@ -7,6 +7,28 @@
 
 <hr />
 
+<script>
+	const params = {};
+	params.id = parseInt('${param.id}');
+</script>
+
+<script>
+	function ArticleDetail__doIncreaseHitCount() {
+		$.get('../article/doIncreaseHitCountRd', {
+			id : params.id,
+			ajaxMode : 'Y'
+		}, function(data) {
+			console.log(data);
+			console.log(data.data1);
+			$('.article-detail__hit-count').empty().html(data.data1);
+		}, 'json')
+	}
+	$(function() {
+		// 		ArticleDetail__doIncreaseHitCount();
+		setTimeout(ArticleDetail__doIncreaseHitCount, 2000);
+	})
+</script>
+
 <section class="mt-8 text-xl px-4">
 	<div class="mx-auto">
 		<table border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
@@ -41,10 +63,13 @@
 				</tr>
 				<tr style="text-align: center;">
 					<th>조회수</th>
-					<td>${article.hit}</td>
+					<td><span class="article-detail__hit-count">${article.hit}</span></td>
 				</tr>
 			</tbody>
 		</table>
+		<button class="like-button mx-auto">
+			👍 좋아요 <span class="like-count">0</span>
+		</button>
 		<div class="btns text-center mt-8">
 			<button class="btn" type="button" onclick="history.back()">뒤로가기</button>
 			<c:if test="${article.memberId eq loginedMemberId }">

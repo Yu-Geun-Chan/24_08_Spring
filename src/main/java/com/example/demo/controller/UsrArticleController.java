@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -158,8 +159,6 @@ public class UsrArticleController {
 	@RequestMapping("/usr/article/detail")
 	public String showDetail(HttpSession httpSession, int id, Model model) {
 
-		articleService.increaseHitCount(id); // 게시글 상세보기하면 조회수 1 올라가게 하는 코드
-
 		Article foundArticle = articleService.getArticleById(id);
 
 		if (foundArticle == null) {
@@ -171,6 +170,19 @@ public class UsrArticleController {
 		model.addAttribute("article", foundArticle);
 
 		return "/usr/article/detail";
+	}
+	
+	@RequestMapping("/usr/article/doIncreaseHitCountRd")
+	@ResponseBody
+	public ResultData doIncreaseHitCount(int id) {
+
+		ResultData increaseHitCountRd = articleService.increaseHitCount(id);
+ 
+		if (increaseHitCountRd.isFail()) {
+			return increaseHitCountRd;
+		}
+
+		return ResultData.newData(increaseHitCountRd, "hit", articleService.getArticleHitCount(id));
 	}
 
 	// 게시글 목록

@@ -46,15 +46,29 @@ public class ArticleService {
 		return articleRepository.getArticles();
 	}
 
-	public List<Article> getForPrintArticles(int boardId, int itemsInApage, int limitFrom, String searchKeywordTypeCode, String searchKeyword) {
-		return articleRepository.getForPrintArticles(boardId, itemsInApage, limitFrom, searchKeywordTypeCode, searchKeyword);
+	public List<Article> getForPrintArticles(int boardId, int itemsInApage, int limitFrom, String searchKeywordTypeCode,
+			String searchKeyword) {
+		return articleRepository.getForPrintArticles(boardId, itemsInApage, limitFrom, searchKeywordTypeCode,
+				searchKeyword);
 	}
 
 	public int getArticlesCount(int boardId, String searchKeywordTypeCode, String searchKeyword) {
 		return articleRepository.getArticlesCount(boardId, searchKeywordTypeCode, searchKeyword);
 	}
-	
-	public void increaseHitCount(int id) {
-	    articleRepository.increaseHitCount(id);
+
+	public ResultData increaseHitCount(int id) {
+		
+		int affectedRow = articleRepository.increaseHitCount(id);
+
+		if (affectedRow == 0) {
+			return ResultData.from("F-1", "해당 게시글 없음", "id", id);
+		}
+
+		return ResultData.from("S-1", "해당 게시글 조회수 증가", "id", id);
+
+	}
+
+	public Object getArticleHitCount(int id) {
+		return articleRepository.getArticleHitCount(id);
 	}
 }

@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.example.demo.vo.Article;
+import com.example.demo.vo.ResultData;
 
 @Mapper
 public interface ArticleRepository {
@@ -37,6 +38,8 @@ public interface ArticleRepository {
 
 	public int getArticlesCount(int boardId, String searchKeywordTypeCode, String searchKeyword);
 	
-	public void increaseHitCount(int id);
+	public int increaseHitCount(int id);
+
+	public Object getArticleHitCount(int id);
 
 }
