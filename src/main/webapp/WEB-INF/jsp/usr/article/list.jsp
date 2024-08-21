@@ -48,6 +48,7 @@
 						<td><a class="hover:underline" href="detail?id=${article.id}">${article.title}</a></td>
 						<td>${article.body}</td>
 						<td>${article.extra__writer}</td>
+						<td>${article.hit}</td>
 					</tr>
 				</c:forEach>
 

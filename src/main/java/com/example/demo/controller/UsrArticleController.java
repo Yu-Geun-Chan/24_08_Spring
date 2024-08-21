@@ -158,12 +158,14 @@ public class UsrArticleController {
 	@RequestMapping("/usr/article/detail")
 	public String showDetail(HttpSession httpSession, int id, Model model) {
 
-		articleService.increaseHitCount(id);
+		articleService.increaseHitCount(id); // 게시글 상세보기하면 조회수 1 올라가게 하는 코드
 
 		Article foundArticle = articleService.getArticleById(id);
 
 		if (foundArticle == null) {
-			return "redirect:/usr/article/list";
+			model.addAttribute("msg", String.format("%d번 게시글은 없습니다.", id));
+			model.addAttribute("replaceUri", "/usr/article/list");
+			return "/usr/home/alert";
 		}
 
 		model.addAttribute("article", foundArticle);
