@@ -1,3 +1,5 @@
+###(INIT 시작)
+# DB 세팅
 DROP DATABASE IF EXISTS `24_08_Spring`;
 CREATE DATABASE `24_08_Spring`;
 USE `24_08_Spring`;
@@ -35,6 +37,17 @@ CREATE TABLE board(
       `name` CHAR(20) NOT NULL UNIQUE COMMENT '게시판 이름',
       delStatus TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '삭제 여부(0 = 삭제 전, 1 = 삭제 후)',
       delDate DATETIME COMMENT '삭제 날짜'
+);
+
+# 좋아요(reactionPoint) 테이블 생성
+CREATE TABLE reactionPoint(
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    updateDate DATETIME NOT NULL,
+    memberId INT(10) UNSIGNED NOT NULL,
+    relTypeCode CHAR(50) NOT NULL COMMENT '관련 데이터 타입 코드',
+    relId INT(10) NOT NULL COMMENT '관련 데이터 번호',
+    `point` INT(10) NOT NULL
 );
 
 ## 게시글 테스트 데이터 생성
@@ -147,6 +160,54 @@ UPDATE article
 SET boardId = 3
 WHERE id = 4;
 
+# reactionPoint 테스트 데이터 생성
+## 1번 회원이 1번 글에 싫어요
+INSERT INTO reactionPoint
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 1,
+relTypeCode = 'article',
+relId = 1,
+`point` = -1;
+
+## 1번 회원이 2번 글에 좋아요
+INSERT INTO reactionPoint
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 1,
+relTypeCode = 'article',
+relId = 2,
+`point` = 1;
+
+## 2번 회원이 1번 글에 싫어요
+INSERT INTO reactionPoint
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 2,
+relTypeCode = 'article',
+relId = 1,
+`point` = -1;
+
+## 2번 회원이 2번 글에 싫어요
+INSERT INTO reactionPoint
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 2,
+relTypeCode = 'article',
+relId = 2,
+`point` = -1;
+
+## 3번 회원이 1번 글에 좋아요
+INSERT INTO reactionPoint
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 3,
+relTypeCode = 'article',
+relId = 1,
+`point` = 1;
+
+
+###(INIT 끝)
 #################################################################
 
 SELECT *
@@ -157,6 +218,9 @@ SELECT * FROM board;
 
 SELECT *
 FROM `member`;
+
+SELECT * 
+FROM `reactionPoint`;
 
 ###############################################################################
 
@@ -186,3 +250,53 @@ SHOW FULL COLUMNS FROM `member`;
 SELECT COUNT(*) FROM article WHERE boardId = 1;
 SELECT COUNT(*) FROM article WHERE boardId = 2;
 SELECT COUNT(*) FROM article WHERE boardId = 3;
+
+SELECT *
+FROM article
+WHERE boardId = 1
+ORDER BY id DESC;
+
+SELECT *
+FROM article
+WHERE boardId = 2
+ORDER BY id DESC;
+
+SELECT *
+FROM article
+WHERE boardId = 3
+ORDER BY id DESC;
+
+SELECT COUNT(*) AS cnt
+FROM article
+WHERE boardId = 1
+ORDER BY id DESC;
+
+SELECT *
+FROM article
+WHERE boardId = 1 AND title LIKE '%123%'
+ORDER BY id DESC;
+
+SELECT *
+FROM article
+WHERE boardId = 1 AND `body` LIKE '%123%'
+ORDER BY id DESC;
+
+SELECT *
+FROM article
+WHERE boardId = 1 AND title LIKE '%123%' OR `body` LIKE '%123%'
+ORDER BY id DESC;
+
+SELECT COUNT(*)
+FROM article AS A
+WHERE A.boardId = 1 
+ORDER BY A.id DESC;
+
+boardId=1&searchKeywordTypeCode=nickname&searchKeyword=1
+
+SELECT COUNT(*)
+FROM article AS A
+WHERE A.boardId = 1 AND A.memberId = 3
+ORDER BY A.id DESC;
+
+SELECT hit
+FROM article WHERE id = 3

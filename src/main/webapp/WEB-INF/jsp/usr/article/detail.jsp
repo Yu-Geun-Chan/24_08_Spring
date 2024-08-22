@@ -21,7 +21,7 @@
 		}
 
 		localStorage.setItem(localStorageKey, true);
-		
+
 		$.get('../article/doIncreaseHitCountRd', {
 			id : params.id,
 			ajaxMode : 'Y'
@@ -31,6 +31,7 @@
 			$('.article-detail__hit-count').empty().html(data.data1);
 		}, 'json')
 	}
+	
 	$(function() {
 		// 		ArticleDetail__doIncreaseHitCount();
 		setTimeout(ArticleDetail__doIncreaseHitCount, 2000);
@@ -75,10 +76,9 @@
 				</tr>
 			</tbody>
 		</table>
-		<button class="like-button mx-auto">
-			👍 좋아요 <span class="like-count">0</span>
-		</button>
+	
 		<div class="btns text-center mt-8">
+		<button class="like-button" type="button">👍 좋아요 <span class="like-count mr-8">0</span></button>
 			<button class="btn" type="button" onclick="history.back()">뒤로가기</button>
 			<c:if test="${article.memberId eq loginedMemberId }">
 				<a class="btn ml-8" href="../article/modify?id=${article.id }">수정</a>

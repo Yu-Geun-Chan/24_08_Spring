@@ -172,6 +172,7 @@ public class UsrArticleController {
 		return "/usr/article/detail";
 	}
 	
+	// 게시글 조회수 증가
 	@RequestMapping("/usr/article/doIncreaseHitCountRd")
 	@ResponseBody
 	public ResultData doIncreaseHitCount(int id) {
