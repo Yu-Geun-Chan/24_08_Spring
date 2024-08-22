@@ -31,11 +31,40 @@
 			$('.article-detail__hit-count').empty().html(data.data1);
 		}, 'json')
 	}
-	
+
 	$(function() {
 		// 		ArticleDetail__doIncreaseHitCount();
 		setTimeout(ArticleDetail__doIncreaseHitCount, 2000);
 	})
+</script>
+
+<script>
+	function ArticleDetail__doReactionPointLike(){
+		const localStoragyKey = 'article__' + params.id + '__alreadyDoLike';
+		
+		if (localStorage.getItem(localStorageKey)) {
+			return;
+		}
+
+		localStorage.setItem(localStorageKey, true);
+
+		$.get('../article/doLike', {
+			id : params.id,
+			ajaxMode : 'Y'
+		}, function(data) {
+			console.log(data);
+			console.log(data.data1);
+			$('.like-count').empty().html(data.data1);
+		}, 'json')
+	}
+	
+	$(function(){
+		$('.like-button').click(function(){
+			ArticleDetail__doReactionPointLike();
+		}
+	})
+		
+	
 </script>
 
 <section class="mt-8 text-xl px-4">
@@ -76,9 +105,14 @@
 				</tr>
 			</tbody>
 		</table>
-	
+
 		<div class="btns text-center mt-8">
-		<button class="like-button" type="button">👍 좋아요 <span class="like-count mr-8">0</span></button>
+			<button class="like-button" type="button">
+				좋아요 👍 <span class="like-count mr-8">0</span>
+			</button>
+			<button class="dislike-button" type="button">
+				싫어요 👎 <span class="dislike-count mr-8">0</span>
+			</button>
 			<button class="btn" type="button" onclick="history.back()">뒤로가기</button>
 			<c:if test="${article.memberId eq loginedMemberId }">
 				<a class="btn ml-8" href="../article/modify?id=${article.id }">수정</a>

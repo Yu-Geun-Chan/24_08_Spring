@@ -289,14 +289,11 @@ ORDER BY id DESC;
 SELECT COUNT(*)
 FROM article AS A
 WHERE A.boardId = 1 
-ORDER BY A.id DESC;
 
-boardId=1&searchKeywordTypeCode=nickname&searchKeyword=1
 
 SELECT COUNT(*)
 FROM article AS A
 WHERE A.boardId = 1 AND A.memberId = 3
-ORDER BY A.id DESC;
 
 SELECT hit
 FROM article WHERE id = 3

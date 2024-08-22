@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.service.ArticleService;
 import com.example.demo.service.BoardService;
+import com.example.demo.service.ReactionPointService;
 import com.example.demo.util.Ut;
 import com.example.demo.vo.Article;
 import com.example.demo.vo.Board;
@@ -28,6 +32,9 @@ public class UsrArticleController {
 
 	@Autowired // 알아서 연결
 	private BoardService boardService;
+	
+    @Autowired // 알아서 연결
+    private ReactionPointService reactionPointService;
 
 	// 액션 메서드
 	@RequestMapping("/usr/article/write")
@@ -184,6 +191,38 @@ public class UsrArticleController {
 		}
 
 		return ResultData.newData(increaseHitCountRd, "hit", articleService.getArticleHitCount(id));
+	}
+	
+	@PostMapping("/usr/article/doLike")
+	@ResponseBody
+	public ResultData<Integer> doLike(HttpSession httpSession, int id) {
+	    int memberId = (int) httpSession.getAttribute("loginMemberId");
+
+	    reactionPointService.setReactionPoint(memberId, "article", id, 1);
+
+	    int likeCount = reactionPointService.getReactionPointCount("article", id, 1);
+	    int dislikeCount = reactionPointService.getReactionPointCount("article", id, -1);
+
+	    ResultData<Integer> result = ResultData.from("S-1", "좋아요 처리 성공", "likeCount", likeCount);
+	    result = ResultData.newData(result, "dislikeCount", dislikeCount);
+
+	    return result;
+	}
+
+	@PostMapping("/usr/article/doDislike")
+	@ResponseBody
+	public ResultData<Integer> doDislike(HttpSession httpSession, int id) {
+	    int memberId = (int) httpSession.getAttribute("loginMemberId");
+
+	    reactionPointService.setReactionPoint(memberId, "article", id, -1);
+
+	    int likeCount = reactionPointService.getReactionPointCount("article", id, 1);
+	    int dislikeCount = reactionPointService.getReactionPointCount("article", id, -1);
+
+	    ResultData<Integer> result = ResultData.from("S-1", "싫어요 처리 성공", "likeCount", likeCount);
+	    result = ResultData.newData(result, "dislikeCount", dislikeCount);
+
+	    return result;
 	}
 
 	// 게시글 목록
