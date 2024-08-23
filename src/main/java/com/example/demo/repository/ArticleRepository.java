@@ -24,20 +24,32 @@ public interface ArticleRepository {
 	@Delete("DELETE FROM article WHERE id = #{id}")
 	public void deleteArticle(int id);
 
-//	@Select("SELECT * FROM article WHERE id = #{id}")
+	@Select("""
+			SELECT A.*, M.nickname AS extra__writer,
+			IFNULL(SUM(RP.point), 0) AS extra__sumReactionPoint,
+			IFNULL(SUM(IF(RP.point > 0, RP.point, 0)), 0) AS extra__goodReactionPoint,
+			IFNULL(SUM(IF(RP.point < 0, RP.point, 0)), 0) AS extra__badReactionPoint
+			FROM article AS A
+			INNER JOIN `member` AS M
+			ON A.memberId = M.id
+			LEFT JOIN reactionPoint AS RP
+			ON A.id = RP.relId AND RP.relTypeCode = 'article'
+			WHERE A.id = #{id}
+				""")
 	public Article getArticleById(int id);
 
 //	@Select("SELECT * FROM article ORDER BY id DESC")
 	public List<Article> getArticles();
 
 	List<Article> getForPrintArticles(@Param("boardId") int boardId, @Param("itemsInApage") int itemsInApage,
-			@Param("limitFrom") int limitFrom, @Param("searchKeywordTypeCode") String searchKeywordTypeCode, @Param("searchKeyword") String searchKeyword);
+			@Param("limitFrom") int limitFrom, @Param("searchKeywordTypeCode") String searchKeywordTypeCode,
+			@Param("searchKeyword") String searchKeyword);
 
 	@Select("SELECT LAST_INSERT_ID();")
 	public int getLastInsertId();
 
 	public int getArticlesCount(int boardId, String searchKeywordTypeCode, String searchKeyword);
-	
+
 	public int increaseHitCount(int id);
 
 	public Object getArticleHitCount(int id);

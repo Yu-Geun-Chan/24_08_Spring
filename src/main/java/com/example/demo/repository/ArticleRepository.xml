@@ -87,27 +87,22 @@
 		</if>
 	</select>
 
-	<select id="getArticles" resultType="Article">
-		SELECT A.*, M.nickName AS
-		extra__Writer
-		FROM article AS A
-		INNER JOIN `member` AS M
-		ON M.id =
-		A.memberId
-		INNER JOIN board AS B
-		ON B.id = A.boardId
-		WHERE B.id =
-		#{board}
-		ORDER BY A.id DESC
-	</select>
+<!-- 	<select id="getArticles" resultType="Article"> -->
+<!-- 		SELECT A.*, M.nickName AS extra__Writer -->
+<!-- 		FROM article AS A -->
+<!-- 		INNER JOIN `member` AS M -->
+<!-- 		ON M.id = A.memberId -->
+<!-- 		INNER JOIN board AS B -->
+<!-- 		ON B.id = A.boardId -->
+<!-- 		WHERE B.id = #{board} -->
+<!-- 		ORDER BY A.id DESC -->
+<!-- 	</select> -->
 
 	<select id="getArticleById" resultType="Article">
-		SELECT A.*, M.nickName AS
-		extra__writer
+		SELECT A.*, M.nickName AS extra__writer
 		FROM article AS A
 		INNER JOIN `member` AS M
-		ON M.id =
-		A.memberId
+		ON M.id = A.memberId
 		WHERE A.id = #{id}
 	</select>
 

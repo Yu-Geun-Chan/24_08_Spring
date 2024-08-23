@@ -210,17 +210,13 @@ relId = 1,
 ###(INIT 끝)
 #################################################################
 
-SELECT *
-FROM article
-ORDER BY id DESC;
+SELECT * FROM article ORDER BY id DESC;
 
 SELECT * FROM board;
 
-SELECT *
-FROM `member`;
+SELECT * FROM `member`;
 
-SELECT * 
-FROM `reactionPoint`;
+SELECT * FROM `reactionPoint`;
 
 ###############################################################################
 
@@ -290,10 +286,37 @@ SELECT COUNT(*)
 FROM article AS A
 WHERE A.boardId = 1 
 
-
 SELECT COUNT(*)
 FROM article AS A
 WHERE A.boardId = 1 AND A.memberId = 3
 
 SELECT hit
 FROM article WHERE id = 3
+
+# 서브쿼리
+## IFNULL(데이터, 대체할 데이터) : 데이터가 NULL이면 대체할 데이터를 띄워준다.
+SELECT AM.*,
+IFNULL(SUM(RP.point), 0) AS extra__sumReactionPoint,
+IFNULL(SUM(IF(RP.point > 0, RP.point, 0)), 0) AS extra__goodReactionPoint,
+IFNULL(SUM(IF(RP.point < 0, RP.point, 0)), 0) AS extra__badReactionPoint
+FROM (
+   SELECT A.*, M.nickname AS extra__writer
+   FROM article AS A
+   INNER JOIN `member` AS M
+   ON A.memberId = M.id 
+) AS AM
+LEFT JOIN reactionPoint AS RP
+ON A.id = RP.relId AND RP.relTypeCode = 'article'
+GROUP BY A.id
+
+# 완성본(JOIN)
+SELECT A.*, M.nickname AS extra__writer,
+IFNULL(SUM(RP.point), 0) AS extra__sumReactionPoint,
+IFNULL(SUM(IF(RP.point > 0, RP.point, 0)), 0) AS extra__goodReactionPoint,
+IFNULL(SUM(IF(RP.point < 0, RP.point, 0)), 0) AS extra__badReactionPoint
+FROM article AS A
+INNER JOIN `member` AS M
+ON A.memberId = M.id 
+LEFT JOIN reactionPoint AS RP
+ON A.id = RP.relId AND RP.relTypeCode = 'article'
+GROUP BY A.id

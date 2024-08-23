@@ -193,38 +193,6 @@ public class UsrArticleController {
 		return ResultData.newData(increaseHitCountRd, "hit", articleService.getArticleHitCount(id));
 	}
 	
-	@PostMapping("/usr/article/doLike")
-	@ResponseBody
-	public ResultData<Integer> doLike(HttpSession httpSession, int id) {
-	    int memberId = (int) httpSession.getAttribute("loginMemberId");
-
-	    reactionPointService.setReactionPoint(memberId, "article", id, 1);
-
-	    int likeCount = reactionPointService.getReactionPointCount("article", id, 1);
-	    int dislikeCount = reactionPointService.getReactionPointCount("article", id, -1);
-
-	    ResultData<Integer> result = ResultData.from("S-1", "좋아요 처리 성공", "likeCount", likeCount);
-	    result = ResultData.newData(result, "dislikeCount", dislikeCount);
-
-	    return result;
-	}
-
-	@PostMapping("/usr/article/doDislike")
-	@ResponseBody
-	public ResultData<Integer> doDislike(HttpSession httpSession, int id) {
-	    int memberId = (int) httpSession.getAttribute("loginMemberId");
-
-	    reactionPointService.setReactionPoint(memberId, "article", id, -1);
-
-	    int likeCount = reactionPointService.getReactionPointCount("article", id, 1);
-	    int dislikeCount = reactionPointService.getReactionPointCount("article", id, -1);
-
-	    ResultData<Integer> result = ResultData.from("S-1", "싫어요 처리 성공", "likeCount", likeCount);
-	    result = ResultData.newData(result, "dislikeCount", dislikeCount);
-
-	    return result;
-	}
-
 	// 게시글 목록
 	@RequestMapping("/usr/article/list")
 	public String showList(Model model, @RequestParam(defaultValue = "1") int boardId,

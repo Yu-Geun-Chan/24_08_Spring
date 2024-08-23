@@ -21,5 +21,9 @@ public class Article {
 	private String nickname;
 	private int hit;
 	
+	private String extra__sumReactionPoint;
+	private String extra__goodReactionPoint;
+	private String extra__badReactionPoint;
+	
 	private String extra__writer;
 }
