@@ -293,8 +293,9 @@ WHERE A.boardId = 1 AND A.memberId = 3
 SELECT hit
 FROM article WHERE id = 3
 
-# 서브쿼리
-## IFNULL(데이터, 대체할 데이터) : 데이터가 NULL이면 대체할 데이터를 띄워준다.
+# 좋아요
+## 서브쿼리
+### IFNULL(데이터, 대체할 데이터) : 데이터가 NULL이면 대체할 데이터를 띄워준다.
 SELECT AM.*,
 IFNULL(SUM(RP.point), 0) AS extra__sumReactionPoint,
 IFNULL(SUM(IF(RP.point > 0, RP.point, 0)), 0) AS extra__goodReactionPoint,
@@ -309,7 +310,7 @@ LEFT JOIN reactionPoint AS RP
 ON A.id = RP.relId AND RP.relTypeCode = 'article'
 GROUP BY A.id
 
-# 완성본(JOIN)
+## 완성본(JOIN)
 SELECT A.*, M.nickname AS extra__writer,
 IFNULL(SUM(RP.point), 0) AS extra__sumReactionPoint,
 IFNULL(SUM(IF(RP.point > 0, RP.point, 0)), 0) AS extra__goodReactionPoint,

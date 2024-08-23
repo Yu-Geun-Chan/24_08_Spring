@@ -24,11 +24,15 @@
 	</insert>
 
 	<select id="getForPrintArticles" resultType="Article">
-		SELECT A.* , M.nickname AS extra__writer
+		SELECT A.*, M.nickname AS extra__writer,
+		IFNULL(SUM(RP.point), 0) AS extra__sumReactionPoint,
+		IFNULL(SUM(IF(RP.point &gt; 0, RP.point, 0)), 0) AS extra__goodReactionPoint,
+		IFNULL(SUM(IF(RP.point &lt; 0, RP.point, 0)), 0) AS extra__badReactionPoint
 		FROM article AS A
-		INNER JOIN
-		`member` AS M
+		INNER JOIN `member` AS M
 		ON A.memberId = M.id
+		LEFT JOIN reactionPoint AS RP
+		ON A.id = RP.relId AND RP.relTypeCode = 'article'
 		WHERE 1
 		<if test="boardId != 0">
 			AND boardId = #{boardId}
@@ -52,6 +56,7 @@
 				</otherwise>
 			</choose>
 		</if>
+		GROUP BY A.id
 		ORDER BY A.id DESC
 		LIMIT #{limitFrom}, #{itemsInApage}
 	</select>
@@ -60,8 +65,7 @@
 		SELECT COUNT(*)
 		FROM article AS A
 		INNER JOIN `member` AS M
-		ON A.memberId
-		= M.id
+		ON A.memberId = M.id
 		WHERE 1
 		<if test="boardId != 0">
 			AND A.boardId = #{boardId}
@@ -87,24 +91,24 @@
 		</if>
 	</select>
 
-<!-- 	<select id="getArticles" resultType="Article"> -->
-<!-- 		SELECT A.*, M.nickName AS extra__Writer -->
-<!-- 		FROM article AS A -->
-<!-- 		INNER JOIN `member` AS M -->
-<!-- 		ON M.id = A.memberId -->
-<!-- 		INNER JOIN board AS B -->
-<!-- 		ON B.id = A.boardId -->
-<!-- 		WHERE B.id = #{board} -->
-<!-- 		ORDER BY A.id DESC -->
-<!-- 	</select> -->
-
-	<select id="getArticleById" resultType="Article">
-		SELECT A.*, M.nickName AS extra__writer
+	<select id="getArticles" resultType="Article">
+		SELECT A.*, M.nickName AS extra__Writer
 		FROM article AS A
 		INNER JOIN `member` AS M
 		ON M.id = A.memberId
-		WHERE A.id = #{id}
+		INNER JOIN board AS B
+		ON B.id = A.boardId
+		WHERE B.id = #{board}
+		ORDER BY A.id DESC
 	</select>
+
+<!-- 	<select id="getArticleById" resultType="Article"> -->
+<!-- 		SELECT A.*, M.nickName AS extra__writer -->
+<!-- 		FROM article AS A -->
+<!-- 		INNER JOIN `member` AS M -->
+<!-- 		ON M.id = A.memberId -->
+<!-- 		WHERE A.id = #{id} -->
+<!-- 	</select> -->
 
 	<update id="increaseHitCount">
 		UPDATE article

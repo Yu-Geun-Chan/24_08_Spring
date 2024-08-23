@@ -37,7 +37,7 @@
 		setTimeout(ArticleDetail__doIncreaseHitCount, 2000);
 	})
 </script>
-	
+
 <section class="mt-8 text-xl px-4">
 	<div class="mx-auto">
 		<table border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
@@ -76,26 +76,20 @@
 				</tr>
 				<tr style="text-align: center;">
 					<th>좋아요</th>
-					<td><span class="article-detail__goodReactionPoint">${article.extra__goodReactionPoint}</span></td>
+					<td>${article.extra__goodReactionPoint}</td>
 				</tr>
 				<tr style="text-align: center;">
 					<th>싫어요</th>
-					<td><span class="article-detail__badReactionPoint">${article.extra__badReactionPoint}</span></td>
+					<td>${article.extra__badReactionPoint}</td>
 				</tr>
 				<tr style="text-align: center;">
 					<th>좋아요, 싫어요 합산</th>
-					<td><span class="article-detail__sumReactionPoint">${article.extra__sumReactionPoint}</span></td>
+					<td>${article.extra__sumReactionPoint}</td>
 				</tr>
 			</tbody>
 		</table>
 
 		<div class="btns text-center mt-8">
-			<button class="like-button" type="button">
-				좋아요 👍 <span class="like-count mr-8">${likeCount}</span>
-			</button>
-			<button class="dislike-button" type="button">
-				싫어요 👎 <span class="dislike-count mr-8">${dislikeCount}</span>
-			</button>
 			<button class="btn" type="button" onclick="history.back()">뒤로가기</button>
 			<c:if test="${article.memberId eq loginedMemberId }">
 				<a class="btn ml-8" href="../article/modify?id=${article.id }">수정</a>

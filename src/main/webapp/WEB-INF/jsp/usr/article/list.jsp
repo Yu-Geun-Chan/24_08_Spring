@@ -29,7 +29,7 @@
 			<button type="submit">검색</button>
 		</form>
 
-		<table id="list_table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
+		<table id="list_table" border="1" cellspacing="0" cellpadding="9" style="width: 100%; border-collapse: collapse;">
 			<thead>
 				<tr style="text-align: center;">
 					<th>게시글 번호</th>
@@ -38,6 +38,9 @@
 					<th>내용</th>
 					<th>작성자 닉네임</th>
 					<th>조회수</th>
+					<th>좋아요</th>
+					<th>싫어요</th>
+					<th>좋아요, 싫어요 합산</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -49,6 +52,9 @@
 						<td>${article.body}</td>
 						<td>${article.extra__writer}</td>
 						<td>${article.hit}</td>
+						<td>${article.extra__goodReactionPoint}</td>
+						<td>${article.extra__badReactionPoint}</td>
+						<td>${article.extra__sumReactionPoint}</td>
 					</tr>
 				</c:forEach>
 
