@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class UsrArticleController {
 
-	@Autowired
+	@Autowired // 알아서 연결
 	private Rq rq;
 
 	@Autowired
@@ -42,7 +42,7 @@ public class UsrArticleController {
 
 		Article article = articleService.getForPrintArticle(rq.getLoginedMemberId(), id);
 
-		// -1 싫어요 , 0 표현 x, 1 좋아요
+		// -1 : 싫어요, 0 : 싫어요/좋아요 둘다 하지 않음, 1 : 좋아요
 		int userCanReaction = reactionPointService.userCanReaction(rq.getLoginedMemberId(), "article", id);
 		System.err.println(userCanReaction);
 
@@ -189,18 +189,18 @@ public class UsrArticleController {
 		// 글 25개 -> 3page
 		int itemsInAPage = 10;
 
-		int pagesCount = (int) Math.ceil(articlesCount / (double) itemsInAPage);
+		int totalPage = (int) Math.ceil(articlesCount / (double) itemsInAPage);
 
 		List<Article> articles = articleService.getForPrintArticles(boardId, itemsInAPage, page, searchKeywordTypeCode,
 				searchKeyword);
 
 		if (board == null) {
-			return rq.historyBackOnView("없는 게시판임");
+			return rq.historyBackOnView("없는 게시판입니다.");
 		}
 
 		model.addAttribute("articles", articles);
 		model.addAttribute("articlesCount", articlesCount);
-		model.addAttribute("pagesCount", pagesCount);
+		model.addAttribute("totalPage", totalPage);
 		model.addAttribute("board", board);
 		model.addAttribute("page", page);
 		model.addAttribute("searchKeywordTypeCode", searchKeywordTypeCode);

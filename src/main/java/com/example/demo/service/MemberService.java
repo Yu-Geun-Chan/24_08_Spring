@@ -37,7 +37,7 @@ public class MemberService {
 
 		int id = memberRepository.getLastInsertId();
 
-		return ResultData.from("S-1", "회원가입 성공", "생성된 회원 id", id);
+		return ResultData.from("S-1", Ut.f("[%s]님 회원가입 되었습니다.", nickname), "생성된 회원 id", id);
 	}
 
 	private Member getMemberByNameAndEmail(String name, String email) {

@@ -81,4 +81,15 @@ public class Rq {
 		req.setAttribute("historyBack", true);
 		return "usr/common/js";
 	}
+	
+	public String getCurrentUri() {
+		String currentUri = req.getRequestURI();
+		String queryString = req.getQueryString(); // ? 뒤의 값
+		
+		if(currentUri != null && queryString != null) {
+			currentUri += "?" + queryString;
+		}
+		
+		return currentUri;
+	}
 }

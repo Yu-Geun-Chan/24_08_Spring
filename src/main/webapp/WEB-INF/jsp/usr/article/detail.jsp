@@ -28,7 +28,7 @@
 		}, function(data) {
 			console.log(data);
 			console.log(data.data1);
-			$('.article-detail__hit-count').empty().html(data.data1);
+			$('.article-detail__hit').empty().html(data.data1);
 		}, 'json')
 	}
 
@@ -72,7 +72,7 @@
 				</tr>
 				<tr style="text-align: center;">
 					<th>조회수</th>
-					<td><span class="article-detail__hit-count">${article.hit}</span></td>
+					<td><span class="article-detail__hit">${article.hit}</span></td>
 				</tr>
 				<tr style="text-align: center;">
 					<th>좋아요</th>
@@ -84,12 +84,9 @@
 				</tr>
 				<tr style="text-align: center;">
 					<th>좋아요 / 싫어요</th>
-					<td>
-						<button class="btn btn-success">👍 좋아요 <span>${article.goodReactionPoint}</span></button>
-						
-						<button class="btn btn-error">👎?싫어요 <span ${article.badReactionPoint}></span></button> 
-						
-					</td>
+					<td><a href="/usr/reactionPoint/doGoodReaction?relTypeCode=article&relId=${param.id}&replaceUri=${rq.currentUri}" 
+					class="btn btn-success">👍 좋아요 ${article.goodReactionPoint}</a> 
+					<a href="/usr/reactionPoint/doBadReaction" class="btn btn-error">👎 싫어요 ${article.badReactionPoint}</a></td>
 				</tr>
 			</tbody>
 		</table>

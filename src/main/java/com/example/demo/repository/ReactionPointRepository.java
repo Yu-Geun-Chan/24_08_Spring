@@ -1,21 +1,31 @@
 package com.example.demo.repository;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-
-import com.example.demo.vo.Board;
 
 @Mapper
 public interface ReactionPointRepository {
 
 	@Select("""
 			SELECT IFNULL(SUM(RP.point),0)
-			FROM reactionPoint AS RP
+			FROM reactionPoint as RP
 			WHERE RP.relTypeCode = #{relTypeCode}
-			AND RP.relId = #{redId}
+			AND RP.relId = #{relId}
 			AND RP.memberId = #{loginedMemberId};
 			""")
-	int getSumReactionPoint(int memberId, String relTypeCode, int relId);
+	public int getSumReactionPoint(int loginedMemberId, String relTypeCode, int relId);
+
+	@Insert("""
+			INSERT INTO reactionPoint
+			SET regDate = NOW(),
+			updateDate = NOW(),
+			memberId = #{loginedMemberId},
+			relTypeCode = #{relTypeCode},
+			relId = #{relId},
+			`point`= 1
+			""")
+	public int increaseReactionPoint(int loginedMemberId, String relTypeCode, int relId);
 
 }
