@@ -14,7 +14,7 @@
 	<div class="mx-auto">
 		<div>해당 게시판 게시글 수 : ${articlesCount}개</div>
 
-		<form class="mb-4" method="POST" action="list?boardId=${board.id}">
+		<form class="mb-4" method="POST" action="list?boardId=${boardId}">
 			<div>
 				<select name="searchKeywordTypeCode" data-value="${searchKeywordTypeCode }">
 					<option value="title">제목</option>
@@ -40,7 +40,6 @@
 					<th>조회수</th>
 					<th>좋아요</th>
 					<th>싫어요</th>
-					<th>좋아요, 싫어요 합산</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -52,9 +51,8 @@
 						<td>${article.body}</td>
 						<td>${article.extra__writer}</td>
 						<td>${article.hit}</td>
-						<td>${article.extra__goodReactionPoint}</td>
-						<td>${article.extra__badReactionPoint}</td>
-						<td>${article.extra__sumReactionPoint}</td>
+						<td>${article.goodReactionPoint}</td>
+						<td>${article.badReactionPoint}</td>
 					</tr>
 				</c:forEach>
 
@@ -72,7 +70,7 @@
 			<c:set var="startPage" value="${page -  paginationLen  >= 1 ? page - paginationLen : 1}" />
 			<c:set var="endPage" value="${page +  paginationLen  <= totalPage ? page + paginationLen : totalPage}" />
 
-			<c:set var="baseUri" value="?boardId=${board.id }"></c:set>
+			<c:set var="baseUri" value="?boardId=${boardId }"></c:set>
 			<c:set var="baseUri" value="${baseUri }&searchKeywordTypeCode=${searchKeywordTypeCode }"></c:set>
 			<c:set var="baseUri" value="${baseUri }&searchKeyword=${searchKeyword }"></c:set>
 

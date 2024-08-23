@@ -14,9 +14,11 @@ public class MemberService {
 	@Autowired
 	private MemberRepository memberRepository;
 
+	public MemberService(MemberRepository memberRepository) {
+		this.memberRepository = memberRepository;
+	}
 
-	// ResultData<Integer> : data1의 타입이 int라고 명시
-	public ResultData<Integer> doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum,
+	public ResultData<Integer> join(String loginId, String loginPw, String name, String nickname, String cellphoneNum,
 			String email) {
 
 		Member existsMember = getMemberByLoginId(loginId);
@@ -35,7 +37,7 @@ public class MemberService {
 
 		int id = memberRepository.getLastInsertId();
 
-		return ResultData.from("S-1", "회원가입 성공", "새로 회원가입된 member id", id);
+		return ResultData.from("S-1", "회원가입 성공", "생성된 회원 id", id);
 	}
 
 	private Member getMemberByNameAndEmail(String name, String email) {

@@ -1,8 +1,10 @@
 package com.example.demo.vo;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class ResultData<DT> {
+
 	@Getter
 	private String ResultCode;
 	@Getter
@@ -11,12 +13,16 @@ public class ResultData<DT> {
 	private DT data1;
 	@Getter
 	private String data1Name;
+	@Getter
+	private Object data2;
+	@Getter
+	private String data2Name;
 
-	public static <DT> ResultData <DT> from(String ResultCode, String msg) {
+	public static <DT> ResultData<DT> from(String ResultCode, String msg) {
 		return from(ResultCode, msg, null, null);
 	}
 
-	public static <DT> ResultData <DT> from(String ResultCode, String msg, String data1Name, DT data1) {
+	public static <DT> ResultData<DT> from(String ResultCode, String msg, String data1Name, DT data1) {
 		ResultData<DT> rd = new ResultData<DT>();
 		rd.ResultCode = ResultCode;
 		rd.msg = msg;
@@ -34,8 +40,13 @@ public class ResultData<DT> {
 		return isSuccess() == false;
 	}
 
-	public static <DT> ResultData <DT> newData(ResultData rd, String dataName, DT newData) {
+	public static <DT> ResultData<DT> newData(ResultData rd, String dataName, DT newData) {
 		return from(rd.getResultCode(), rd.getMsg(), dataName, newData);
+	}
+
+	public void setData2(String data2Name, Object data2) {
+		this.data2 = data2;
+		this.data2Name = data2Name;
 	}
 
 }

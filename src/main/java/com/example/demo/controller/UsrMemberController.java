@@ -2,136 +2,108 @@ package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.service.MemberService;
 import com.example.demo.util.Ut;
 import com.example.demo.vo.Member;
 import com.example.demo.vo.ResultData;
+import com.example.demo.vo.Rq;
 
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 
-@Controller // 프로젝트에서 얘는 컨트롤러라고 인식하게끔 하는것
+@Controller
 public class UsrMemberController {
 
-	@Autowired // 알아서 연결
+	@Autowired
+	private Rq rq;
+
+	@Autowired
 	private MemberService memberService;
 
-	// 액션 메서드
-	@RequestMapping("/usr/member/join")
-	public String join(HttpSession httpSession, Model model) {
+	@RequestMapping("/usr/member/doLogout")
+	@ResponseBody
+	public String doLogout(HttpServletRequest req) {
 
-		boolean isLogined = false;
+		rq.logout();
 
-		if (httpSession.getAttribute("loginedMemberId") != null) {
-			isLogined = true;
-		}
-
-		if (isLogined) {
-			model.addAttribute("msg", "로그아웃 해주세요.");
-			model.addAttribute("replaceUri", "/usr/home/main");
-			return "/usr/home/alert";
-		}
-		return "/usr/member/join";
-	}
-
-	@RequestMapping("/usr/member/doJoin")
-	public Object doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum,
-			String email, Model model) {
-
-		ResultData doJoinRd = memberService.doJoin(loginId, loginPw, name, nickname, cellphoneNum, email);
-
-		if (doJoinRd.isFail()) {
-			return doJoinRd;
-		}
-
-		Member member = memberService.getMemberById((int) doJoinRd.getData1());
-
-		model.addAttribute("member", member);
-
-		model.addAttribute("msg", String.format("[%s]님 회원가입을 환영합니다.", member.getNickname()));
-		model.addAttribute("replaceUri", "/usr/home/main");
-		return "/usr/home/alert";
-
+		return Ut.jsReplace("S-1", Ut.f("로그아웃 성공"), "/");
 	}
 
 	@RequestMapping("/usr/member/login")
-	public String login(HttpSession httpSession, String loginId, String loginPw, Model model) {
-
-		boolean isLogined = false;
-
-		if (httpSession.getAttribute("loginedMemberId") != null) {
-			isLogined = true;
-		}
-
-		if (isLogined) {
-			model.addAttribute("msg", "로그아웃 해주세요.");
-			model.addAttribute("replaceUri", "/usr/home/main");
-			return "/usr/home/alert";
-		}
+	public String showLogin(HttpServletRequest req) {
 
 		return "/usr/member/login";
 	}
 
 	@RequestMapping("/usr/member/doLogin")
-	public String doLogin(HttpSession httpSession, String loginId, String loginPw, Model model) {
+	@ResponseBody
+	public String doLogin(HttpServletRequest req, String loginId, String loginPw) {
+
+		Rq rq = (Rq) req.getAttribute("rq");
 
 		if (Ut.isEmptyOrNull(loginId)) {
-			model.addAttribute("msg", "아이디를 입력해주세요.");
-			model.addAttribute("replaceUri", "/usr/member/login");
-			return "/usr/home/alert";
+			return Ut.jsHistoryBack("F-1", "loginId 입력 x");
 		}
-
 		if (Ut.isEmptyOrNull(loginPw)) {
-			model.addAttribute("msg", "비밀번호를 입력해주세요.");
-			model.addAttribute("replaceUri", "/usr/member/login");
-			return "/usr/home/alert";
+			return Ut.jsHistoryBack("F-2", "loginPw 입력 x");
 		}
 
 		Member member = memberService.getMemberByLoginId(loginId);
 
 		if (member == null) {
-			model.addAttribute("msg", String.format("[%s]은(는) 없는 아이디 입니다.", loginId));
-			model.addAttribute("replaceUri", "/usr/member/login");
-			return "/usr/home/alert";
+			return Ut.jsHistoryBack("F-3", Ut.f("%s는(은) 존재 x", loginId));
 		}
 
-		if (!member.getLoginPw().equals(loginPw)) {
-			model.addAttribute("msg", "비밀번호가 일치하지 않습니다.");
-			model.addAttribute("replaceUri", "/usr/member/login");
-			return "/usr/home/alert";
+		if (member.getLoginPw().equals(loginPw) == false) {
+			return Ut.jsHistoryBack("F-4", Ut.f("비밀번호 틀림"));
 		}
 
-		model.addAttribute("member", member);
+		rq.login(member);
 
-		Member loginedMember = memberService.getMemberByLoginId(loginId);
-
-		httpSession.setAttribute("loginedMemberId", loginedMember.getId());
-		httpSession.setAttribute("loginedMemberNickname", loginedMember.getNickname());
-
-		model.addAttribute("loginedMemberId", loginedMember.getId());
-
-		model.addAttribute("msg", String.format("[%s]님 환영합니다.", member.getNickname()));
-		model.addAttribute("replaceUri", "/usr/home/main");
-		return "/usr/home/alert";
+		return Ut.jsReplace("S-1", Ut.f("%s님 환영합니다", member.getNickname()), "/");
 	}
 
-	@RequestMapping("/usr/member/doLogout")
-	public String doLogout(HttpSession httpSession, Model model) {
+	@RequestMapping("/usr/member/join")
+	public String showJoin(HttpServletRequest req) {
 
-		if (httpSession.getAttribute("loginedMemberId") == null) {
-			model.addAttribute("msg", "로그인 해주세요.");
-			model.addAttribute("replaceUri", "/usr/member/login");
-			return "/usr/home/alert";
+		return "/usr/member/join";
+	}
+
+	@RequestMapping("/usr/member/doJoin")
+	@ResponseBody
+	public String doJoin(HttpServletRequest req, String loginId, String loginPw, String name, String nickname,
+			String cellphoneNum, String email) {
+
+		if (Ut.isEmptyOrNull(loginId)) {
+			return Ut.jsHistoryBack("F-1", "loginId 입력 x");
+		}
+		if (Ut.isEmptyOrNull(loginPw)) {
+			return Ut.jsHistoryBack("F-2", "loginPw 입력 x");
+		}
+		if (Ut.isEmptyOrNull(name)) {
+			return Ut.jsHistoryBack("F-3", "name 입력 x");
+		}
+		if (Ut.isEmptyOrNull(nickname)) {
+			return Ut.jsHistoryBack("F-4", "nickname 입력 x");
+		}
+		if (Ut.isEmptyOrNull(cellphoneNum)) {
+			return Ut.jsHistoryBack("F-5", "cellphoneNum 입력 x");
+		}
+		if (Ut.isEmptyOrNull(email)) {
+			return Ut.jsHistoryBack("F-6", "email 입력 x");
 		}
 
-		model.addAttribute("msg", String.format("[%s]님 로그아웃 되었습니다.", httpSession.getAttribute("loginedMemberNickname")));
-		httpSession.removeAttribute("loginedMemberId");
-		httpSession.removeAttribute("loginedMemberNickname");
-		model.addAttribute("replaceUri", "/usr/home/main");
-		return "/usr/home/alert";
+		ResultData joinRd = memberService.join(loginId, loginPw, name, nickname, cellphoneNum, email);
+
+		if (joinRd.isFail()) {
+			return Ut.jsHistoryBack(joinRd.getResultCode(), joinRd.getMsg());
+		}
+
+		Member member = memberService.getMemberById((int) joinRd.getData1());
+
+		return Ut.jsReplace(joinRd.getResultCode(), joinRd.getMsg(), "../member/login");
 	}
+
 }

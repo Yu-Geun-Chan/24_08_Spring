@@ -15,14 +15,16 @@ import com.example.demo.vo.ResultData;
 @Service
 public class ReactionPointService {
 
-    @Autowired
-    private ReactionPointRepository reactionPointRepository;
+	@Autowired
+	private ReactionPointRepository reactionPointRepository;
 
-    public int getReactionPointCount(String relTypeCode, int relId, int point) {
-        return reactionPointRepository.getReactionPointCount(relTypeCode, relId, point);
-    }
+	public int userCanReaction(int loginedMemberId, String relTypeCode, int relId) {
 
-    public void setReactionPoint(int memberId, String relTypeCode, int relId, int point) {
-    	reactionPointRepository.setReactionPoint(memberId, relTypeCode, relId, point);
-    }
+		if (loginedMemberId == 0) {
+			return -2; // 줄 수 없는 숫자(로그인 안했다는 뜻, -1 / 0 / 1만 나오니까)
+		}
+
+		return reactionPointRepository.getSumReactionPoint(loginedMemberId, relTypeCode, relId);
+
+	}
 }

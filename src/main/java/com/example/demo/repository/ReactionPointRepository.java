@@ -10,22 +10,12 @@ import com.example.demo.vo.Board;
 public interface ReactionPointRepository {
 
 	@Select("""
-			SELECT COUNT(*) 
-			FROM reactionPoint 
-			WHERE relTypeCode = #{relTypeCode} AND relId = #{relId} AND `point` = #{point}
+			SELECT IFNULL(SUM(RP.point),0)
+			FROM reactionPoint AS RP
+			WHERE RP.relTypeCode = #{relTypeCode}
+			AND RP.relId = #{redId}
+			AND RP.memberId = #{loginedMemberId};
 			""")
-	public int getReactionPointCount(String relTypeCode, int relId, int point);
+	int getSumReactionPoint(int memberId, String relTypeCode, int relId);
 
-	@Insert("""
-			INSERT INTO reactionPoint
-			SET regDate = NOW(),
-			updateDate = NOW(),
-			memberId = #{memberId},
-			relTypeCode = #{relTypeCode},
-			relId = #{relId}, 
-			`point` = #{point}
-			ON DUPLICATE KEY UPDATE `point` = #{point},
-			updateDate = NOW()
-			""")
-	public void setReactionPoint(int memberId, String relTypeCode, int relId, int point);
 }

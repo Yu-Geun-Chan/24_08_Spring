@@ -206,6 +206,23 @@ relTypeCode = 'article',
 relId = 1,
 `point` = 1;
 
+# article 테이블에 reactionPoint(좋아요) 관련 컬럼 추가
+ALTER TABLE article ADD COLUMN goodReactionPoint INT(10) UNSIGNED NOT NULL DEFAULT 0;
+ALTER TABLE article ADD COLUMN badReactionPoint INT(10) UNSIGNED NOT NULL DEFAULT 0;
+
+# update join -> 기존 게시글의 good, bad RP 값을 RP 테이블에서 추출해서 article table에 채운다
+## INNER JOIN 안의 서브쿼리는 article table에 넣어줄 값을 가져온 것.
+UPDATE article AS A
+INNER JOIN (
+    SELECT RP.relTypeCode, RP.relId,
+    SUM(IF(RP.point > 0, RP.point, 0)) AS goodReactionPoint,
+    SUM(IF(RP.point < 0, RP.point * -1, 0)) AS badReactionPoint # RP.point * -1 : 양수로 바꿔주기 위해(article table의 badReactionPoint가 음수 금지라서)
+    FROM reactionPoint AS RP
+    GROUP BY RP.relTypeCode, RP.relId
+) AS RP_SUM
+ON A.id = RP_SUM.relId
+SET A.goodReactionPoint = RP_SUM.goodReactionPoint,
+A.badReactionPoint = RP_SUM.badReactionPoint;
 
 ###(INIT 끝)
 #################################################################
@@ -293,9 +310,8 @@ WHERE A.boardId = 1 AND A.memberId = 3
 SELECT hit
 FROM article WHERE id = 3
 
-# 좋아요
-## 서브쿼리
-### IFNULL(데이터, 대체할 데이터) : 데이터가 NULL이면 대체할 데이터를 띄워준다.
+# 서브쿼리
+## IFNULL(데이터, 대체할 데이터) : 데이터가 NULL이면 대체할 데이터를 띄워준다.
 SELECT AM.*,
 IFNULL(SUM(RP.point), 0) AS extra__sumReactionPoint,
 IFNULL(SUM(IF(RP.point > 0, RP.point, 0)), 0) AS extra__goodReactionPoint,
@@ -310,7 +326,7 @@ LEFT JOIN reactionPoint AS RP
 ON A.id = RP.relId AND RP.relTypeCode = 'article'
 GROUP BY A.id
 
-## 완성본(JOIN)
+# 완성본(JOIN)
 SELECT A.*, M.nickname AS extra__writer,
 IFNULL(SUM(RP.point), 0) AS extra__sumReactionPoint,
 IFNULL(SUM(IF(RP.point > 0, RP.point, 0)), 0) AS extra__goodReactionPoint,
@@ -321,3 +337,5 @@ ON A.memberId = M.id
 LEFT JOIN reactionPoint AS RP
 ON A.id = RP.relId AND RP.relTypeCode = 'article'
 GROUP BY A.id
+			
+SELECT * FROM `reactionPoint`;

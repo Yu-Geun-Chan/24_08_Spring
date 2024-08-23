@@ -14,16 +14,19 @@ public class Article {
 	private int id;
 	private String regDate;
 	private String updateDate;
-	private String title;
-	private String body;
 	private int memberId;
 	private int boardId;
-	private String nickname;
+	private String title;
+	private String body;
 	private int hit;
-	
-	private String extra__sumReactionPoint;
-	private String extra__goodReactionPoint;
-	private String extra__badReactionPoint;
-	
+	private int goodReactionPoint;
+	private int badReactionPoint;
+
 	private String extra__writer;
+
+	private String extra__sumReactionPoint;
+
+	private boolean userCanModify;
+	private boolean userCanDelete;
+
 }

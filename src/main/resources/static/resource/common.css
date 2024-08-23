@@ -114,7 +114,6 @@ header ul li a:hover {
 }
 /* 여기까지 전체 상단바 스타일 */
 
-
 /* 전체 폼 스타일 */
 form {
 	max-width: 350px;
@@ -146,7 +145,7 @@ section>div>form>div:first-child>select, section>div>form>div:last-child>input[t
 }
 
 section>div>form>div:first-child>select {
-	width:140px;
+	width: 140px;
 }
 
 /* 검색 폼 버튼 스타일 */
@@ -219,4 +218,24 @@ form button:hover {
 .btn:hover {
 	background-color: #28a745;
 	color: black;
+}
+
+.btn-success {
+	background-color: #10b981;
+	color: white;
+	border-color: #10b981;
+}
+
+.btn-success:hover {
+	background-color: #059669;
+}
+
+.btn-error {
+	background-color: #ef4444;
+	color: white;
+	border-color: #ef4444;
+}
+
+.btn-error:hover {
+	background-color: #dc2626;
 }

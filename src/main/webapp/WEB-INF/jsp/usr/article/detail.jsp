@@ -76,15 +76,20 @@
 				</tr>
 				<tr style="text-align: center;">
 					<th>좋아요</th>
-					<td>${article.extra__goodReactionPoint}</td>
+					<td>${article.goodReactionPoint}</td>
 				</tr>
 				<tr style="text-align: center;">
 					<th>싫어요</th>
-					<td>${article.extra__badReactionPoint}</td>
+					<td>${article.badReactionPoint}</td>
 				</tr>
 				<tr style="text-align: center;">
-					<th>좋아요, 싫어요 합산</th>
-					<td>${article.extra__sumReactionPoint}</td>
+					<th>좋아요 / 싫어요</th>
+					<td>
+						<button class="btn btn-success">👍 좋아요 <span>${article.goodReactionPoint}</span></button>
+						
+						<button class="btn btn-error">👎?싫어요 <span ${article.badReactionPoint}></span></button> 
+						
+					</td>
 				</tr>
 			</tbody>
 		</table>

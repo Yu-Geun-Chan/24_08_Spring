@@ -1,18 +1,14 @@
 package com.example.demo.controller;
 
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.service.ArticleService;
 import com.example.demo.service.BoardService;
@@ -21,212 +17,196 @@ import com.example.demo.util.Ut;
 import com.example.demo.vo.Article;
 import com.example.demo.vo.Board;
 import com.example.demo.vo.ResultData;
+import com.example.demo.vo.Rq;
+import jakarta.servlet.http.HttpServletRequest;
 
-import jakarta.servlet.http.HttpSession;
-
-@Controller // 프로젝트에서 얘는 컨트롤러라고 인식하게끔 하는것
+@Controller
 public class UsrArticleController {
 
-	@Autowired // 알아서 연결
+	@Autowired
+	private Rq rq;
+
+	@Autowired
 	private ArticleService articleService;
 
-	@Autowired // 알아서 연결
+	@Autowired
 	private BoardService boardService;
-	
-    @Autowired // 알아서 연결
-    private ReactionPointService reactionPointService;
 
-	// 액션 메서드
-	@RequestMapping("/usr/article/write")
-	public String write(HttpSession httpSession, String title, String body, Model model) {
+	@Autowired
+	private ReactionPointService reactionPointService;
 
-		if (httpSession.getAttribute("loginedMemberId") == null) {
-			model.addAttribute("msg", "로그인 후에 이용해주세요.");
-			model.addAttribute("replaceUri", "/usr/member/login");
-			return "/usr/home/alert";
-		}
+	@RequestMapping("/usr/article/detail")
+	public String showDetail(HttpServletRequest req, Model model, int id) {
 
-		return "/usr/article/write";
-	}
+		Rq rq = (Rq) req.getAttribute("rq");
 
-	@RequestMapping("/usr/article/doWrite")
-	public String doWrite(HttpSession httpSession, String title, String body, Model model, String boardId) {
+		Article article = articleService.getForPrintArticle(rq.getLoginedMemberId(), id);
 
-		int loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");
-
-		if (Ut.isEmptyOrNull(title)) {
-			model.addAttribute("msg", "제목을 입력해주세요.");
-			model.addAttribute("replaceUri", "/usr/article/write");
-			return "/usr/home/alert";
-		}
-
-		if (Ut.isEmptyOrNull(body)) {
-			model.addAttribute("msg", "내용을 입력해주세요.");
-			model.addAttribute("replaceUri", "/usr/article/write");
-			return "/usr/home/alert";
-		}
-		if (Ut.isEmptyOrNull(boardId)) {
-			model.addAttribute("msg", "게시판을 선택해주세요.");
-			model.addAttribute("replaceUri", "/usr/article/write");
-			return "/usr/home/alert";
-		}
-
-		ResultData writeArticleRd = articleService.writeArticle(loginedMemberId, title, body, boardId);
-
-		int id = (int) writeArticleRd.getData1();
-
-		Article article = articleService.getArticleById(id);
+		// -1 싫어요 , 0 표현 x, 1 좋아요
+		int userCanReaction = reactionPointService.userCanReaction(rq.getLoginedMemberId(), "article", id);
+		System.err.println(userCanReaction);
 
 		model.addAttribute("article", article);
+		model.addAttribute("userCanReaction", userCanReaction);
 
-		model.addAttribute("msg", String.format("%d번 게시글이 작성되었습니다.", id));
-		model.addAttribute("replaceUri", "/usr/article/detail?id=" + id);
-		return "/usr/home/alert";
-
+		return "usr/article/detail";
 	}
 
-	@RequestMapping("/usr/article/doDelete")
-	public Object delete(HttpSession httpSession, int id, Model model) {
-
-		if (httpSession.getAttribute("loginedMemberId") == null) {
-			model.addAttribute("msg", "로그인 후에 이용해주세요.");
-			model.addAttribute("replaceUri", "/usr/member/login");
-			return "/usr/home/alert";
-		}
-
-		int loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");
-
-		Article foundArticle = articleService.getArticleById(id);
-
-		if (foundArticle == null) {
-			model.addAttribute("msg", String.format("%d번 게시글은 없습니다.", id));
-			model.addAttribute("replaceUri", "/usr/article/list");
-			return "/usr/home/alert";
-		}
-
-		if (foundArticle.getMemberId() != loginedMemberId) {
-			model.addAttribute("msg", String.format("%d번 게시글에 대한 권한이 없습니다.", id));
-			model.addAttribute("replaceUri", "/usr/article/list");
-			return "/usr/home/alert";
-		}
-
-		articleService.deleteArticle(id);
-
-		model.addAttribute("msg", String.format("%d번 게시글이 삭제되었습니다.", id));
-		model.addAttribute("replaceUri", "/usr/article/list");
-		return "/usr/home/alert";
-	}
-
-	// 로그인 체크 -> 게시글 유무 체크 -> 권한 체크 -> 수정
-	@RequestMapping("/usr/article/modify")
-	public String modify(HttpSession httpSession, int id, String title, String body, Model model) {
-
-		if (httpSession.getAttribute("loginedMemberId") == null) {
-			model.addAttribute("msg", "로그인 후에 이용해주세요.");
-			model.addAttribute("replaceUri", "/usr/member/login");
-			return "/usr/home/alert";
-		}
-
-		int loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");
-
-		Article foundArticle = articleService.getArticleById(id);
-
-		if (foundArticle == null) {
-			model.addAttribute("msg", String.format("%d번 게시글은 없습니다.", id));
-			model.addAttribute("replaceUri", "/usr/article/list");
-			return "/usr/home/alert";
-		}
-
-		if (foundArticle.getMemberId() != loginedMemberId) {
-			model.addAttribute("msg", String.format("%d번 게시글에 대한 권한이 없습니다.", id));
-			model.addAttribute("replaceUri", "/usr/article/list");
-			return "/usr/home/alert";
-		}
-
-		model.addAttribute("article", foundArticle);
-
-		return "/usr/article/modify";
-	}
-
-	@RequestMapping("/usr/article/doModify")
-	public String doModify(HttpSession httpSession, int id, String title, String body, Model model) {
-
-		articleService.modifyArticle(id, title, body);
-
-		Article modifyArticle = articleService.getArticleById(id);
-
-		model.addAttribute("article", modifyArticle);
-
-		model.addAttribute("msg", String.format("%d번 게시글이 수정되었습니다.", id));
-		model.addAttribute("replaceUri", "/usr/article/detail?id=" + id);
-		return "/usr/home/alert";
-	}
-
-	// 게시글 상세보기
-	@RequestMapping("/usr/article/detail")
-	public String showDetail(HttpSession httpSession, int id, Model model) {
-
-		Article foundArticle = articleService.getArticleById(id);
-
-		if (foundArticle == null) {
-			model.addAttribute("msg", String.format("%d번 게시글은 없습니다.", id));
-			model.addAttribute("replaceUri", "/usr/article/list");
-			return "/usr/home/alert";
-		}
-
-		model.addAttribute("article", foundArticle);
-
-		return "/usr/article/detail";
-	}
-	
-	// 게시글 조회수 증가
 	@RequestMapping("/usr/article/doIncreaseHitCountRd")
 	@ResponseBody
 	public ResultData doIncreaseHitCount(int id) {
 
 		ResultData increaseHitCountRd = articleService.increaseHitCount(id);
- 
+
 		if (increaseHitCountRd.isFail()) {
 			return increaseHitCountRd;
 		}
 
-		return ResultData.newData(increaseHitCountRd, "hit", articleService.getArticleHitCount(id));
+		ResultData rd = ResultData.newData(increaseHitCountRd, "hit", articleService.getArticleHitCount(id));
+
+		rd.setData2("조회수가 증가된 게시글의 id", id);
+
+		return rd;
 	}
-	
-	// 게시글 목록
+
+	@RequestMapping("/usr/article/modify")
+	public String showModify(HttpServletRequest req, Model model, int id) {
+
+		Rq rq = (Rq) req.getAttribute("rq");
+
+		Article article = articleService.getForPrintArticle(rq.getLoginedMemberId(), id);
+
+		if (article == null) {
+			return Ut.jsHistoryBack("F-1", Ut.f("%d번 게시글은 없습니다", id));
+		}
+
+		model.addAttribute("article", article);
+
+		return "/usr/article/modify";
+	}
+
+	// 로그인 체크 -> 유무 체크 -> 권한 체크 -> 수정
+	@RequestMapping("/usr/article/doModify")
+	@ResponseBody
+	public String doModify(HttpServletRequest req, int id, String title, String body) {
+
+		Rq rq = (Rq) req.getAttribute("rq");
+
+		Article article = articleService.getArticleById(id);
+
+		if (article == null) {
+			return Ut.jsHistoryBack("F-1", Ut.f("%d번 게시글은 없습니다", id));
+		}
+
+		ResultData userCanModifyRd = articleService.userCanModify(rq.getLoginedMemberId(), article);
+
+		if (userCanModifyRd.isFail()) {
+			return Ut.jsHistoryBack(userCanModifyRd.getResultCode(), userCanModifyRd.getMsg());
+		}
+
+		if (userCanModifyRd.isSuccess()) {
+			articleService.modifyArticle(id, title, body);
+		}
+
+		article = articleService.getArticleById(id);
+
+		return Ut.jsReplace(userCanModifyRd.getResultCode(), userCanModifyRd.getMsg(), "../article/detail?id=" + id);
+	}
+
+	@RequestMapping("/usr/article/doDelete")
+	@ResponseBody
+	public String doDelete(HttpServletRequest req, int id) {
+
+		Rq rq = (Rq) req.getAttribute("rq");
+
+		Article article = articleService.getArticleById(id);
+
+		if (article == null) {
+			return Ut.jsHistoryBack("F-1", Ut.f("%d번 게시글은 없습니다", id));
+		}
+
+		ResultData userCanDeleteRd = articleService.userCanDelete(rq.getLoginedMemberId(), article);
+
+		if (userCanDeleteRd.isFail()) {
+			return Ut.jsHistoryBack(userCanDeleteRd.getResultCode(), userCanDeleteRd.getMsg());
+		}
+
+		if (userCanDeleteRd.isSuccess()) {
+			articleService.deleteArticle(id);
+		}
+
+		return Ut.jsReplace(userCanDeleteRd.getResultCode(), userCanDeleteRd.getMsg(), "../article/list");
+	}
+
+	@RequestMapping("/usr/article/write")
+	public String showWrite(HttpServletRequest req) {
+
+		return "usr/article/write";
+	}
+
+	@RequestMapping("/usr/article/doWrite")
+	@ResponseBody
+	public String doWrite(HttpServletRequest req, String title, String body, String boardId) {
+
+		Rq rq = (Rq) req.getAttribute("rq");
+
+		if (Ut.isEmptyOrNull(title)) {
+			return Ut.jsHistoryBack("F-1", "제목을 입력해주세요");
+		}
+		if (Ut.isEmptyOrNull(body)) {
+			return Ut.jsHistoryBack("F-2", "내용을 입력해주세요");
+		}
+		if (Ut.isEmptyOrNull(boardId)) {
+			return Ut.jsHistoryBack("F-3", "게시판을 선택해주세요");
+		}
+
+		System.err.println(boardId);
+
+		ResultData writeArticleRd = articleService.writeArticle(rq.getLoginedMemberId(), title, body, boardId);
+
+		int id = (int) writeArticleRd.getData1();
+
+		Article article = articleService.getArticleById(id);
+
+		return Ut.jsReplace(writeArticleRd.getResultCode(), writeArticleRd.getMsg(), "../article/detail?id=" + id);
+
+	}
+
 	@RequestMapping("/usr/article/list")
-	public String showList(Model model, @RequestParam(defaultValue = "1") int boardId,
-			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int itemsInApage,
-			@RequestParam(defaultValue = "") String searchKeyword,
-			@RequestParam(defaultValue = "title, body, nickname") String searchKeywordTypeCode) {
+	public String showList(HttpServletRequest req, Model model, @RequestParam(defaultValue = "1") int boardId,
+			@RequestParam(defaultValue = "1") int page,
+			@RequestParam(defaultValue = "title,body") String searchKeywordTypeCode,
+			@RequestParam(defaultValue = "") String searchKeyword) throws IOException {
+
+		Rq rq = (Rq) req.getAttribute("rq");
 
 		Board board = boardService.getBoardById(boardId);
 
-		if (board == null) {
-			model.addAttribute("msg", "존재하지 않는 게시판입니다.");
-			model.addAttribute("replaceUri", "../article/list");
-			return "/usr/home/alert";
-		}
-
-		// limitFrom 계산
-		int limitFrom = (page - 1) * itemsInApage;
-
-		// 페이징된 게시글 가져오기
 		int articlesCount = articleService.getArticlesCount(boardId, searchKeywordTypeCode, searchKeyword);
-		List<Article> articles = articleService.getForPrintArticles(boardId, itemsInApage, limitFrom,
-				searchKeywordTypeCode, searchKeyword);
 
-		// 총 페이지 수 계산
-		int totalPage = (int) Math.ceil(articlesCount / (double) itemsInApage);
+		// 한페이지에 글 10개
+		// 글 20개 -> 2page
+		// 글 25개 -> 3page
+		int itemsInAPage = 10;
+
+		int pagesCount = (int) Math.ceil(articlesCount / (double) itemsInAPage);
+
+		List<Article> articles = articleService.getForPrintArticles(boardId, itemsInAPage, page, searchKeywordTypeCode,
+				searchKeyword);
+
+		if (board == null) {
+			return rq.historyBackOnView("없는 게시판임");
+		}
 
 		model.addAttribute("articles", articles);
 		model.addAttribute("articlesCount", articlesCount);
+		model.addAttribute("pagesCount", pagesCount);
 		model.addAttribute("board", board);
 		model.addAttribute("page", page);
-		model.addAttribute("totalPage", totalPage);
 		model.addAttribute("searchKeywordTypeCode", searchKeywordTypeCode);
 		model.addAttribute("searchKeyword", searchKeyword);
+		model.addAttribute("boardId", boardId);
 
-		return "/usr/article/list";
+		return "usr/article/list";
 	}
 }
