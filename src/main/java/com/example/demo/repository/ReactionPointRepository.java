@@ -21,11 +21,11 @@ public interface ReactionPointRepository {
 			INSERT INTO reactionPoint
 			SET regDate = NOW(),
 			updateDate = NOW(),
-			memberId = #{loginedMemberId},
 			relTypeCode = #{relTypeCode},
 			relId = #{relId},
-			`point`= 1
+			memberId = #{memberId},
+			`point` = 1
 			""")
-	public int increaseReactionPoint(int loginedMemberId, String relTypeCode, int relId);
+	public int increaseReactionPoint(int memberId, String relTypeCode, int relId);
 
 }

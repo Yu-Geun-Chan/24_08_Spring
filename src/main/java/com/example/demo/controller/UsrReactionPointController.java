@@ -35,7 +35,7 @@ public class UsrReactionPointController {
 
 		Rq rq = (Rq) req.getAttribute("rq");
 
-		int usersReaction = reactionPointService.userCanReaction(rq.getLoginedMemberId(), relTypeCode, relId);
+		int usersReaction = reactionPointService.usersReaction(rq.getLoginedMemberId(), relTypeCode, relId);
 
 		if (usersReaction == 1) {
 			return Ut.jsHistoryBack("F-1", "이미 좋아요를 눌렀습니다.");
@@ -44,20 +44,6 @@ public class UsrReactionPointController {
 		ResultData reaticonRd = reactionPointService.increaseReactionPoint(rq.getLoginedMemberId(), relTypeCode, relId);
 
 		return Ut.jsReplace(reaticonRd.getResultCode(), reaticonRd.getMsg(), replaceUri);
-	}
-
-	@RequestMapping("/usr/reactionPoint/doBadReaction")
-	public String doBadReaction(HttpServletRequest req, String relTypeCode, int relId, String replaceUri) {
-
-		Rq rq = (Rq) req.getAttribute("rq");
-
-		int usersReaction = reactionPointService.userCanReaction(rq.getLoginedMemberId(), relTypeCode, relId);
-
-		if (usersReaction == -1) {
-			return Ut.jsHistoryBack("F-1", "이미 싫어요를 눌렀습니다.");
-		}
-
-		return "usr/article/detail";
 	}
 
 }

@@ -7,6 +7,8 @@
 
 <hr />
 
+<!-- <iframe src="http://localhost:8080/usr/article/doIncreaseHitCount?id=757" frameborder="0"></iframe> -->
+
 <script>
 	const params = {};
 	params.id = parseInt('${param.id}');
@@ -74,7 +76,7 @@
 					<th>조회수</th>
 					<td><span class="article-detail__hit">${article.hit}</span></td>
 				</tr>
-				<tr style="text-align: center;">
+				<tr class="reaction" style="text-align: center;">
 					<th>좋아요</th>
 					<td>${article.goodReactionPoint}</td>
 				</tr>
