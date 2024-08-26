@@ -134,9 +134,9 @@ public interface ArticleRepository {
 			</script>
 			""")
 	public int getArticleCount(int boardId, String searchKeywordTypeCode, String searchKeyword);
-
+	
 	@Select("""
-			SELECT hitCount
+			SELECT hit
 			FROM article
 			WHERE id = #{id}
 				""")
@@ -148,6 +148,27 @@ public interface ArticleRepository {
 			WHERE id = #{relId}
 			""")
 	public int increaseGoodReactionPoint(int relId);
+
+	@Update("""
+			UPDATE article
+			SET goodReactionPoint = goodReactionPoint - 1
+			WHERE id = #{relId}
+			""")
+	public int decreaseGoodReactionPoint(int relId);
+
+	@Update("""
+			UPDATE article
+			SET badReactionPoint = badReactionPoint + 1
+			WHERE id = #{relId}
+			""")
+	public int increaseBadReactionPoint(int relId);
+
+	@Update("""
+			UPDATE article
+			SET badReactionPoint = badReactionPoint - 1
+			WHERE id = #{relId}
+			""")
+	public int decreaseBadReactionPoint(int relId);
 	
 	@Update("""
 			UPDATE article
@@ -155,5 +176,8 @@ public interface ArticleRepository {
 			WHERE id = #{id}
 			""")
 	public int increaseHitCount(int id);
+	
+	
+
 
 }

@@ -40,6 +40,41 @@
 	})
 </script>
 
+<script>
+<!-- 좋아요 싫어요 버튼	-->
+	function doReaction(reactionType) {
+		let url = "";
+
+		if (reactionType === 'good') {
+			url = "/usr/reactionPoint/doGoodReaction?relTypeCode=article&relId=${article.id}";
+		} else if (reactionType === 'bad') {
+			url = "/usr/reactionPoint/doBadReaction?relTypeCode=article&relId=${article.id}";
+		}
+
+		$.ajax({
+			type : "POST",
+			url : url,
+			success : function(data) {
+				var likeButton = $('.article-detail__good-reaction');
+				var dislikeButton = $('.article-detail__bad-reaction');
+				console.log(data);
+
+				if (reactionType === 'good') {
+					likeButton.text(data.data1);
+					dislikeButton.text(data.data2);
+				} else if (reactionType === 'bad') {
+					dislikeButton.text(data.data1);
+					likeButton.text(data.data2);
+				}
+			},
+			error: function(jqXHR,textStatus,errorThrown) {
+				alert('좋아요 / 싫어요 오류 발생 : ' + textStatus); <!-- textStatus == 'error' -->
+			}
+		});
+	}
+</script>
+
+
 <section class="mt-8 text-xl px-4">
 	<div class="mx-auto">
 		<table border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
@@ -74,21 +109,30 @@
 				</tr>
 				<tr style="text-align: center;">
 					<th>조회수</th>
-					<td><span class="article-detail__hit">${article.hit}</span></td>
+					<td>
+						<span class="article-detail__hit">${article.hit}</span>
+					</td>
 				</tr>
 				<tr class="reaction" style="text-align: center;">
 					<th>좋아요</th>
-					<td>${article.goodReactionPoint}</td>
+					<td class="article-detail__good-reaction">${article.goodReactionPoint}</td>
 				</tr>
 				<tr style="text-align: center;">
 					<th>싫어요</th>
-					<td>${article.badReactionPoint}</td>
+					<td class="article-detail__bad-reaction">${article.badReactionPoint}</td>
 				</tr>
 				<tr style="text-align: center;">
-					<th>좋아요 / 싫어요</th>
-					<td><a href="/usr/reactionPoint/doGoodReaction?relTypeCode=article&relId=${param.id}&replaceUri=${rq.currentUri}" 
-					class="btn btn-success">👍 좋아요 ${article.goodReactionPoint}</a> 
-					<a href="/usr/reactionPoint/doBadReaction" class="btn btn-error">👎 싫어요 ${article.badReactionPoint}</a></td>
+					<th>좋아요 / 싫어요 / ${usersReaction}</th>
+					<td>
+						<button class="btn btn-success" onclick="doReaction('good')">
+							👍 좋아요
+							<span class="article-detail__good-reaction">${article.goodReactionPoint}</span>
+						</button>
+						<button class="btn btn-error" onclick="doReaction('bad')">
+							👎 싫어요
+							<span class="article-detail__bad-reaction">${article.badReactionPoint}</span>
+						</button>
+					</td>
 				</tr>
 			</tbody>
 		</table>
@@ -96,10 +140,14 @@
 		<div class="btns text-center mt-8">
 			<button class="btn" type="button" onclick="history.back()">뒤로가기</button>
 			<c:if test="${article.memberId eq loginedMemberId }">
-				<a class="btn ml-8" href="../article/modify?id=${article.id }">수정</a>
+				<button class="btn ml-8">
+					<a href="../article/modify?id=${article.id }">수정</a>
+				</button>
 			</c:if>
 			<c:if test="${article.memberId eq loginedMemberId }">
-				<a class="btn ml-8" href="../article/doDelete?id=${article.id }">삭제</a>
+				<button class="btn ml-8">
+					<a href="../article/doDelete?id=${article.id }">삭제</a>
+				</button>
 			</c:if>
 		</div>
 	</div>
