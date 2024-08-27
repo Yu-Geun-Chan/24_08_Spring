@@ -21,8 +21,6 @@ public class Reply {
 	private int goodReactionPoint;
 	private int badReactionPoint;
 
-	
-	
 	private String extra__writer;
 	
 }

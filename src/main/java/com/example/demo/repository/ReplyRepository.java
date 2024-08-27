@@ -2,10 +2,12 @@ package com.example.demo.repository;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import com.example.demo.vo.Reply;
+import com.example.demo.vo.ResultData;
 
 @Mapper
 public interface ReplyRepository {
@@ -20,5 +22,18 @@ public interface ReplyRepository {
 			ORDER BY R.id ASC;
 			""")
 	public List<Reply> getForPrintReplies(String relTypeCode, int relId);
+
+	@Insert("""
+			INSERT INTO reply
+			SET regDate = NOW(),
+			updateDate = NOW(),
+			relTypeCode = #{relTypeCode},
+			relId = #{relId},
+			memberId = #{loginedMemberId},
+			`body` = #{body}
+			""")
+	public void writeReply(int loginedMemberId, String relTypeCode, int relId, String body);
 		
+	@Select("SELECT LAST_INSERT_ID();")
+	public int getLastInsertId();
 }

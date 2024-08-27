@@ -176,8 +176,26 @@
 	</div>
 </section>
 
+<!-- 댓글 -->
 <section class="mt-8 text-xl px-4">
-	<div class="mx-auto">
+
+	<c:if test="${!rq.isLogined()}">
+		댓글 작성을 위해<a class='btn' href="../member/login">로그인</a>이 필요합니다.
+	</c:if>
+	<c:if test="${rq.isLogined()}">
+		<form method="POST" action="../reply/doWrite">
+			<input type="hidden" name="relTypeCode" value="article" />
+			<input type="hidden" name="relId" value="${article.id}" />
+			<div>
+				댓글 내용 입력 <br>
+				<textarea type="text" placeholder="내용을 입력하세요." name="body"></textarea>
+			</div>
+			<button type="submit">작성</button>
+		</form>
+	</c:if>
+
+	<!-- 댓글 리스트 -->
+	<div class="mx-auto mt-8">
 		<table id="list_table" border="1" cellspacing="0" cellpadding="9" style="width: 100%; border-collapse: collapse;">
 			<thead>
 				<tr style="text-align: center;">
@@ -188,7 +206,7 @@
 					<th>싫어요</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody></tbody>
 				<c:forEach var="reply" items="${replies}">
 					<tr style="text-align: center;">
 						<td>${reply.regDate.substring(0,10)}</td>
@@ -198,10 +216,14 @@
 						<td>${reply.badReactionPoint}</td>
 					</tr>
 				</c:forEach>
-	</div>
-</section>
+				
+				<c:if test="empty=${replies}">
+					댓글이 없습니다.
+				</c:if>
+				</div>
+				</section>
 
 
 
 
-<%@ include file="../common/foot.jspf"%>
+				<%@ include file="../common/foot.jspf"%>
