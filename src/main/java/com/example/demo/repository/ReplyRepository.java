@@ -12,6 +12,7 @@ import com.example.demo.vo.ResultData;
 @Mapper
 public interface ReplyRepository {
 
+	// DB에서 작성댓글들을 가져오기 위한 쿼리
 	@Select("""
 			SELECT R.*, M.nickname AS extra__writer
 			FROM reply AS R
@@ -23,6 +24,7 @@ public interface ReplyRepository {
 			""")
 	public List<Reply> getForPrintReplies(String relTypeCode, int relId);
 
+	// DB에 댓글 작성을 하기 위한 쿼리
 	@Insert("""
 			INSERT INTO reply
 			SET regDate = NOW(),
@@ -33,7 +35,16 @@ public interface ReplyRepository {
 			`body` = #{body}
 			""")
 	public void writeReply(int loginedMemberId, String relTypeCode, int relId, String body);
-		
+
+    @Select("""
+    		SELECT COUNT(*) 
+    		FROM reply 
+    		WHERE relId = #{articleId} 
+    		AND relTypeCode = 'article'
+    		""")
+    int getRepliesCount(int articleId);
+	
+	// 마지막 댓글의 id를 가져오는 쿼리
 	@Select("SELECT LAST_INSERT_ID();")
 	public int getLastInsertId();
 }

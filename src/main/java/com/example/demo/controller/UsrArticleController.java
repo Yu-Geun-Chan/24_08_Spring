@@ -52,12 +52,15 @@ public class UsrArticleController {
 			model.addAttribute("userCanMakeReaction", usersReactionRd.isSuccess());
 		}
 		
+		// 작성되어있는 댓글들 가져오기 위한 로직
 		List<Reply> replies = replyService.getForPrintReplies("article", id);
 		
+		// 작성댓글이 총 몇개인지 repliesCount에 저장 
 		int repliesCount = replies.size();
 		
 		model.addAttribute("article", article);
 		
+		// 전역에서 쓰기 위하여 model에 작성댓글들이랑, 작성댓글 개수를 저장
 		model.addAttribute("replies", replies);
 		model.addAttribute("repliesCount", repliesCount);
 		

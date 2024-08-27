@@ -47,7 +47,7 @@
 					<tr style="text-align: center;">
 						<td>${article.id}</td>
 						<td>${article.regDate.substring(0,10)}</td>
-						<td><a class="hover:underline" href="detail?id=${article.id}">${article.title}</a></td>
+						<td><a class="hover:underline" href="detail?id=${article.id}">${article.title}</a> [${article.repliesCount}]</td>
 						<td>${article.body}</td>
 						<td>${article.extra__writer}</td>
 						<td>${article.hit}</td>

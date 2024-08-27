@@ -23,4 +23,9 @@ public class Reply {
 
 	private String extra__writer;
 	
+	private String extra__sumReactionPoint;
+	
+	private boolean userCanModify;
+	private boolean userCanDelete;
+	
 }

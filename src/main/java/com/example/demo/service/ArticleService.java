@@ -12,6 +12,9 @@ import com.example.demo.vo.ResultData;
 
 @Service
 public class ArticleService {
+	
+	@Autowired
+    private ReplyService replyService;
 
 	@Autowired
 	private ArticleRepository articleRepository;
@@ -59,8 +62,15 @@ public class ArticleService {
 		int limitFrom = (page - 1) * itemsInAPage;
 		int limitTake = itemsInAPage;
 
-		return articleRepository.getForPrintArticles(boardId, limitFrom, limitTake, searchKeywordTypeCode,
+		List<Article> articles = articleRepository.getForPrintArticles(boardId, limitFrom, limitTake, searchKeywordTypeCode,
 				searchKeyword);
+		
+        for (Article article : articles) {
+            int repliesCount = replyService.getRepliesCount(article.getId());
+            article.setRepliesCount(repliesCount);  // 각 게시물에 댓글 수 설정
+        }
+        
+        return articles;
 	}
 
 	public List<Article> getArticles() {

@@ -207,23 +207,25 @@
 				</tr>
 			</thead>
 			<tbody></tbody>
-				<c:forEach var="reply" items="${replies}">
-					<tr style="text-align: center;">
-						<td>${reply.regDate.substring(0,10)}</td>
-						<td>${reply.extra__writer}</td>
-						<td>${reply.body}</td>
-						<td>${reply.goodReactionPoint}</td>
-						<td>${reply.badReactionPoint}</td>
-					</tr>
-				</c:forEach>
-				
-				<c:if test="empty=${replies}">
-					댓글이 없습니다.
-				</c:if>
-				</div>
-				</section>
+			<c:forEach var="reply" items="${replies}">
+				<tr style="text-align: center;">
+					<td>${reply.regDate.substring(0,10)}</td>
+					<td>${reply.extra__writer}</td>
+					<td>${reply.body}</td>
+					<td>${reply.goodReactionPoint}</td>
+					<td>${reply.badReactionPoint}</td>
+				</tr>
+			</c:forEach>
+
+			<c:if test="${empty replies}">
+				<tr>
+					<td colspan="5" style="text-align: center;">댓글이 없습니다</td>
+				</tr>
+			</c:if>
+			</div>
+			</section>
 
 
 
 
-				<%@ include file="../common/foot.jspf"%>
+			<%@ include file="../common/foot.jspf"%>
