@@ -41,6 +41,10 @@
 </script>
 
 <script>
+	var loginedMemberId =' ${loginedMemberId}'; // 서버에서 loginedMemberId를 페이지에 전달
+</script>
+
+<script>
 <!-- 좋아요 싫어요 버튼	-->
 	function doReaction(reactionType) {
 		let url = "";
@@ -67,9 +71,17 @@
 					likeButton.text(data.data2);
 				}
 			},
-			error: function(jqXHR,textStatus,errorThrown) {
-				alert('좋아요 / 싫어요 오류 발생 : ' + textStatus); <!-- textStatus == 'error' -->
+			error : function(jqXHR, textStatus, errorThrown) {
+				if (loginedMemberId == 0 || loginedMemberId == null) {
+					if (confirm('로그인 창으로 이동하시겠습니까?')) {
+//						console.log(window.location.href); -> 현재 페이지
+//						console.log(encodeURIComponent(window.location.href)); -> 현재 페이지 인코딩(부호화)
+						var currentUri = encodeURIComponent(window.location.href); // 원래 페이지 저장
+						window.location.href = '../member/login?afterLoginUri=' + currentUri;// 로그인 페이지에 원래 페이지의 정보를 포함시켜서 보냄
+					}
+				} else alert('좋아요 / 싫어요 오류 발생: ' + textStatus); <!-- textStatus : error -->
 			}
+
 		});
 	}
 </script>

@@ -39,7 +39,7 @@ public class UsrMemberController {
 
 	@RequestMapping("/usr/member/doLogin")
 	@ResponseBody
-	public String doLogin(HttpServletRequest req, String loginId, String loginPw) {
+	public String doLogin(HttpServletRequest req, String loginId, String loginPw, String afterLoginUri) {
 
 		Rq rq = (Rq) req.getAttribute("rq");
 
@@ -60,8 +60,14 @@ public class UsrMemberController {
 			return Ut.jsHistoryBack("F-4", Ut.f("비밀번호가 일치하지 않습니다."));
 		}
 
+		// 로그인 처리
 		rq.login(member);
-
+		
+		// 원래 페이지가 있으면 로그인하고 그쪽으로 보내주는 로직.
+		if (afterLoginUri.length() > 0) {
+			return Ut.jsReplace("S-1", Ut.f("[%s]님 환영합니다", member.getNickname()), afterLoginUri);
+		}
+		
 		return Ut.jsReplace("S-1", Ut.f("[%s]님 환영합니다", member.getNickname()), "/");
 	}
 

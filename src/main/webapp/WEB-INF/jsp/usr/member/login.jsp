@@ -10,6 +10,7 @@
 
 <div class="text-center mt-3">
 	<form method="POST" action="doLogin">
+		<input type="hidden" name="afterLoginUri" value="${param.afterLoginUri }" />
 		<div>
 			아이디 <input autocomplete="off" type="text" placeholder="아이디를 입력해주세요." name="loginId" />
 		</div>
