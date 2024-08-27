@@ -160,7 +160,7 @@
 			</tbody>
 		</table>
 
-		<div class="btns text-center mt-8">
+		<div class="btns mt-8">
 			<button class="btn" type="button" onclick="history.back()">뒤로가기</button>
 			<c:if test="${article.memberId eq loginedMemberId }">
 				<button class="btn ml-8">
@@ -175,6 +175,33 @@
 		</div>
 	</div>
 </section>
+
+<section class="mt-8 text-xl px-4">
+	<div class="mx-auto">
+		<table id="list_table" border="1" cellspacing="0" cellpadding="9" style="width: 100%; border-collapse: collapse;">
+			<thead>
+				<tr style="text-align: center;">
+					<th>작성 날짜</th>
+					<th>작성자 닉네임</th>
+					<th>내용</th>
+					<th>좋아요</th>
+					<th>싫어요</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="reply" items="${replies}">
+					<tr style="text-align: center;">
+						<td>${reply.regDate.substring(0,10)}</td>
+						<td>${reply.extra__writer}</td>
+						<td>${reply.body}</td>
+						<td>${reply.goodReactionPoint}</td>
+						<td>${reply.badReactionPoint}</td>
+					</tr>
+				</c:forEach>
+	</div>
+</section>
+
+
 
 
 <%@ include file="../common/foot.jspf"%>
