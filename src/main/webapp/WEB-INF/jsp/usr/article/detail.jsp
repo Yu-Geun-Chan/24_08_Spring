@@ -97,50 +97,6 @@
 	}
 </script>
 
-<!-- 댓글 수정 버튼 -->
-<script>
-function toggleModifybtn(replyId) {
-	
-	console.log(replyId);
-	
-	$('#modify-btn-'+replyId).hide();
-	$('#save-btn-'+replyId).show();
-	$('#reply-'+replyId).hide();
-	$('#modify-form-'+replyId).show();
-}
-function doModifyReply(replyId) {
-	 console.log(replyId); // 디버깅을 위해 replyId를 콘솔에 출력
-	    
-	    // form 요소를 정확하게 선택
-	    var form = $('#modify-form-' + replyId);
-	    console.log(form); // 디버깅을 위해 form을 콘솔에 출력
-	    // form 내의 input 요소의 값을 가져옵니다
-	    var text = form.find('input[name="reply-body-' + replyId + '"]').val();
-	    console.log(text); // 디버깅을 위해 text를 콘솔에 출력
-	    // form의 action 속성 값을 가져옵니다
-	    var action = form.attr('action');
-	    console.log(action); // 디버깅을 위해 action을 콘솔에 출력
-	
-    $.post({
-    	url: '/usr/reply/doModify', // 수정된 URL
-        type: 'POST', // GET에서 POST로 변경
-        data: { id: replyId, body: text }, // 서버에 전송할 데이터
-        success: function(data) {
-        	$('#modify-form-'+replyId).hide();
-        	$('#reply-'+replyId).text(data);
-        	$('#reply-'+replyId).show();
-        	$('#save-btn-'+replyId).hide();
-        	$('#modify-btn-'+replyId).show();
-        },
-        error: function(xhr, status, error) {
-            alert('댓글 수정에 실패했습니다: ' + error);
-        }
-	})
-}
-
-</script>
-
-
 <section class="mt-8 text-xl px-4">
 	<div class="mx-auto">
 		<table border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
@@ -219,6 +175,58 @@ function doModifyReply(replyId) {
 	</div>
 </section>
 
+<!-- 댓글 수정 버튼 -->
+<script>
+function toggleModifybtn(replyId) {
+	
+	console.log(replyId);
+	
+	$('#modify-btn-'+replyId).hide();
+	$('#save-btn-'+replyId).show();
+	$('#reply-'+replyId).hide();
+	$('#modify-form-'+replyId).show();
+	 <!--
+	 수정 버튼을 눌렀을 때 일어나는 이벤트들
+	 1. 수정 버튼이 사라지고 저장 버튼이 나타난다.
+	 2. 원래 보였던 댓글 내용창이 사라지고 댓글 수정 폼이 나타난다.
+	-->
+}
+function doModifyReply(replyId) {
+	 console.log(replyId); // 디버깅을 위해 replyId를 콘솔에 출력
+	    
+	    // form 요소를 정확하게 선택
+	    var form = $('#modify-form-' + replyId);
+	    console.log(form); // 디버깅을 위해 form을 콘솔에 출력
+	    // form 내의 input 요소의 값을 가져옵니다
+	    // 각 댓글의 id(replyId)를 식별자로 사용
+	    var text = form.find('input[name="reply-body-' + replyId + '"]').val();
+	    console.log(text); // 디버깅을 위해 text를 콘솔에 출력
+	    // form의 action 속성 값을 가져옵니다
+	    var action = form.attr('action');
+	    console.log(action); // 디버깅을 위해 action을 콘솔에 출력
+	
+    $.post({
+    	url: '/usr/reply/doModify', // 수정된 URL
+        type: 'POST', // GET에서 POST로 변경
+        data: { id: replyId, body: text }, // 서버에 전송할 데이터
+        success: function(data) {
+        	$('#modify-form-'+replyId).hide();
+        	$('#reply-'+replyId).text(data); // data에는 수정한 댓글 내용이 들어있다.
+        	$('#reply-'+replyId).show();
+        	$('#save-btn-'+replyId).hide();
+        	$('#modify-btn-'+replyId).show();
+        	// 저장 버튼을 눌렀을 때 일어나는 이벤트들
+        	// 1. 댓글 수정 폼이 사라지고 수정한 댓글 내용이 댓글 내용창에 적용되어서 나타난다.
+        	// 2. 저장 버튼이 사라지고 수정 버튼이 나타난다.
+        },
+        error: function(xhr, status, error) {
+            alert('댓글 수정에 실패했습니다: ' + error);
+        }
+	})
+}
+</script>
+
+
 <!-- 댓글 -->
 <section class="mt-8 text-xl px-4">
 
@@ -259,6 +267,7 @@ function doModifyReply(replyId) {
 						<td>
 							<span id="reply-${reply.id}">${reply.body}</span>
 							<form id="modify-form-${reply.id}" style="display: none;" method="POST" action="/usr/reply/doModify">
+							<!-- 각 댓글의 id(replyId)를 식별자로 사용하기 위해 input의 name에 reply.id를 불러와서 적용 -->
 								<input type="text" name="reply-body-${reply.id}" value="${reply.body}" placeholder="수정할 내용을 입력하세요." />
 							</form>
 						</td>

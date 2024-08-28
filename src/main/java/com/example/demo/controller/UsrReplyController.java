@@ -73,4 +73,31 @@ public class UsrReplyController {
 		return reply.getBody();
 	}
 	
+	@RequestMapping("/usr/reply/doDelete")
+	@ResponseBody
+	public String doDelete(HttpServletRequest req, int id, String body) {
+
+		Rq rq = (Rq) req.getAttribute("rq");
+
+		Reply reply = replyService.getReplyById(id);
+
+		if (reply == null) {
+			return Ut.jsHistoryBack("F-1", Ut.f("%d번 댓글은 없습니다", id));
+		}
+
+		ResultData userCanModifyRd = replyService.userCanModify(rq.getLoginedMemberId(), reply);
+
+		if (userCanModifyRd.isFail()) {
+			return Ut.jsHistoryBack(userCanModifyRd.getResultCode(), userCanModifyRd.getMsg());
+		}
+
+		if (userCanModifyRd.isSuccess()) {
+			replyService.deleteReply(id);
+		}
+
+		reply = replyService.getReplyById(id);
+
+		return reply.getBody();
+	}
+	
 }
