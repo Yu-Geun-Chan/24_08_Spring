@@ -53,7 +53,7 @@ public class UsrArticleController {
 		}
 		
 		// 작성되어있는 댓글들 가져오기 위한 로직
-		List<Reply> replies = replyService.getForPrintReplies("article", id);
+		List<Reply> replies = replyService.getForPrintReplies(rq.getLoginedMemberId(), "article", id);
 		
 		// 작성댓글이 총 몇개인지 repliesCount에 저장 
 		int repliesCount = replies.size();
@@ -179,8 +179,6 @@ public class UsrArticleController {
 		if (Ut.isEmptyOrNull(boardId)) {
 			return Ut.jsHistoryBack("F-3", "게시판을 선택해주세요");
 		}
-
-		System.err.println(boardId);
 
 		ResultData writeArticleRd = articleService.writeArticle(rq.getLoginedMemberId(), title, body, boardId);
 

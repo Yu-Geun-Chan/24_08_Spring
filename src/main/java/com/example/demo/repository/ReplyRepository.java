@@ -22,7 +22,7 @@ public interface ReplyRepository {
 			AND R.relId = #{relId}
 			ORDER BY R.id ASC;
 			""")
-	public List<Reply> getForPrintReplies(String relTypeCode, int relId);
+	public List<Reply> getForPrintReplies(int loginMemberId, String relTypeCode, int relId);
 
 	// DB에 댓글 작성을 하기 위한 쿼리
 	@Insert("""
@@ -42,7 +42,7 @@ public interface ReplyRepository {
     		WHERE relId = #{articleId} 
     		AND relTypeCode = 'article'
     		""")
-    int getRepliesCount(int articleId);
+    public int getRepliesCount(int articleId);
 	
 	// 마지막 댓글의 id를 가져오는 쿼리
 	@Select("SELECT LAST_INSERT_ID();")

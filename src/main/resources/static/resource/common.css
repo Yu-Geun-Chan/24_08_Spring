@@ -239,3 +239,71 @@ form button:hover {
 .btn-error:hover {
 	background-color: #dc2626;
 }
+
+/* 댓글 */
+
+.reply-section {
+    width: 100%;
+    margin-top: 20px;
+}
+
+#reply_list_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#reply_list_table th, #list_table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+#reply_list_table th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+}
+
+#reply_list_table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#reply_list_table tr:hover {
+    background-color: #f1f1f1;
+}
+/* 댓글 수정, 삭제 버튼 */
+.actions {
+    margin-left:5px;
+    display:inline-block;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    margin-right: 4px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #007bff;
+    font-size: 14px;
+}
+
+.action-btn:hover {
+    background-color: #0056b3;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.no-replys {
+    text-align: center;
+    color: #777;
+    font-size: 16px;
+}

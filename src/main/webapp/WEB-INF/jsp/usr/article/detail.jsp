@@ -180,7 +180,7 @@
 <section class="mt-8 text-xl px-4">
 
 	<c:if test="${!rq.isLogined()}">
-		댓글 작성을 위해<a class='btn' href="../member/login">로그인</a>이 필요합니다.
+		댓글 작성을 위해 <a class='btn' href="../member/login">로그인</a> 이 필요합니다.
 	</c:if>
 	<c:if test="${rq.isLogined()}">
 		<form method="POST" action="../reply/doWrite">
@@ -195,8 +195,9 @@
 	</c:if>
 
 	<!-- 댓글 리스트 -->
-	<div class="mx-auto mt-8">
-		<table id="list_table" border="1" cellspacing="0" cellpadding="9" style="width: 100%; border-collapse: collapse;">
+	<div class="reply-section mx-auto mt-8">
+		<table id="reply_list_table" border="1" cellspacing="0" cellpadding="9"
+			style="width: 100%; border-collapse: collapse;">
 			<thead>
 				<tr style="text-align: center;">
 					<th>작성 날짜</th>
@@ -204,28 +205,41 @@
 					<th>내용</th>
 					<th>좋아요</th>
 					<th>싫어요</th>
+					<th>수정 / 삭제</th>
 				</tr>
 			</thead>
-			<tbody></tbody>
-			<c:forEach var="reply" items="${replies}">
-				<tr style="text-align: center;">
-					<td>${reply.regDate.substring(0,10)}</td>
-					<td>${reply.extra__writer}</td>
-					<td>${reply.body}</td>
-					<td>${reply.goodReactionPoint}</td>
-					<td>${reply.badReactionPoint}</td>
-				</tr>
-			</c:forEach>
+			<tbody>
+				<c:forEach var="reply" items="${replies}">
+					<tr style="text-align: center;">
+						<td>${reply.regDate.substring(0,10)}</td>
+						<td>${reply.extra__writer}</td>
+						<td>${reply.body}</td>
+						<td>${reply.goodReactionPoint}</td>
+						<td>${reply.badReactionPoint}</td>
+						<td>
+							<div class="actions">
+								<c:if test="${reply.memberId eq loginedMemberId }">
+									<a href="../reply/doModify?id=${reply.id }" class="action-btn">수정</a>
+								</c:if>
+								<c:if test="${reply.memberId eq loginedMemberId }">
+									<a href="../reply/doDelete?id=${reply.id }" class="action-btn delete-btn" onclick="confirm('삭제하시겠습니까?')">삭제</a>
+								</c:if>
+							</div>
+						</td>
+					</tr>
+				</c:forEach>
 
-			<c:if test="${empty replies}">
-				<tr>
-					<td colspan="5" style="text-align: center;">댓글이 없습니다</td>
-				</tr>
-			</c:if>
-			</div>
-			</section>
+				<c:if test="${empty replies}">
+					<tr>
+						<td colspan="5" style="text-align: center;" class="no-replys">댓글이 없습니다</td>
+					</tr>
+				</c:if>
+			</tbody>
+		</table>
+	</div>
+</section>
 
 
 
 
-			<%@ include file="../common/foot.jspf"%>
+<%@ include file="../common/foot.jspf"%>
