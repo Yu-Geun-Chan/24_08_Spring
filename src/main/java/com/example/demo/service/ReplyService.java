@@ -17,36 +17,44 @@ public class ReplyService {
 
 	@Autowired
 	private ReplyRepository replyRepository;
-	
+
 	ReplyService(ReplyRepository replyRepository) {
 		this.replyRepository = replyRepository;
 	}
 	
+	public void modifyReply(int id, String body) {
+		replyRepository.modifyReply(id, body);
+	}
+
+	public void deleteReply(int id) {
+		replyRepository.deleteReply(id);
+	}
+
 	// 작성되어있는 댓글들을 가져오기 위한 로직
 	public List<Reply> getForPrintReplies(int loginMemberId, String relTypeCode, int id) {
-		
+
 		List<Reply> replies = replyRepository.getForPrintReplies(loginMemberId, relTypeCode, id);
-		
-		for(Reply reply : replies) {
+
+		for (Reply reply : replies) {
 			controlForPrintData(loginMemberId, reply);
 		}
-		
+
 		return replies;
 	}
 
 	// 댓글을 작성하기 위한 로직
 	public ResultData writeReply(int loginedMemberId, String relTypeCode, int relId, String body) {
 		replyRepository.writeReply(loginedMemberId, relTypeCode, relId, body);
-		
+
 		int id = replyRepository.getLastInsertId();
-		
+
 		return ResultData.from("S-1", Ut.f("%d번 댓글이 등록되었습니다", id), "등록 된 댓글의 id", id);
 	}
-	
-    public int getRepliesCount(int articleId) {
-        return replyRepository.getRepliesCount(articleId);
-    }
-    
+
+	public int getRepliesCount(int articleId) {
+		return replyRepository.getRepliesCount(articleId);
+	}
+
 	private void controlForPrintData(int loginedMemberId, Reply reply) {
 		if (reply == null) {
 			return;
@@ -71,5 +79,9 @@ public class ReplyService {
 		}
 		return ResultData.from("S-1", Ut.f("%d번 댓글을 수정했습니다", reply.getId()), "수정된 댓글", reply);
 	}
-}
 
+	public Reply getReplyById(int id) {
+		return replyRepository.getReplyById(id);
+	}
+
+}

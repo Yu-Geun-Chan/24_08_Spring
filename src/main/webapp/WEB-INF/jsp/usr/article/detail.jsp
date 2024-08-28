@@ -31,7 +31,7 @@
 			console.log(data);
 			console.log(data.data1);
 			$('.article-detail__hit').empty().html(data.data1);
-		}, 'json')
+		}, 'json' // data의 형식)
 	}
 
 	$(function() {
@@ -67,7 +67,7 @@
 
 		$.ajax({
 			type : "POST",
-			url : url,
+			url : url, // 클라이언트가 HTTP 요청을 보낼 서버의 URL 주소
 			success : function(data) {
 				var likeButton = $('.article-detail__good-reaction');
 				var dislikeButton = $('.article-detail__bad-reaction');
@@ -95,6 +95,49 @@
 
 		});
 	}
+</script>
+
+<!-- 댓글 수정 버튼 -->
+<script>
+function toggleModifybtn(replyId) {
+	
+	console.log(replyId);
+	
+	$('#modify-btn-'+replyId).hide();
+	$('#save-btn-'+replyId).show();
+	$('#reply-'+replyId).hide();
+	$('#modify-form-'+replyId).show();
+}
+function doModifyReply(replyId) {
+	 console.log(replyId); // 디버깅을 위해 replyId를 콘솔에 출력
+	    
+	    // form 요소를 정확하게 선택
+	    var form = $('#modify-form-' + replyId);
+	    console.log(form); // 디버깅을 위해 form을 콘솔에 출력
+	    // form 내의 input 요소의 값을 가져옵니다
+	    var text = form.find('input[name="reply-body-' + replyId + '"]').val();
+	    console.log(text); // 디버깅을 위해 text를 콘솔에 출력
+	    // form의 action 속성 값을 가져옵니다
+	    var action = form.attr('action');
+	    console.log(action); // 디버깅을 위해 action을 콘솔에 출력
+	
+    $.post({
+    	url: '/usr/reply/doModify', // 수정된 URL
+        type: 'POST', // GET에서 POST로 변경
+        data: { id: replyId, body: text }, // 서버에 전송할 데이터
+        success: function(data) {
+        	$('#modify-form-'+replyId).hide();
+        	$('#reply-'+replyId).text(data);
+        	$('#reply-'+replyId).show();
+        	$('#save-btn-'+replyId).hide();
+        	$('#modify-btn-'+replyId).show();
+        },
+        error: function(xhr, status, error) {
+            alert('댓글 수정에 실패했습니다: ' + error);
+        }
+	})
+}
+
 </script>
 
 
@@ -213,13 +256,20 @@
 					<tr style="text-align: center;">
 						<td>${reply.regDate.substring(0,10)}</td>
 						<td>${reply.extra__writer}</td>
-						<td>${reply.body}</td>
+						<td>
+							<span id="reply-${reply.id}">${reply.body}</span>
+							<form id="modify-form-${reply.id}" style="display: none;" method="POST" action="/usr/reply/doModify">
+								<input type="text" name="reply-body-${reply.id}" value="${reply.body}" placeholder="수정할 내용을 입력하세요." />
+							</form>
+						</td>
 						<td>${reply.goodReactionPoint}</td>
 						<td>${reply.badReactionPoint}</td>
 						<td>
 							<div class="actions">
 								<c:if test="${reply.memberId eq loginedMemberId }">
-									<a href="../reply/doModify?id=${reply.id }" class="action-btn">수정</a>
+									<button onclick="toggleModifybtn('${reply.id}');" id="modify-btn-${reply.id }" class="action-btn">수정</button>
+									<button onclick="doModifyReply('${reply.id}');" style="white-space: nowrap; display: none;"
+										id="save-btn-${reply.id }" class="action-btn">저장</button>
 								</c:if>
 								<c:if test="${reply.memberId eq loginedMemberId }">
 									<a href="../reply/doDelete?id=${reply.id }" class="action-btn delete-btn" onclick="confirm('삭제하시겠습니까?')">삭제</a>

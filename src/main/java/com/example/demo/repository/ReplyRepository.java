@@ -2,15 +2,31 @@ package com.example.demo.repository;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.example.demo.vo.Reply;
 import com.example.demo.vo.ResultData;
 
 @Mapper
 public interface ReplyRepository {
+	
+	@Update("""
+			UPDATE reply
+			SET updateDate = NOW(),
+			`body` = #{body}
+			WHERE id = #{id}
+			""")
+	public void modifyReply(int id, String body);
+
+	@Delete("""
+			DELETE FROM reply
+			WHERE id = #{id}
+			""")
+	public void deleteReply(int id);
 
 	// DB에서 작성댓글들을 가져오기 위한 쿼리
 	@Select("""
@@ -36,15 +52,23 @@ public interface ReplyRepository {
 			""")
 	public void writeReply(int loginedMemberId, String relTypeCode, int relId, String body);
 
-    @Select("""
-    		SELECT COUNT(*) 
-    		FROM reply 
-    		WHERE relId = #{articleId} 
-    		AND relTypeCode = 'article'
-    		""")
-    public int getRepliesCount(int articleId);
-	
+	@Select("""
+			SELECT COUNT(*)
+			FROM reply
+			WHERE relId = #{articleId}
+			AND relTypeCode = 'article'
+			""")
+	public int getRepliesCount(int articleId);
+
 	// 마지막 댓글의 id를 가져오는 쿼리
 	@Select("SELECT LAST_INSERT_ID();")
 	public int getLastInsertId();
+
+	@Select("""
+			SELECT *
+			FROM reply
+			WHERE id = #{id}
+			""")
+	public Reply getReplyById(int id);
+
 }

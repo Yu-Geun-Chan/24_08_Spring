@@ -10,6 +10,7 @@ import com.example.demo.service.ReactionPointService;
 import com.example.demo.service.ReplyService;
 import com.example.demo.util.Ut;
 import com.example.demo.vo.Article;
+import com.example.demo.vo.Reply;
 import com.example.demo.vo.ResultData;
 import com.example.demo.vo.Rq;
 
@@ -44,5 +45,32 @@ public class UsrReplyController {
 		return Ut.jsReplace(writeReplyRd.getResultCode(), writeReplyRd.getMsg(), "../article/detail?id=" + relId);
 	}
 	
+	// 로그인 체크 -> 유무 체크 -> 권한 체크 -> 수정
+	@RequestMapping("/usr/reply/doModify")
+	@ResponseBody
+	public String doModify(HttpServletRequest req, int id, String body) {
+
+		Rq rq = (Rq) req.getAttribute("rq");
+
+		Reply reply = replyService.getReplyById(id);
+
+		if (reply == null) {
+			return Ut.jsHistoryBack("F-1", Ut.f("%d번 댓글은 없습니다", id));
+		}
+
+		ResultData userCanModifyRd = replyService.userCanModify(rq.getLoginedMemberId(), reply);
+
+		if (userCanModifyRd.isFail()) {
+			return Ut.jsHistoryBack(userCanModifyRd.getResultCode(), userCanModifyRd.getMsg());
+		}
+
+		if (userCanModifyRd.isSuccess()) {
+			replyService.modifyReply(id, body);
+		}
+
+		reply = replyService.getReplyById(id);
+
+		return reply.getBody();
+	}
 	
 }
