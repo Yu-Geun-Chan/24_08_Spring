@@ -16,10 +16,10 @@
 	<div id="map" style="width: 100%; height: 350px;"></div>
 
 	<!--  appkey= 다음에 Kakao developer 앱 키에서 발급받은 JavaScript KEY를 넣어주면 된다. -->
-	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey="></script>
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f1f9a79eb50b08adc48c36903d8e7bdc"></script>
 	<script>
 	
-	const API_KEY = ''; // 공공데이터 포털 마이페이지에 있는 인증키를 넣어주면 된다.
+	const API_KEY = 'aToHYG4xpZhS0OS59VRMVuioU5pgfn7mwvbBFbfnODC0%2Fwmwbx8DQbKtcoXyk7HXNCX9BNanoAQtqaxjpgrTJg%3D%3D'; // 공공데이터 포털 마이페이지에 있는 인증키를 넣어주면 된다.
 	
 	let la;
 	let lo;

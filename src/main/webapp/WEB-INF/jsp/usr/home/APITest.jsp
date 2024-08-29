@@ -3,7 +3,7 @@
 <c:set var="pageTitle" value="API TEST"></c:set>
 
 <script>
-	const API_KEY = '';
+	const API_KEY = 'aToHYG4xpZhS0OS59VRMVuioU5pgfn7mwvbBFbfnODC0%2Fwmwbx8DQbKtcoXyk7HXNCX9BNanoAQtqaxjpgrTJg%3D%3D';
 	
 	async function getCData() {
 		const url = 'http://apis.data.go.kr/1180000/DaejeonNationalCemetery/Burialinfo042?name=홍길동&pageNo=1&numOfRows=50&serviceKey='+ API_KEY;
