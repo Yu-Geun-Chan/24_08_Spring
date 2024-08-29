@@ -3,8 +3,10 @@ package com.example.demo.repository;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.example.demo.vo.Member;
+import com.example.demo.vo.ResultData;
 
 @Mapper
 public interface MemberRepository {
@@ -32,5 +34,56 @@ public interface MemberRepository {
 			AND email = #{email}
 			""")
 	public Member getMemberByNameAndEmail(String name, String email);
+
+	@Update("""
+			<sciprt>
+				UPDATE `member`
+				<set>
+					<if test="loginPw != null">
+						loginPw = #{loginPw},
+					</if>
+					<if test="name != null">
+						name = #{name},
+					</if>
+					<if test="nickname != null">
+						nickname = #{nickname},
+					</if>
+					<if test="email != null">
+						email = #{email},
+					</if>
+					<if test="cellphoneNum != null">
+						cellphoneNum = #{cellphoneNum},
+					</if>
+					updateDate = NOW()
+				</set>
+			WHERE id = #{loginemMemberId}
+			</sciprt>
+			""")
+	public void modifyMember(int loginemMemberId, String loginPw, String email, String cellphoneNum, String nickname,
+			String name);
+
+	@Update("""
+			<sciprt>
+				UPDATE `member`
+				<set>
+					<if test="name != null">
+						name = #{name},
+					</if>
+					<if test="nickname != null">
+						nickname = #{nickname},
+					</if>
+					<if test="email != null">
+						email = #{email},
+					</if>
+					<if test="cellphoneNum != null">
+						cellphoneNum = #{cellphoneNum},
+					</if>
+					updateDate = NOW()
+				</set>
+			WHERE id = #{loginemMemberId}
+			</sciprt>
+			""")
+	public void modifyWithoutPwMember(int loginedMemberId, String email, String cellphoneNum, String nickname,
+			String name);
 
 }

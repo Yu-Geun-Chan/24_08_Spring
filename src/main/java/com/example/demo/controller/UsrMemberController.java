@@ -47,7 +47,7 @@ public class UsrMemberController {
 			return Ut.jsHistoryBack("F-1", "로그인 아이디를 입력해주세요.");
 		}
 		if (Ut.isEmptyOrNull(loginPw)) {
-			return Ut.jsHistoryBack("F-2", "비밀번호를 입력해주세요. x");
+			return Ut.jsHistoryBack("F-2", "비밀번호를 입력해주세요.");
 		}
 
 		Member member = memberService.getMemberByLoginId(loginId);
@@ -62,12 +62,12 @@ public class UsrMemberController {
 
 		// 로그인 처리
 		rq.login(member);
-		
+
 		// 원래 페이지가 있으면 로그인하고 그쪽으로 보내주는 로직.
 		if (afterLoginUri.length() > 0) {
 			return Ut.jsReplace("S-1", Ut.f("[%s]님 환영합니다", member.getNickname()), afterLoginUri);
 		}
-		
+
 		return Ut.jsReplace("S-1", Ut.f("[%s]님 환영합니다", member.getNickname()), "/");
 	}
 
@@ -111,8 +111,7 @@ public class UsrMemberController {
 
 		return Ut.jsReplace(joinRd.getResultCode(), joinRd.getMsg(), "../member/login");
 	}
-	
-	
+
 	@RequestMapping("/usr/member/myPage")
 	public String showMyPage() {
 		return "usr/member/myPage";
@@ -122,20 +121,54 @@ public class UsrMemberController {
 	public String showCheckPw() {
 		return "usr/member/checkPw";
 	}
-	
+
 	@RequestMapping("/usr/member/doCheckPw")
 	public String doCheckPw(String loginPw) {
-		
+
 		if (Ut.isEmptyOrNull(loginPw)) {
-			return rq.historyBackOnView("비밀번호를 입력해주세요");
+			return Ut.jsHistoryBack("F-1", "비밀번호를 입력해주세요");
 		}
-		
+
 		if (rq.getLoginedMember().getLoginPw().equals(loginPw) == false) {
-			return rq.historyBackOnView("비밀번호가 일치하지 않습니다.");
+			return Ut.jsHistoryBack("F-2", "비밀번호가 일치하지 않습니다.");
 		}
-		
-		return "usr/member/modify";
+
+		return Ut.jsReplace("S-1", "비밀번호 확인 성공", "modify");
 	}
-	
-	
+
+	@RequestMapping("/usr/member/modify")
+	public String showMymodify() {
+		return "usr/member/modify";
+
+	}
+
+	@RequestMapping("/usr/member/doModify")
+	public String doModify(HttpServletRequest req, String loginPw, String email, String cellphoneNum, String nickname,
+			String name, String loginId) {
+
+		// 비밀번호 입력하지 않아도 회원정보 수정이 가능하게끔 해야한다. -> 비밀번호 null 체크는 X
+		if (Ut.isEmptyOrNull(name)) {
+			return Ut.jsHistoryBack("F-1", "이름을 입력해주세요.");
+		}
+		if (Ut.isEmptyOrNull(nickname)) {
+			return Ut.jsHistoryBack("F-2", "닉네임을 입력해주세요.");
+		}
+		if (Ut.isEmptyOrNull(cellphoneNum)) {
+			return Ut.jsHistoryBack("F-3", "휴대폰 번호를 입력해주세요.");
+		}
+		if (Ut.isEmptyOrNull(email)) {
+			return Ut.jsHistoryBack("F-4", "이메일을 입력해주세요.");
+		}
+
+		ResultData modifyRd;
+
+		if (Ut.isEmptyOrNull(loginPw)) {
+			modifyRd = memberService.modifyWithoutPwMember(rq.getLoginedMemberId(), email, cellphoneNum, nickname,
+					name);
+		} else
+			modifyRd = memberService.modifyMember(rq.getLoginedMemberId(), loginPw, email, cellphoneNum, nickname,
+					name);
+
+		return Ut.jsReplace(modifyRd.getResultCode(), modifyRd.getMsg(), "../member/myPage");
+	}
 }

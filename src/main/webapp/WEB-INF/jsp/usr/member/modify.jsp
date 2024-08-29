@@ -8,29 +8,54 @@
 
 <hr />
 
+<script type="text/javascript">
+	function JoinForm__submit(form) {
+		form.loginPw.value = form.loginPw.value.trim();
+
+		if (form.loginPw.value.length > 0) {
+			form.loginPwConfirm.value = form.loginPwConfirm.value.trim();
+			if (form.loginPw.value == 0) {
+				alert('비밀번호 입력하세요.');
+				return;
+			}
+
+			if (form.loginPwConfirm.value != form.loginPw.value) {
+				alert('비밀번호가 일치하지 않습니다.');
+				return;
+			}
+		}
+		form.submit();
+	}
+</script>
+
 <div class="text-center mt-3">
-	<form method="POST" action="doLogin">
+	<form onsubmit="MemberModify__submit(this); return false;" method="POST" action="doModify">
 		<div>가입일 ${rq.loginedMember.regDate}</div>
+		<div>아이디 ${rq.loginedMember.loginId}</div>
 		<div>
-			아이디 ${rq.loginedMember.loginId}
+			새 비밀번호
+			<input autocomplete="off" type="password" placeholder="새 비밀번호를 입력해주세요." name="loginPw" />
 		</div>
 		<div>
-			새 비밀번호 <input autocomplete="off" type="password" placeholder="새 비밀번호를 입력해주세요." name="loginPw" />
+			비밀번호 확인
+			<input autocomplete="off" type="password" placeholder="비밀번호 확인을 입력해주세요." name="loginPwConfirm" />
 		</div>
 		<div>
-			비밀번호 확인 <input autocomplete="off" type="password" placeholder="비밀번호 확인을 입력해주세요." name="loginPw" />
+			이름
+			<input autocomplete="off" type="text" placeholder="이름을 입력해주세요." name="name" value="${rq.loginedMember.name}" />
 		</div>
 		<div>
-			이름 <input autocomplete="off" type="text" placeholder="이름을 입력해주세요." name="name" value="${rq.loginedMember.name}" />
+			닉네임
+			<input autocomplete="off" type="text" placeholder="닉네임을 입력해주세요." name="nickname" value="${rq.loginedMember.nickname}" />
 		</div>
 		<div>
-			닉네임 <input autocomplete="off" type="text" placeholder="닉네임을 입력해주세요." name="nickname" value="${rq.loginedMember.nickname}"/>
+			이메일
+			<input autocomplete="off" type="text" placeholder="이메일을 입력해주세요." name="email" value="${rq.loginedMember.email}" />
 		</div>
 		<div>
-			이메일 <input autocomplete="off" type="text" placeholder="이메일을 입력해주세요." name="email" value="${rq.loginedMember.email}"/>
-		</div>
-		<div>
-			전화번호 <input autocomplete="off" type="text" placeholder="전화번호를 입력해주세요." name="cellphoneNum" value="${rq.loginedMember.cellphoneNum}"/>
+			전화번호
+			<input autocomplete="off" type="text" placeholder="전화번호를 입력해주세요." name="cellphoneNum"
+				value="${rq.loginedMember.cellphoneNum}" />
 		</div>
 		<button class="login" type="submit">수정</button>
 	</form>
