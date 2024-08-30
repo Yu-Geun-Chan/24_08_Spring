@@ -108,4 +108,14 @@ public class Rq {
 	public String getEncodedCurrentUri() {
 		return Ut.getEncodedCurrentUri(getCurrentUri());
 	}
+	
+	// getAfterLoginUri() : 인코딩한 원래 페이지 URI가 남겨져있다.
+	public String getLoginUri() {
+		return "../member/login?afterLoginUri=" + getAfterLoginUri();
+	}
+
+	// 원래 페이지 URI를 인코딩 하라고 요청하는 메서드를 호출하는 메서드
+	private String getAfterLoginUri() {
+		return getEncodedCurrentUri();
+	}
 }

@@ -8,89 +8,162 @@
 
 <hr />
 
-<script type="text/javascript">
+
+<!-- lodash debounce -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+
+<script>
+	let validLoginId = "";
 	function JoinForm__submit(form) {
 
-		let loginId = form.loginId.value.trim();
-		let loginPw = form.loginPw.value.trim();
-		let loginPwConfirm = form.loginPwConfirm.value.trim();
-		let name = form.name.value.trim();
-		let nickname = form.nickname.value.trim();
-		let cellphoneNum = form.cellphoneNum.value.trim();
-		let email = form.email.value.trim();
-
-		if (loginId.length == 0) {
-			alert('아이디를 입력해주세요.');
+		form.loginId.value = form.loginId.value.trim();
+		if (form.loginId.value == 0) {
+			alert('아이디를 입력해주세요');
 			return;
 		}
-		if (loginPw.length == 0) {
-			alert('비밀번호를 입력해주세요.');
+<!-- 넘겨받은 loginId와 일치하지 않는 경우 -->
+		if (form.loginId.value != validLoginId) {
+			alert('사용할 수 없는 아이디입니다.');
+			form.loginId.focus();
 			return;
 		}
-		if (loginPwConfirm.length == 0) {
-			alert('비밀번호 확인을 입력해주세요.');
+		if (validLoginId == form.loginId.value) {
 			return;
 		}
-
-		if (loginPw != loginPwConfirm) {
-			alert('비밀번호가 일치하지 않습니다.');
+		form.loginPw.value = form.loginPw.value.trim();
+		if (form.loginPw.value == 0) {
+			alert('비밀번호를 입력해주세요');
+			return;
+		}
+		form.loginPwConfirm.value = form.loginPwConfirm.value.trim();
+		if (form.loginPwConfirm.value == 0) {
+			alert('비밀번호 확인을 입력해주세요');
+			return;
+		}
+		if (form.loginPwConfirm.value != form.loginPw.value) {
+			alert('비밀번호가 일치하지 않습니다');
 			form.loginPw.focus();
 			return;
 		}
-
-		if (name.length == 0) {
-			alert('이름을 입력해주세요.');
+		form.name.value = form.name.value.trim();
+		if (form.name.value == 0) {
+			alert('이름을 입력해주세요');
 			return;
 		}
-		if (nickname.length == 0) {
-			alert('닉네임을 입력해주세요.');
+		form.nickname.value = form.nickname.value.trim();
+		if (form.nickname.value == 0) {
+			alert('닉네임을 입력해주세요');
 			return;
 		}
-		if (cellphoneNum.length == 0) {
-			alert('휴대폰번호를 입력해주세요.');
+		form.email.value = form.email.value.trim();
+		if (form.email.value == 0) {
+			alert('이메일을 입력해주세요');
 			return;
 		}
-		if (email.length == 0) {
-			alert('이메일을 입력해주세요.');
+		form.cellphoneNum.value = form.cellphoneNum.value.trim();
+		if (form.cellphoneNum.value == 0) {
+			alert('전화번호를 입력해주세요');
 			return;
 		}
-
+		submitJoinFormDone = true;
 		form.submit();
-
 	}
+
+	function checkLoginIdDup(el) {
+		$('.checkDup-msg').empty(); <!-- 해당 클래스명의 요소를 비운다. -->
+<!-- el = input, closest('form') 가장 가까운 form을 찾는다.-->
+<!-- $(el).closest('form').get(0); = 아이디 입력하는 input 창 -->
+		const form = $(el).closest('form').get(0); 
+		if (form.loginId.value.length == 0) {
+			validLoginId = '';
+			return;
+		}
+		$.get('../member/getLoginIdDup', {
+			isAjax : 'Y',
+			loginId : form.loginId.value
+		}, function(data) {
+			$('.checkDup-msg').html('<div class="mt-2">' + data.msg + '</div>') <!-- data.msg = 넘겨받은 메세지 -->
+			if (data.success) {
+				validLoginId = data.data1; <!-- data.data1 = 넘겨받은 loginId -->
+			} else {
+				validLoginId = '';
+			}
+		}, 'json');
+	}
+	// 	checkLoginIdDup(); // 매번 실행
+	const checkLoginIdDupDebounced = _.debounce(checkLoginIdDup, 600); // 실행 빈도 조절
 </script>
 
-<form class="mt-3" method="POST" action="doJoin" onsubmit="JoinForm__submit(this); return false;">
-	<div>
-		아이디<input autocomplete="off" type="text" placeholder="아이디를 입력해주세요." name="loginId" />
-	</div>
-	<div>
-		비밀번호<input autocomplete="off" type="text" placeholder="비밀번호를 입력해주세요." name="loginPw" />
-	</div>
-	<div>
-		비밀번호 확인<input autocomplete="off" type="text" placeholder="비밀번호 확인을 입력해주세요." name="loginPwConfirm" />
-	</div>
-	<div>
-		이름<input autocomplete="off" type="text" placeholder="이름을 입력해주세요." name="name" />
-	</div>
-	<div>
-		닉네임<input autocomplete="off" type="text" placeholder="닉네임을 입력해주세요." name="nickname" />
-	</div>
-	<div>
-		휴대폰번호<input autocomplete="off" type="text" placeholder="휴대폰번호를 입력해주세요." name="cellphoneNum" />
-	</div>
-	<div>
-		이메일<input autocomplete="off" type="text" placeholder="이메일을 입력해주세요." name="email" />
-	</div>
-	<button type="submit">회원가입</button>
-</form>
+<section class="mt-24 text-xl px-4">
+	<div class="mx-auto">
+		<form action="../member/doJoin" method="POST" onsubmit="JoinForm__submit(this); return false;">
+			<table class="table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
+				<tbody>
+					<tr>
+						<th>아이디</th>
+						<td style="text-align: center;">
+							<input onkeyup="checkLoginIdDupDebounced(this);"
+								class="input input-bordered input-primary input-sm w-full max-w-xs" name="loginId" autocomplete="off"
+								type="text" placeholder="아이디를 입력해" />
+						</td>
 
+					</tr>
+					<tr>
+						<th></th>
+						<td style="text-align: center;">
+							<div class="checkDup-msg"></div>
+						</td>
+					</tr>
 
-<div class="btns text-center mt-8 mb-8">
-	<button class="btn" type="button" onclick="history.back()">뒤로가기</button>
-	<button class="btn" type="button">
-		<a href="list">리스트로 돌아가기</a>
-	</button>
-</div>
+					<tr>
+						<th>비밀번호</th>
+						<td style="text-align: center;">
+							<input class="input input-bordered input-primary input-sm w-full max-w-xs" name="loginPw" autocomplete="off"
+								type="text" placeholder="비밀번호를 입력해" />
+						</td>
+					</tr>
+					<tr>
+						<th>이름</th>
+						<td style="text-align: center;">
+							<input class="input input-bordered input-primary input-sm w-full max-w-xs" name="name" autocomplete="off"
+								type="text" placeholder="이름 입력해" />
+						</td>
+					</tr>
+					<tr>
+						<th>닉네임</th>
+						<td style="text-align: center;">
+							<input class="input input-bordered input-primary input-sm w-full max-w-xs" name="nickname" autocomplete="off"
+								type="text" placeholder="닉네임 입력해" />
+						</td>
+					</tr>
+					<tr>
+						<th>전화번호</th>
+						<td style="text-align: center;">
+							<input class="input input-bordered input-primary input-sm w-full max-w-xs" name="cellphoneNum" autocomplete="off"
+								type="text" placeholder="전화번호를 입력해" />
+						</td>
+					</tr>
+					<tr>
+						<th>이메일</th>
+						<td style="text-align: center;">
+							<input class="input input-bordered input-primary input-sm w-full max-w-xs" name="email" autocomplete="off"
+								type="text" placeholder="이메일을 입력해" />
+						</td>
+					</tr>
+					<tr>
+						<th></th>
+						<td style="text-align: center;">
+							<button class="btn btn-primary">가입</button>
+						</td>
+
+					</tr>
+				</tbody>
+			</table>
+		</form>
+		<div class="btns">
+			<button class="btn" type="button" onclick="history.back()">뒤로가기</button>
+		</div>
+	</div>
+</section>
 
 <%@ include file="../common/foot.jspf"%>

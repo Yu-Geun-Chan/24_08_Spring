@@ -23,10 +23,12 @@ public class NeedLoginInterceptor implements HandlerInterceptor {
 		if (!rq.isLogined()) {
 			System.err.println("================== 로그인 후 이용해주세요 ====================");
 
-			String afterLoginUri = rq.getEncodedCurrentUri();
-			rq.printReplace("F-A", "로그인 후 이용해주세요", "../member/login?afterLoginUri=" + afterLoginUri);
+						// 원래 페이지를 저장하기 위한 로직
+						String afterLoginUri = rq.getEncodedCurrentUri();
+						// 로그인 하지 않았다면 로그인 창으로 보내고 로그인을 한 후에는 원래 페이지로 되돌리기 위한 코드
+						rq.printReplace("F-A", "로그인 후 이용해주세요", "../member/login?afterLoginUri=" + afterLoginUri);
 
-			return false;
+						return false;
 
 		}
 

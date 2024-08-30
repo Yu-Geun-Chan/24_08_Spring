@@ -83,6 +83,7 @@ public class Ut {
 		return String.format(format, args);
 	}
 	
+	// 원래페이지 URI를 인코딩하는 메서드
 	public static String getEncodedCurrentUri(String currentUri) {
 		try {
 			return URLEncoder.encode(currentUri, "UTF-8");

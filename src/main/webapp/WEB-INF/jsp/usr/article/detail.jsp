@@ -115,18 +115,6 @@
 					<td>${article.updateDate.substring(0,10)}</td>
 				</tr>
 				<tr style="text-align: center;">
-					<th>제목</th>
-					<td>${article.title}</td>
-				</tr>
-				<tr style="text-align: center;">
-					<th>내용</th>
-					<td>
-						<div class="toast-ui-viewer">
-							<script type="text/x-template">${article.body}</script>
-						</div>
-					</td>
-				</tr>
-				<tr style="text-align: center;">
 					<th>게시판</th>
 					<td>${article.boardId}</td>
 				</tr>
@@ -159,6 +147,18 @@
 							👎 싫어요
 							<span class="article-detail__bad-reaction">${article.badReactionPoint}</span>
 						</button>
+					</td>
+				</tr>
+				<tr style="text-align: center;">
+					<th>제목</th>
+					<td>${article.title}</td>
+				</tr>
+				<tr style="text-align: center;">
+					<th>내용</th>
+					<td>
+						<div class="toast-ui-viewer">
+							<script type="text/x-template">${article.body}</script>
+						</div>
 					</td>
 				</tr>
 			</tbody>
@@ -236,7 +236,7 @@ function doModifyReply(replyId) {
 <section class="mt-8 text-xl px-4">
 
 	<c:if test="${!rq.isLogined()}">
-		댓글 작성을 위해 <a class='btn' href="../member/login">로그인</a> 이 필요합니다.
+		댓글 작성을 위해 <a class='btn' href="${rq.loginUri }">로그인</a> 이 필요합니다.
 	</c:if>
 	<c:if test="${rq.isLogined()}">
 		<form method="POST" action="../reply/doWrite">
