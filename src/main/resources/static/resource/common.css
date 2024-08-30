@@ -52,6 +52,10 @@ header>div>ul>li {
 	margin-right: 30px;
 }
 
+.toastui-editor-contents {
+	text-align: center;
+}
+
 /* 전체적인 상단바 스타일 */
 header {
 	padding: 0 20px;
@@ -134,6 +138,17 @@ section>div>form {
 
 /* 게시글 작성 폼 스타일 */
 .write_form {
+	max-width: 1400px;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	text-align: center;
+}
+
+/* 게시글 수정 폼 스타일 */
+.modify_form {
 	max-width: 1400px;
 	margin: 0 auto;
 	padding: 20px;

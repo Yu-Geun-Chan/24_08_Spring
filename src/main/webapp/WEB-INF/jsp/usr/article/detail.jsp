@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="pageTitle" value="DETAIL"></c:set>
 <%@ include file="../common/head.jspf"%>
+<%@ include file="../common/toastUiEditorLib.jspf"%>
 
 <a href="../home/main">메인 페이지로 </a>
 
@@ -119,7 +120,11 @@
 				</tr>
 				<tr style="text-align: center;">
 					<th>내용</th>
-					<td>${article.body }</td>
+					<td>
+						<div class="toast-ui-viewer">
+							<script type="text/x-template">${article.body}</script>
+						</div>
+					</td>
 				</tr>
 				<tr style="text-align: center;">
 					<th>게시판</th>
@@ -267,7 +272,7 @@ function doModifyReply(replyId) {
 						<td>
 							<span id="reply-${reply.id}">${reply.body}</span>
 							<form id="modify-form-${reply.id}" style="display: none;" method="POST" action="/usr/reply/doModify">
-							<!-- 각 댓글의 id(replyId)를 식별자로 사용하기 위해 input의 name에 reply.id를 불러와서 적용 -->
+								<!-- 각 댓글의 id(replyId)를 식별자로 사용하기 위해 input의 name에 reply.id를 불러와서 적용 -->
 								<input type="text" name="reply-body-${reply.id}" value="${reply.body}" placeholder="수정할 내용을 입력하세요." />
 							</form>
 						</td>

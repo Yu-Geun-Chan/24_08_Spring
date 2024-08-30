@@ -9,6 +9,7 @@
 
 <hr />
 
+<!--  -->
 <script type="text/javascript">
 	function ArticleWrite__submit(form) {
 		form.title.value = form.title.value.trim();
