@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.util.crawlTest;
 import com.example.demo.vo.Article;
 
 @Controller // 프로젝트에서 얘는 컨트롤러라고 인식하게끔 하는것
@@ -26,5 +27,12 @@ public class UsrHomeController {
 		return "redirect:/usr/home/main";
 	}
 	
+	@RequestMapping("/usr/crawl")
+	public String doCrawl() {
+
+		crawlTest.crawl();
+
+		return "redirect:/usr/home/main";
+	}
 
 }
