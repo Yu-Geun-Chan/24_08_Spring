@@ -29,8 +29,10 @@
 	}
 </script>
 
-<form class="write_form" onsubmit="ArticleWrite__submit(this); return false;" method="POST" action="doWrite">
+<form class="write_form" onsubmit="ArticleWrite__submit(this); return false;" method="POST" action="doWrite"
+	enctype="multipart/form-data">
 	<input type="hidden" name="body" />
+	<input type="hidden" name=">${currentId }">
 	<div class="p-3">
 		<select name="board">
 			<option value="" selected disabled>게시판을 선택하세요.</option>
@@ -44,10 +46,16 @@
 		제목
 		<input type="text" placeholder="제목을 입력하세요." name="title" />
 	</div>
+	<div>첨부 이미지</div>
+	<div>
+		<input id="fileInput" placeholder="이미지를 선택해주세요" type="file" />
+	</div>
+	</div>
+
 	<div>내용</div>
-		<div class="toast-ui-editor">
-			<script type="text/x-template"></script>
-		</div>
+	<div class="toast-ui-editor">
+		<script type="text/x-template"></script>
+	</div>
 	<button type="submit">작성</button>
 </form>
 

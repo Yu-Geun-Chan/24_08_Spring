@@ -1,22 +1,32 @@
 package com.example.demo.vo;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Map;
 
+import com.example.demo.util.Ut;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class ResultData<DT> {
 
-	@Getter
 	private String ResultCode;
-	@Getter
 	private String msg;
-	@Getter
 	private DT data1;
-	@Getter
 	private String data1Name;
-	@Getter
 	private Object data2;
-	@Getter
 	private String data2Name;
+
+	private Map<String, Object> body;
+
+	public ResultData(String ResultCode, String msg, Object... args) {
+		this.ResultCode = ResultCode;
+		this.msg = msg;
+		this.body = Ut.mapOf(args);
+	}
 
 	public static <DT> ResultData<DT> from(String ResultCode, String msg) {
 		return from(ResultCode, msg, null, null);
@@ -31,7 +41,7 @@ public class ResultData<DT> {
 
 		return rd;
 	}
-	
+
 	public static <DT> ResultData<DT> from(String resultCode, String msg, String data1Name, DT data1, String data2Name,
 			DT data2) {
 		ResultData<DT> rd = new ResultData<DT>();

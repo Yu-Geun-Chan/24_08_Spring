@@ -161,6 +161,16 @@
 						</div>
 					</td>
 				</tr>
+				<tr style="text-align: center;">
+					<th>첨부 이미지</th>
+					<td>
+						<div style="text-align: center;">
+							<img class="mx-auto rounded-xl" src="${rq.getImgUri(article.id)}" onerror="${rq.profileFallbackImgOnErrorHtml}"
+								alt="" />
+						</div>
+						<div>${rq.getImgUri(article.id)}</div>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 
