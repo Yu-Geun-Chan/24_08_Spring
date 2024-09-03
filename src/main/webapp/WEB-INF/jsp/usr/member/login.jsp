@@ -9,16 +9,43 @@
 <hr />
 
 <div class="text-center mt-3">
-	<form method="POST" action="doLogin">
-	 	<!-- doLogin 메서드의 afterUri를 넘겨주기 위해 추가 -->
+	<form action="../member/doLogin" method="POST">
+		<!-- doLogin 메서드의 afterUri를 넘겨주기 위해 추가 -->
 		<input type="hidden" name="afterLoginUri" value="${param.afterLoginUri }" />
-		<div>
-			아이디 <input autocomplete="off" type="text" placeholder="아이디를 입력해주세요." name="loginId" />
-		</div>
-		<div>
-			비밀번호 <input autocomplete="off" type="password" placeholder="비밀번호를 입력해주세요." name="loginPw" />
-		</div>
-		<button class="login" type="submit">로그인</button>
+		<table class="table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
+			<tbody>
+				<tr>
+					<th>아이디</th>
+					<td style="text-align: center;">
+						<input class="input input-bordered input-primary input-sm w-full max-w-xs" name="loginId" autocomplete="off"
+							type="text" placeholder="아이디를 입력해" />
+					</td>
+
+				</tr>
+				<tr>
+					<th>비밀번호</th>
+					<td style="text-align: center;">
+						<input class="input input-bordered input-primary input-sm w-full max-w-xs" name="loginPw" autocomplete="off"
+							type="text" placeholder="비밀번호를 입력해" />
+					</td>
+
+				</tr>
+				<tr>
+					<th></th>
+					<td style="text-align: center;">
+						<button class="btn btn-primary">로그인</button>
+					</td>
+
+				</tr>
+				<tr>
+					<th></th>
+					<td style="text-align: center;">
+						<a class="btn btn-outline btn-primary" href="${rq.findLoginIdUri }">아이디 찾기</a>
+						<a class="btn btn-outline btn-success" href="${rq.findLoginPwUri }">비밀번호찾기</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</form>
 </div>
 

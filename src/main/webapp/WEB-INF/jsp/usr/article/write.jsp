@@ -14,14 +14,14 @@
 	function ArticleWrite__submit(form) {
 		form.title.value = form.title.value.trim();
 		if (form.title.value.length == 0) {
-			alert('제목 써');
+			alert('제목을 입력하세요.');
 			return;
 		}
 		const editor = $(form).find('.toast-ui-editor').data(
 				'data-toast-editor');
 		const markdown = editor.getMarkdown().trim();
 		if (markdown.length == 0) {
-			alert('내용 써');
+			alert('내용을 입력하세요.');
 			return;
 		}
 		form.body.value = markdown;
