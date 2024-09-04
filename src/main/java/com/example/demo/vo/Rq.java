@@ -1,6 +1,7 @@
 package com.example.demo.vo;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -17,12 +18,12 @@ import lombok.Getter;
 @Component
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class Rq {
-
+	@Getter
+	boolean isAjax;
 	@Getter
 	private boolean isLogined;
 	@Getter
 	private int loginedMemberId;
-	
 	@Getter
 	private Member loginedMember;
 
@@ -31,12 +32,16 @@ public class Rq {
 
 	private HttpSession session;
 
+	private Map<String, String> paramMap;
+
 	public Rq(HttpServletRequest req, HttpServletResponse resp, MemberService memberService) {
 		this.req = req;
 		this.resp = resp;
 		this.session = req.getSession();
 
 		HttpSession httpSession = req.getSession();
+
+		paramMap = Ut.getParamMap(req);
 
 		if (httpSession.getAttribute("loginedMemberId") != null) {
 			isLogined = true;
@@ -45,6 +50,24 @@ public class Rq {
 		}
 
 		this.req.setAttribute("rq", this);
+
+		String requestUri = req.getRequestURI();
+
+		boolean isAjax = requestUri.endsWith("Ajax");
+
+		if (isAjax == false) {
+			if (paramMap.containsKey("ajax") && paramMap.get("ajax").equals("Y")) {
+				isAjax = true;
+			} else if (paramMap.containsKey("isAjax") && paramMap.get("isAjax").equals("Y")) {
+				isAjax = true;
+			}
+		}
+		if (isAjax == false) {
+			if (requestUri.contains("/get")) {
+				isAjax = true;
+			}
+		}
+		this.isAjax = isAjax;
 	}
 
 	public void printHistoryBack(String msg) throws IOException {
@@ -88,18 +111,23 @@ public class Rq {
 		req.setAttribute("historyBack", true);
 		return "usr/common/js";
 	}
-	
+
 	public String getCurrentUri() {
 		String currentUri = req.getRequestURI();
-		String queryString = req.getQueryString(); // ? 뒤의 값
-		
-		if(currentUri != null && queryString != null) {
+		String queryString = req.getQueryString();
+
+		System.err.println(currentUri);
+		System.err.println(queryString);
+
+		if (currentUri != null && queryString != null) {
 			currentUri += "?" + queryString;
 		}
-		
+
+		System.out.println(currentUri);
+
 		return currentUri;
 	}
-	
+
 	public void printReplace(String resultCode, String msg, String replaceUri) {
 		resp.setContentType("text/html; charset=UTF-8");
 		print(Ut.jsReplace(resultCode, msg, replaceUri));
@@ -108,17 +136,19 @@ public class Rq {
 	public String getEncodedCurrentUri() {
 		return Ut.getEncodedCurrentUri(getCurrentUri());
 	}
-	
-	// getAfterLoginUri() : 인코딩한 원래 페이지 URI가 남겨져있다.
+
 	public String getLoginUri() {
 		return "../member/login?afterLoginUri=" + getAfterLoginUri();
 	}
 
-	// 원래 페이지 URI를 인코딩 하라고 요청하는 메서드를 호출하는 메서드
-	private String getAfterLoginUri() {
+	public String getAfterLoginUri() {
 		return getEncodedCurrentUri();
 	}
-	
+
+	public String jsReplace(String msg, String uri) {
+		return Ut.jsReplace(msg, uri);
+	}
+
 	public String getImgUri(int id) {
 		return "/common/genFile/file/article/" + id + "/extra/Img/1";
 	}
@@ -130,7 +160,7 @@ public class Rq {
 	public String getProfileFallbackImgOnErrorHtml() {
 		return "this.src = '" + getProfileFallbackImgUri() + "'";
 	}
-	
+
 	public String getFindLoginIdUri() {
 		return "../member/findLoginId?afterFindLoginIdUri=" + getAfterFindLoginIdUri();
 	}
@@ -145,6 +175,14 @@ public class Rq {
 
 	private String getAfterFindLoginPwUri() {
 		return getEncodedCurrentUri();
+	}
+
+	public boolean isAdmin() {
+		if (isLogined == false) {
+			return false;
+		}
+
+		return loginedMember.isAdmin();
 	}
 
 }

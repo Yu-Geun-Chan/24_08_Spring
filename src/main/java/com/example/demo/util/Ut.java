@@ -8,6 +8,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class Ut {
+
+	public static String jsReplace(String msg, String replaceUri) {
+
+		if (msg == null) {
+			msg = "";
+		}
+		if (replaceUri == null) {
+			replaceUri = "/";
+		}
+
+		return Ut.f("""
+					<script>
+						if(msg.length > 0){
+							alert(msg);
+						}
+						location.replace('%s');
+					</script>
+				""", msg, replaceUri);
+	}
 
 	public static String jsReplace(String resultCode, String msg, String replaceUri) {
 
@@ -279,9 +300,23 @@ public class Ut {
 	public static <T> T reqAttr(HttpServletRequest req, String attrName, T defaultValue) {
 		return (T) ifNull(req.getAttribute(attrName), defaultValue);
 	}
-	
 
-	// sha256(비밀번호 넘어갈때 암호화, 복호화 / sha256이라 검색하면 알고리즘 나온다.)
+	public static Map<String, String> getParamMap(HttpServletRequest req) {
+		Map<String, String> param = new HashMap<>();
+
+		Enumeration<String> parameterNames = req.getParameterNames();
+
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = req.getParameter(paramName);
+
+			param.put(paramName, paramValue);
+		}
+
+		return param;
+	}
+
+	// sha256
 	public static String sha256(String input) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");

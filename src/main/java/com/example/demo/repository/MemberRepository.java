@@ -1,12 +1,13 @@
 package com.example.demo.repository;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.example.demo.vo.Member;
-import com.example.demo.vo.ResultData;
 
 @Mapper
 public interface MemberRepository {
@@ -36,7 +37,7 @@ public interface MemberRepository {
 	public Member getMemberByNameAndEmail(String name, String email);
 
 	@Update("""
-			<sciprt>
+			<script>
 				UPDATE `member`
 				<set>
 					<if test="loginPw != null">
@@ -48,22 +49,22 @@ public interface MemberRepository {
 					<if test="nickname != null">
 						nickname = #{nickname},
 					</if>
-					<if test="email != null">
-						email = #{email},
-					</if>
 					<if test="cellphoneNum != null">
 						cellphoneNum = #{cellphoneNum},
 					</if>
+					<if test="email != null">
+						email = #{email},
+					</if>
 					updateDate = NOW()
 				</set>
-			WHERE id = #{loginemMemberId}
-			</sciprt>
+				WHERE id = #{loginedMemberId}
+			</script>
 			""")
-	public void modifyMember(int loginemMemberId, String loginPw, String email, String cellphoneNum, String nickname,
-			String name);
+	public void modify(int loginedMemberId, String loginPw, String name, String nickname, String cellphoneNum,
+			String email);
 
 	@Update("""
-			<sciprt>
+			<script>
 				UPDATE `member`
 				<set>
 					<if test="name != null">
@@ -72,18 +73,85 @@ public interface MemberRepository {
 					<if test="nickname != null">
 						nickname = #{nickname},
 					</if>
-					<if test="email != null">
-						email = #{email},
-					</if>
 					<if test="cellphoneNum != null">
 						cellphoneNum = #{cellphoneNum},
 					</if>
+					<if test="email != null">
+						email = #{email},
+					</if>
 					updateDate = NOW()
 				</set>
-			WHERE id = #{loginemMemberId}
-			</sciprt>
+				WHERE id = #{loginedMemberId}
+			</script>
 			""")
-	public void modifyWithoutPwMember(int loginedMemberId, String email, String cellphoneNum, String nickname,
-			String name);
+	public void modifyWithoutPw(int loginedMemberId, String name, String nickname, String cellphoneNum, String email);
 
+	@Select("""
+			<script>
+			SELECT COUNT(*) AS cnt
+			FROM `member` AS M
+			WHERE 1
+			<if test="authLevel != 0">
+				AND M.authLevel = #{authLevel}
+			</if>
+			<if test="searchKeyword != ''">
+				<choose>
+					<when test="searchKeywordTypeCode == 'loginId'">
+						AND M.loginId LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<when test="searchKeywordTypeCode == 'name'">
+						AND M.name LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<when test="searchKeywordTypeCode == 'nickname'">
+						AND M.nickname LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<otherwise>
+						AND (
+							M.loginId LIKE CONCAT('%', #{searchKeyword}, '%')
+							OR M.name LIKE CONCAT('%', #{searchKeyword}, '%')
+							OR M.nickname LIKE CONCAT('%', #{searchKeyword}, '%')
+							)
+					</otherwise>
+				</choose>
+			</if>
+			</script>
+							""")
+	int getMembersCount(String authLevel, String searchKeywordTypeCode, String searchKeyword);
+
+	@Select("""
+			<script>
+			SELECT M.*
+			FROM `member` AS M
+			WHERE 1
+			<if test="authLevel != 0">
+				AND M.authLevel = #{authLevel}
+			</if>
+			<if test="searchKeyword != ''">
+				<choose>
+					<when test="searchKeywordTypeCode == 'loginId'">
+						AND M.loginId LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<when test="searchKeywordTypeCode == 'name'">
+						AND M.name LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<when test="searchKeywordTypeCode == 'nickname'">
+						AND M.nickname LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<otherwise>
+						AND (
+							M.loginId LIKE CONCAT('%', #{searchKeyword}, '%')
+							OR M.name LIKE CONCAT('%', #{searchKeyword}, '%')
+							OR M.nickname LIKE CONCAT('%', #{searchKeyword}, '%')
+							)
+					</otherwise>
+				</choose>
+			</if>
+			ORDER BY M.id DESC
+				<if test="limitTake != -1">
+					LIMIT #{limitStart}, #{limitTake}
+				</if>
+			</script>
+							""")
+	List<Member> getForPrintMembers(String authLevel, String searchKeywordTypeCode, String searchKeyword,
+			int limitStart, int limitTake);
 }

@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,14 +34,29 @@ public class MemberService {
 		if (existsMember != null) {
 			return ResultData.from("F-8", Ut.f("이미 사용중인 이름(%s)과 이메일(%s)입니다.", name, email));
 		}
-		
+
 		loginPw = Ut.sha256(loginPw);
 
 		memberRepository.doJoin(loginId, loginPw, name, nickname, cellphoneNum, email);
 
 		int id = memberRepository.getLastInsertId();
 
-		return ResultData.from("S-1", Ut.f("[%s]님 회원가입 되었습니다.", nickname), "생성된 회원 id", id);
+		return ResultData.from("S-1", "회원가입 성공", "생성된 회원 id", id);
+	}
+
+	public int getMembersCount(String authLevel, String searchKeywordTypeCode, String searchKeyword) {
+		return memberRepository.getMembersCount(authLevel, searchKeywordTypeCode, searchKeyword);
+	}
+
+	public List<Member> getForPrintMembers(String authLevel, String searchKeywordTypeCode, String searchKeyword,
+			int itemsInAPage, int page) {
+
+		int limitStart = (page - 1) * itemsInAPage;
+		int limitTake = itemsInAPage;
+		List<Member> members = memberRepository.getForPrintMembers(authLevel, searchKeywordTypeCode, searchKeyword,
+				limitStart, limitTake);
+
+		return members;
 	}
 
 	public Member getMemberByNameAndEmail(String name, String email) {
@@ -54,20 +71,20 @@ public class MemberService {
 		return memberRepository.getMemberById(id);
 	}
 
-	public ResultData modifyMember(int loginemMemberId, String loginPw, String email, String cellphoneNum,
-			String nickname, String name) {
-		
+	public ResultData modify(int loginedMemberId, String loginPw, String name, String nickname, String cellphoneNum,
+			String email) {
+
 		loginPw = Ut.sha256(loginPw);
 
-		memberRepository.modifyMember(loginemMemberId, loginPw, email, cellphoneNum, nickname, name);
-		
+		memberRepository.modify(loginedMemberId, loginPw, name, nickname, cellphoneNum, email);
+
 		return ResultData.from("S-1", "회원정보 수정 완료");
 	}
 
-	public ResultData modifyWithoutPwMember(int loginedMemberId, String email, String cellphoneNum, String nickname,
-			String name) {
-		memberRepository.modifyWithoutPwMember(loginedMemberId, email, cellphoneNum, nickname, name);
-		
+	public ResultData modifyWithoutPw(int loginedMemberId, String name, String nickname, String cellphoneNum,
+			String email) {
+		memberRepository.modifyWithoutPw(loginedMemberId, name, nickname, cellphoneNum, email);
+
 		return ResultData.from("S-1", "회원정보 수정 완료");
 	}
 

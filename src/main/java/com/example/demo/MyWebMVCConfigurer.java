@@ -9,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.example.demo.interceptor.BeforeActionInterceptor;
+import com.example.demo.interceptor.NeedAdminInterceptor;
 import com.example.demo.interceptor.NeedLoginInterceptor;
 import com.example.demo.interceptor.NeedLogoutInterceptor;
 
@@ -36,20 +37,12 @@ public class MyWebMVCConfigurer implements WebMvcConfigurer {
 	@Autowired
 	NeedLogoutInterceptor needLogoutInterceptor;
 
+	// NeedAdminInterceptor 불러오기
+	@Autowired
+	NeedAdminInterceptor needAdminInterceptor;
+
 	// 인터셉터 등록(적용)
 	public void addInterceptors(InterceptorRegistry registry) {
-
-//		registry.addInterceptor(beforeActionInterceptor).addPathPatterns("/**").excludePathPatterns("/resource/**")
-//				.excludePathPatterns("/error");
-//
-//		registry.addInterceptor(needLoginInterceptor).addPathPatterns("/usr/article/write")
-//				.addPathPatterns("/usr/article/doWrite").addPathPatterns("/usr/article/modify")
-//				.addPathPatterns("/usr/article/doModify").addPathPatterns("/usr/article/doDelete")
-//				.addPathPatterns("/usr/member/doLogout");
-//
-//		registry.addInterceptor(needLogoutInterceptor).addPathPatterns("/usr/member/login")
-//				.addPathPatterns("/usr/member/doLogin").addPathPatterns("/usr/member/join")
-//				.addPathPatterns("/usr/member/doJoin");
 
 		InterceptorRegistration ir;
 
@@ -76,6 +69,15 @@ public class MyWebMVCConfigurer implements WebMvcConfigurer {
 		ir.addPathPatterns("/usr/member/modify");
 		ir.addPathPatterns("/usr/member/doModify");
 
+//		관리자 로그인
+		ir.addPathPatterns("/adm/**");
+		ir.addPathPatterns("/adm/member/login");
+		ir.addPathPatterns("/adm/member/doLogin");
+		ir.addPathPatterns("/adm/member/findLoginId");
+		ir.addPathPatterns("/adm/member/doFindLoginId");
+		ir.addPathPatterns("/adm/member/findLoginPw");
+		ir.addPathPatterns("/adm/member/doFindLoginPw");
+
 //		댓글 관련
 		ir.addPathPatterns("/usr/reply/doWrite");
 
@@ -93,6 +95,16 @@ public class MyWebMVCConfigurer implements WebMvcConfigurer {
 		ir.addPathPatterns("/usr/member/doFindLoginId");
 		ir.addPathPatterns("/usr/member/findLoginPw");
 		ir.addPathPatterns("/usr/member/doFindLoginPw");
+
+		// 관리자
+		ir = registry.addInterceptor(needAdminInterceptor);
+		ir.addPathPatterns("/adm/**");
+		ir.addPathPatterns("/adm/member/login");
+		ir.addPathPatterns("/adm/member/doLogin");
+		ir.addPathPatterns("/adm/member/findLoginId");
+		ir.addPathPatterns("/adm/member/doFindLoginId");
+		ir.addPathPatterns("/adm/member/findLoginPw");
+		ir.addPathPatterns("/adm/member/doFindLoginPw");
 
 	}
 
