@@ -55,4 +55,21 @@ public class AdmMemberController {
 
 		return Ut.jsReplace("S-1", "로그아웃 되었습니다", afterLogoutUri);
 	}
+	
+	@RequestMapping("/adm/member/doDeleteMembers")
+	@ResponseBody
+	public String doDeleteMembers(@RequestParam(defaultValue = "") String ids,
+			@RequestParam(defaultValue = "/adm/member/list") String replaceUri) {
+		List<Integer> memberIds = new ArrayList<>();
+
+		for (String idStr : ids.split(",")) {
+			memberIds.add(Integer.parseInt(idStr));
+		}
+
+		memberService.deleteMembers(memberIds);
+
+		System.err.println(replaceUri);
+
+		return rq.jsReplace("해당 회원들이 정지되었습니다.", replaceUri);
+	}
 }
